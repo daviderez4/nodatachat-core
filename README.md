@@ -1,8 +1,9 @@
 <div align="center">
 
-# NoDataChat
+<img src="assets/banner.svg" alt="NoDataChat — Secrets that self-destruct" width="100%"/>
 
-**Secrets that self-destruct.**
+<br/>
+
 
 Send passwords, API keys, and credentials securely — without storing anything.
 
