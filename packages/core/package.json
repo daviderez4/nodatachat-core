@@ -1,0 +1,16 @@
+{
+  "name": "@nodatachat/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zero-knowledge identity & E2E encryption primitives — open-source core",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "license": "SEE LICENSE FILE",
+  "dependencies": {
+    "@nodatachat/crypto": "*"
+  }
+}

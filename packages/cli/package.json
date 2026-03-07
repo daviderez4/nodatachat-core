@@ -1,0 +1,19 @@
+{
+  "name": "@nodatachat/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Send encrypted, self-destructing secrets from the terminal",
+  "bin": {
+    "nodata-send": "dist/send.js",
+    "nodata-proof": "dist/proof.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev:send": "npx tsx src/send.ts",
+    "dev:proof": "npx tsx src/proof.ts"
+  },
+  "license": "SEE LICENSE FILE",
+  "dependencies": {
+    "@nodatachat/core": "*"
+  }
+}
