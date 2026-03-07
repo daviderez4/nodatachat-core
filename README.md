@@ -44,21 +44,10 @@ NoDataChat encrypts on your machine, delivers a one-time link, and deletes every
 
 ## How it works
 
-```
-  Your terminal                 Server                    Recipient
-       |                          |                          |
-       |-- encrypt (AES-256) -->  |                          |
-       |                          |-- store blob (can't     |
-       |                          |   read it) -----------> |
-       |                          |                          |
-       |   link: /burn/id#KEY     |   # never reaches       |
-       |   (send via any channel) |   the server             |
-       |                          |                          |
-       |                          | <-- fetch blob --------- |
-       |                          | -- DELETE blob ---------> |
-       |                          |                          |
-       |                          |      decrypt in browser ->|
-```
+<div align="center">
+<img src="assets/flow-diagram.svg" alt="NoDataChat encryption flow" width="100%"/>
+</div>
+
 
 ## Use cases
 
