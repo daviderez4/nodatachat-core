@@ -1,0 +1,32 @@
+{
+  "name": "@nodatachat/protect",
+  "version": "1.0.1",
+  "description": "NoData CLI — encrypt secrets, run apps safely. Your keys never touch disk in plaintext.",
+  "bin": {
+    "nodata": "dist/cli.js",
+    "nodata-protect": "dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx tsx src/cli.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "encryption",
+    "secrets",
+    "env",
+    "security",
+    "zero-knowledge",
+    "vault",
+    "nodata"
+  ]
+}
