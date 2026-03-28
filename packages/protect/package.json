@@ -20,6 +20,15 @@
     "node": ">=18.0.0"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daviderez4/nodatachat-core",
+    "directory": "packages/protect"
+  },
+  "homepage": "https://www.nodatachat.com/protect",
+  "bugs": {
+    "url": "https://github.com/daviderez4/nodatachat-core/issues"
+  },
   "keywords": [
     "encryption",
     "secrets",
