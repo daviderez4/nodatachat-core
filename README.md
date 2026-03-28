@@ -1,126 +1,185 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="NoDataChat — Secrets that self-destruct" width="100%"/>
+<img src="assets/banner.svg" alt="NoData — Local-first security for developers" width="100%"/>
 
 <br/>
 
+**Your code stays on your machine. Your secrets stay encrypted. Every access is proven.**
 
-Send passwords, API keys, and credentials securely — without storing anything.
-
-[![License: TBD](https://img.shields.io/badge/license-TBD-yellow)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@nodatachat/protect?color=%2300ffa3&label=%40nodatachat%2Fprotect)](https://www.npmjs.com/package/@nodatachat/protect)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://typescriptlang.org)
 [![Encryption](https://img.shields.io/badge/encryption-AES--256--GCM-green)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 </div>
 
 ---
 
+## The Problem
+
+Your `.env` file contains your database password, your API keys, your cloud credentials — **in plain text**.
+
+One poisoned npm package. One `git push` mistake. One stolen laptop. **Game over.**
+
+```
+OPENAI_API_KEY=sk-proj-Ax7Q...        ← anyone can read this
+DATABASE_URL=postgres://prod:pass@...  ← and this
+STRIPE_KEY=sk_live_4eC39...            ← and this
+```
+
+## The Fix: One Command
+
 ```bash
-npx nodata-send "AWS_SECRET_KEY=wJalrXUtn..."
+npx @nodatachat/protect encrypt
 ```
 
 ```
-  Encrypting with AES-256-GCM... done
-  Creating zero-data drop... done
-
-  Secure link: https://nodatachat.com/burn/Ab7K2m#x9f2kL...
-
-  View once | 24h TTL | Zero storage
-
-  The decryption key is in the URL fragment (#...)
-  The server never sees it.
+OPENAI_API_KEY=ndc_enc_7f3a8b...      ← useless if stolen
+DATABASE_URL=ndc_enc_4c1d7a...         ← useless if stolen
+STRIPE_KEY=ndc_enc_c3d9a0...           ← useless if stolen
 ```
 
-**Stop sending passwords in Slack. Send a burner link instead.**
+Your app still works. Secrets are decrypted **in memory only** at runtime:
+
+```bash
+npx @nodatachat/protect run -- npm start
+# Secrets exist only in RAM. Never on disk.
+```
 
 ---
 
-## Why
+## Quick Start
 
-Every day, teams send secrets through Slack, email, and WhatsApp.
-Those messages sit in logs forever.
-
-NoDataChat encrypts on your machine, delivers a one-time link, and deletes everything after the first read. The server **never** sees your plaintext.
-
-## How it works
-
-<div align="center">
-<img src="assets/flow-diagram.svg" alt="NoDataChat encryption flow" width="100%"/>
-</div>
-
-
-## Use cases
-
-**DevOps**
 ```bash
-npx nodata-send "PROD_DB_PASSWORD=s3cret"       # production credentials
-npx nodata-send "ssh-rsa AAAA..." --expire 1h    # SSH key, expires in 1h
-echo "$API_TOKEN" | npx nodata-send              # pipe from env
+# 1. Setup (creates free API key — no signup, no credit card)
+npx @nodatachat/protect init
+
+# 2. Encrypt all secrets in .env
+npx @nodatachat/protect encrypt
+
+# 3. Run your app with decrypted secrets (memory only)
+npx @nodatachat/protect run -- npm run dev
+
+# 4. Check status
+npx @nodatachat/protect status
 ```
 
-**Agencies / Clients**
+Works with **any stack**: Node.js, Python, Go, Ruby, Docker, docker-compose.
+
+---
+
+## Claude Code Skill (AI-Native Security)
+
+**The first security tool distributed as an AI agent skill.**
+
+Install once — your AI automatically detects exposed `.env` files and encrypts them:
+
 ```bash
-npx nodata-send "Admin login: user/p@ssw0rd"     # client credentials
-npx nodata-send "WordPress admin: ..."            # temporary access
+mkdir -p ~/.claude/skills/nodata-protect && \
+curl -sL https://raw.githubusercontent.com/daviderez4/nodatachat-core/main/skill/nodata-protect/SKILL.md \
+  -o ~/.claude/skills/nodata-protect/SKILL.md
 ```
 
-**IT / Helpdesk**
-```bash
-npx nodata-send "WiFi: CompanyNet / xK9#mP2!"    # office WiFi
-npx nodata-send "VPN token: 847291"  --expire 10m # expires in 10 min
-```
+**What happens after install:**
+- Claude detects exposed `.env` in your project
+- Encrypts automatically — AES-256-GCM
+- Adds `dev:safe` to `package.json`
+- Verifies `.gitignore` covers sensitive files
+- Works with Claude Code, Cursor, Windsurf
 
-## CLI commands
+> CLI requires you to remember. A skill runs in the background — your AI detects danger before you notice.
 
-| Command | What it does |
-|---------|-------------|
-| `npx nodata-send "secret"` | Encrypt + create burner link |
-| `npx nodata-send "secret" --expire 1h` | Custom expiry (10m, 1h, 24h) |
-| `npx nodata-send "secret" --no-burn` | Don't delete after first read |
-| `echo "secret" \| npx nodata-send` | Pipe from stdin |
-| `npx nodata-proof` | Show Zero-Data architecture claims |
+---
+
+## Cryptographic Proof
+
+Every encryption and decryption generates **HMAC-SHA256 proof**:
+
+| What | Proof |
+|------|-------|
+| Secret encrypted | Timestamp + device ID + field hash |
+| Secret accessed | When, from where, which device |
+| Secret destroyed | Proof of deletion with hash chain |
+
+**You don't trust your secrets are safe. You prove it.**
+
+---
+
+## Security Model
+
+| State | Without NoData | With NoData |
+|-------|---------------|-------------|
+| On disk (.env) | Plaintext | Encrypted (`ndc_enc_`) |
+| In Git (accident) | Catastrophic | Harmless |
+| In CI/CD logs | Can leak | `ndc_enc_` only |
+| In memory (runtime) | Plaintext | Plaintext (same) |
+| Stolen by malware | Full access | Nothing useful |
+
+**Design principles:**
+- **Zero-knowledge server** — never sees your plaintext
+- **Local-first** — encryption happens on your machine
+- **Any stack** — language-agnostic, works with anything that reads env vars
+- **Audit-ready** — cryptographic proof chain for compliance (SOC 2)
+- **Open source** — audit the code, verify the claims
+
+---
+
+## How We're Different
+
+| | NoData | HashiCorp Vault | AWS Secrets Manager | SOPS | GitGuardian |
+|---|---|---|---|---|---|
+| Setup time | **10 seconds** | Hours | 30 min | 15 min | 10 min |
+| Free tier | **100 enc/mo** | Self-host | Paid | Self | Free (scan) |
+| Access proof | **HMAC-SHA256** | Audit log | CloudTrail | No | No |
+| AI-native skill | **Yes** | No | No | No | No |
+| Zero knowledge | **Yes** | No | No | Partially | No |
+| Fixes issues | **Yes** | No | No | No | No |
+
+---
 
 ## Packages
 
 ```
-nodatachat/
+nodatachat-core/
   packages/
-    core/       Encryption primitives, identity, seed phrase (open source)
-    cli/        CLI tools — nodata-send, nodata-proof (open source)
-    crypto/     Low-level crypto module (open source)
+    crypto/      Low-level encryption (AES-256-GCM, RSA-OAEP, PBKDF2)
+    core/        Identity, seed phrases, zero-data drops
+    cli/         CLI tools — nodata-send, nodata-proof
+  skill/
+    nodata-protect/   Claude Code Skill for automatic .env protection
 ```
 
-## Security
+## Full Protection: NoData Agent
 
-| Layer | Algorithm |
-|-------|-----------|
-| Message encryption | AES-256-GCM |
-| Key exchange | RSA-OAEP-4096 |
-| Key derivation | PBKDF2-SHA256 (310,000 iterations) |
-| Hashing | SHA-256 (domain-separated) |
-| Anti-spam | Proof of Work (SHA-256 nonce) |
+This repo is the **open-source core** — encryption, basic scanning, CLI tools.
 
-**Design principles:**
-- Server never sees plaintext or decryption keys
-- No accounts required — identity is a 12-word seed phrase
-- Secrets burn after first read
-- All crypto uses Web Crypto API (W3C standard)
-- Open source — audit the code, verify the claims
+**For full protection:**
+- 46+ SOC controls deep scan
+- Automatic vulnerability fixes
+- Continuous monitoring daemon
+- Slack/Telegram alerts
+- Compliance certificates
 
-## NoDataChat Platform
+**[Run NoData Agent](https://www.nodatachat.com/protect)**
 
-This repo is the **open-source core** of NoDataChat.
+---
 
-The full platform adds: web app, mobile app, team management, enterprise features, Stripe billing, report boxes, and more.
+## Links
 
-**Website:** [nodatachat.com](https://nodatachat.com)
+- **Website:** [nodatachat.com](https://www.nodatachat.com)
+- **Protect page:** [nodatachat.com/protect](https://www.nodatachat.com/protect)
+- **npm:** [@nodatachat/protect](https://www.npmjs.com/package/@nodatachat/protect)
+- **Claude Code Skill:** [Install instructions](#claude-code-skill-ai-native-security)
+- **SOC Scanner:** [nodatachat.com/soc-scanner](https://www.nodatachat.com/soc-scanner)
 
 ---
 
 <div align="center">
 
-**Secrets that self-destruct.**
+**Open code builds trust. Closed logic builds advantage.**
 
-[Website](https://nodatachat.com) · [CLI Docs](packages/cli/) · [Core API](packages/core/src/README.md) · [Examples](packages/core/examples/)
+Your secrets encrypted. Your control. Your proof.
+
+[Get Started](https://www.nodatachat.com/protect) · [npm](https://www.npmjs.com/package/@nodatachat/protect) · [Docs](packages/core/src/README.md) · [Examples](packages/core/examples/)
 
 </div>
