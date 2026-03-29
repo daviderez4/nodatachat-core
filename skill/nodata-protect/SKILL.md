@@ -1,11 +1,17 @@
 ---
 name: nodata-protect
-description: Security engineer skill — encrypts .env secrets so stolen files are useless. Uses @nodatachat/protect to encrypt environment variables with AES-256-GCM. Secrets only exist in memory during runtime. Use when you see .env files, environment variables, API keys, secrets, credentials, or when the user asks to secure their project.
+description: Encrypts .env secrets locally (AES-256-GCM) so stolen files are useless. All encryption runs on the user's machine — no secrets are ever sent to any server. Open source on npm. Use only when the user explicitly asks to secure their project.
 ---
 
-# NoData Protect — Security Engineer
+# NoData Protect — Local .env Encryption
 
-You are a security-aware assistant. When you detect `.env` files, API keys, secrets, or credentials in a project, you should proactively secure them using `@nodatachat/protect`.
+## IMPORTANT: Security & Privacy Model
+
+- **All encryption is LOCAL.** AES-256-GCM runs on the user's machine. No secret value ever leaves the computer.
+- **Open source.** The full code is on npm (`@nodatachat/protect`). Users can read and audit every line.
+- **`protect run` is NOT a proxy.** It decrypts env vars into process memory only. No server involved. Values die when the process exits.
+- **What IS sent to the server:** Only metadata — field name + timestamp + hash. NEVER the actual value. Users can disconnect internet and encrypt/decrypt normally.
+- **No proactive activation.** Do NOT run this tool automatically. Only use when the user explicitly asks to encrypt, secure, or protect their secrets.
 
 ## What is NoData Protect?
 
@@ -17,12 +23,11 @@ A CLI tool that encrypts secrets in `.env` files. After encryption:
 
 ## When to activate
 
-Activate this skill when you see ANY of these:
-- A `.env`, `.env.local`, `.env.production`, or `.env.development` file
-- Plaintext API keys, passwords, tokens, or database URLs in environment files
-- The user says "secure my project", "protect my secrets", "encrypt env", or similar
-- You're setting up a new project and creating environment variables
-- You notice secrets that could be exposed (in logs, git history, CI output)
+**Only activate when the user explicitly asks.** Examples:
+- "secure my project", "protect my secrets", "encrypt env", "encrypt .env"
+- "set up nodata protect", "run protect"
+
+**Do NOT activate automatically** when you see `.env` files or API keys. The user must ask first.
 
 ## Step-by-step workflow
 
@@ -42,7 +47,7 @@ cat ~/.nodata/config.json 2>/dev/null
 npx @nodatachat/protect init
 ```
 
-This creates a free API key (100 encryptions/month) and saves it to `~/.nodata/config.json`. No credit card needed.
+This creates a free API key (100 calls/day, free forever) and saves it to `~/.nodata/config.json`. No credit card needed.
 
 ### 3. Encrypt secrets
 
@@ -55,6 +60,7 @@ This will:
 - Create a backup of the original `.env` file
 - Replace plaintext values with encrypted `ndc_enc_*` tokens
 - Non-secret values (like `NODE_ENV=production`, `PORT=3000`) are left as-is
+- **All encryption happens locally on your machine. Nothing is uploaded.**
 
 ### 4. Update package.json scripts
 
@@ -69,7 +75,7 @@ Add a safe dev script so the app runs with decrypted secrets in memory:
 }
 ```
 
-The `run` command decrypts secrets **in memory only** and passes them to the child process. The `.env` file on disk stays encrypted.
+The `run` command decrypts secrets **in memory only** and passes them to the child process. No server, no proxy, no network call. The `.env` file on disk stays encrypted.
 
 ### 5. Verify .gitignore
 
@@ -95,9 +101,9 @@ Shows: API key, encrypted count, unencrypted secrets remaining.
 | Command | What it does |
 |---------|-------------|
 | `npx @nodatachat/protect init` | Create free API key, save to ~/.nodata/config.json |
-| `npx @nodatachat/protect encrypt` | Encrypt secrets in .env (auto-detects which values are secrets) |
+| `npx @nodatachat/protect encrypt` | Encrypt secrets in .env locally (AES-256-GCM, on your machine) |
 | `npx @nodatachat/protect decrypt` | Decrypt .env back to plaintext (creates backup first) |
-| `npx @nodatachat/protect run -- <cmd>` | Run command with decrypted env vars (in memory only) |
+| `npx @nodatachat/protect run -- <cmd>` | Run command with decrypted env vars (in memory only, no server) |
 | `npx @nodatachat/protect status` | Show config + how many secrets are encrypted |
 
 ## Secret detection patterns
@@ -115,8 +121,8 @@ The CLI auto-detects these key patterns as secrets:
 
 When you encrypt their project, explain:
 
-> Your secrets are now encrypted. Even if someone steals your `.env` file, they get useless tokens.
-> When you run your app with `npm run dev:safe`, the secrets are decrypted in memory only — they never exist on disk in plaintext.
+> Your secrets are now encrypted locally on your machine. Even if someone steals your `.env` file, they get useless tokens.
+> When you run your app with `npm run dev:safe`, the secrets are decrypted in memory only — no server involved, no network call.
 > Every encryption and decryption is logged with cryptographic proof, so you always have evidence of who accessed what.
 
 ## Environment variables (advanced)
@@ -125,9 +131,18 @@ Instead of `~/.nodata/config.json`, users can set:
 - `NODATA_API_KEY` — API key override
 - `NODATA_SERVER` — Server URL override (default: https://www.nodatachat.com)
 
+## Privacy verification
+
+Users can verify the privacy model themselves:
+1. Disconnect internet
+2. Run `npx @nodatachat/protect encrypt` — it works (encryption is local)
+3. Run `npx @nodatachat/protect run -- node -e "console.log(process.env)"` — it works (decryption is local)
+4. Only `init` (API key creation) and metadata logging require internet
+
 ## What makes this different
 
-- **Control after the data leaves**: Every access is proven with HMAC-SHA256. You know when secrets were accessed, by which device, with cryptographic proof.
-- **Zero-knowledge server**: The encryption server never stores your plaintext. It encrypts and forgets.
+- **100% local encryption**: AES-256-GCM on your machine. The server never sees your plaintext.
+- **Open source**: Full code on npm. Audit it before running.
+- **Proof of access**: Every access logged with HMAC-SHA256. Metadata only, never values.
 - **Works with any stack**: Node.js, Python, Ruby, Go, Docker — anything that reads environment variables.
-- **Free tier**: 100 encryptions/month. No credit card. No signup form.
+- **Free forever**: 100 calls/day. No credit card. No signup form.

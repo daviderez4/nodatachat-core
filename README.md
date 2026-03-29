@@ -68,11 +68,9 @@ Works with **any stack**: Node.js, Python, Go, Ruby, Docker, docker-compose.
 
 ---
 
-## Claude Code Skill (AI-Native Security)
+## Claude Code Skill
 
-**The first security tool distributed as an AI agent skill.**
-
-Install once — your AI automatically detects exposed `.env` files and encrypts them:
+Install once — ask your AI to encrypt your secrets when you need it:
 
 ```bash
 mkdir -p ~/.claude/skills/nodata-protect && \
@@ -81,13 +79,13 @@ curl -sL https://raw.githubusercontent.com/daviderez4/nodatachat-core/main/skill
 ```
 
 **What happens after install:**
-- Claude detects exposed `.env` in your project
-- Encrypts automatically — AES-256-GCM
+- Ask Claude to encrypt your `.env` — it knows how
+- Encryption is local (AES-256-GCM, on your machine)
 - Adds `dev:safe` to `package.json`
 - Verifies `.gitignore` covers sensitive files
 - Works with Claude Code, Cursor, Windsurf
 
-> CLI requires you to remember. A skill runs in the background — your AI detects danger before you notice.
+> **The skill does NOT activate automatically.** It only runs when you ask. You're in control — the AI executes.
 
 ---
 
@@ -116,11 +114,11 @@ Every encryption and decryption generates **HMAC-SHA256 proof**:
 | Stolen by malware | Full access | Nothing useful |
 
 **Design principles:**
-- **Zero-knowledge server** — never sees your plaintext
-- **Local-first** — encryption happens on your machine
-- **Any stack** — language-agnostic, works with anything that reads env vars
+- **100% local encryption** — AES-256-GCM runs on your machine. No secret ever leaves your computer.
+- **Open source** — full code on npm. Read it, audit it, verify every line before running.
+- **`run` is not a proxy** — decrypts to process memory only. No server, no network call. Values die with the process.
+- **What IS sent:** only metadata (field name + timestamp + hash). Never the actual value. Disconnect internet and verify.
 - **Audit-ready** — cryptographic proof chain for compliance (SOC 2)
-- **Open source** — audit the code, verify the claims
 
 ---
 
@@ -129,7 +127,7 @@ Every encryption and decryption generates **HMAC-SHA256 proof**:
 | | NoData | HashiCorp Vault | AWS Secrets Manager | SOPS | GitGuardian |
 |---|---|---|---|---|---|
 | Setup time | **10 seconds** | Hours | 30 min | 15 min | 10 min |
-| Free tier | **100 enc/mo** | Self-host | Paid | Self | Free (scan) |
+| Free tier | **100/day forever** | Self-host | Paid | Self | Free (scan) |
 | Access proof | **HMAC-SHA256** | Audit log | CloudTrail | No | No |
 | AI-native skill | **Yes** | No | No | No | No |
 | Zero knowledge | **Yes** | No | No | Partially | No |
