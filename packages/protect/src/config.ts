@@ -10,6 +10,8 @@ export interface NoDataConfig {
   api_key?: string;
   server?: string;
   device_id?: string;
+  nickname?: string;
+  tier?: string;
 }
 
 const CONFIG_DIR = path.join(os.homedir(), '.nodata');

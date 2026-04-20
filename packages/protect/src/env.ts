@@ -14,7 +14,8 @@ export interface EnvEntry {
 }
 
 const NODATA_PREFIX = 'ndc_enc_';
-const NODATA_AES_PREFIX = 'aes256gcm:v1:';
+const NODATA_AES_V1_PREFIX = 'aes256gcm:v1:';
+const NODATA_AES_V2_PREFIX = 'aes256gcm:v2:';
 
 /**
  * Parse a .env file into entries (preserves comments and empty lines).
@@ -82,7 +83,11 @@ export function writeEnvFile(filePath: string, entries: EnvEntry[]): void {
  * Check if a value is already encrypted by NoData.
  */
 export function isEncrypted(value: string): boolean {
-  return value.startsWith(NODATA_PREFIX) || value.startsWith(NODATA_AES_PREFIX);
+  return (
+    value.startsWith(NODATA_PREFIX) ||
+    value.startsWith(NODATA_AES_V1_PREFIX) ||
+    value.startsWith(NODATA_AES_V2_PREFIX)
+  );
 }
 
 /**

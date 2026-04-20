@@ -1,25 +1,30 @@
 ---
 name: nodata-protect
-description: Encrypts .env secrets locally (AES-256-GCM) so stolen files are useless. All encryption runs on the user's machine — no secrets are ever sent to any server. Open source on npm. Use only when the user explicitly asks to secure their project.
+description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. v2 (live since Apr 20 2026, CLI 1.2.0+) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Open source on npm. Use only when the user explicitly asks to secure their project.
 ---
 
-# NoData Protect — Local .env Encryption
+# NoData Protect — .env Encryption via Blind Relay
 
-## IMPORTANT: Security & Privacy Model
+## IMPORTANT: Security & Privacy Model (be precise — users ask)
 
-- **All encryption is LOCAL.** AES-256-GCM runs on the user's machine. No secret value ever leaves the computer.
-- **Open source.** The full code is on npm (`@nodatachat/protect`). Users can read and audit every line.
-- **`protect run` is NOT a proxy.** It decrypts env vars into process memory only. No server involved. Values die when the process exits.
-- **What IS sent to the server:** Only metadata — field name + timestamp + hash. NEVER the actual value. Users can disconnect internet and encrypt/decrypt normally.
+- **Blind relay architecture.** The plaintext value IS sent over HTTPS to `/api/v1/encrypt` on the NoData server. The server generates a fresh AES-256-GCM key, encrypts, returns the ciphertext, and does NOT persist the plaintext. This is NOT local-only encryption — network access is required.
+- **What the server persists:** Zero plaintext. The `field_access_log` table stores metadata only: field name, device_id, timestamp, hashed IP, action. NEVER the value.
+- **Runtime decrypt path.** `protect run` calls `/api/v1/decrypt` for each secret. Server returns plaintext over HTTPS → CLI injects into the subprocess's `process.env` → values live in that process's RAM only, never touch disk. Values disappear when the process exits.
+- **What the .env looks like after encrypt.**
+  - **v2 (default in CLI 1.2.0+, live since Apr 20 2026):** each value becomes `aes256gcm:v2:<iv>:<ciphertext>:<wrapped_dek_id>`. The actual AES key is encrypted under a server-held KEK and stored in `nd_wrapped_deks`; the `.env` carries only the opaque ID. **A stolen `.env` file alone is useless ciphertext** — decryption requires an authenticated `/api/v1/decrypt` call from the owning device. (Existing v1 `.env` files keep working; auto-upgrade in the next release via `nodata encrypt --upgrade`.)
+  - **v1 (legacy, ≤ CLI 1.1.0):** each value becomes `aes256gcm:v1:<iv>:<ciphertext>:<key>`. **v1 limitation:** the AES key is base64-bundled in that same string, so a motivated technical attacker with a stolen .env can decrypt it in a few lines. Still skipped by automated scrapers (see below).
+- **Why both v1 and v2 help.** Real-world .env leaks are overwhelmingly automated scraper bots (GitHub secret scanning, pastebin scrapers) and supply-chain stealers (LiteLLM-style `grep "sk-" .env` code). These tools look for known plaintext prefixes (`sk_live_`, `ghp_`, `AKIA`). Neither `aes256gcm:v1:` nor `aes256gcm:v2:` matches, so bots skip the file. That covers ~95% of real-world leaks. v2 additionally defeats targeted attackers with the file but no API access.
+- **Open source.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
 - **No proactive activation.** Do NOT run this tool automatically. Only use when the user explicitly asks to encrypt, secure, or protect their secrets.
 
 ## What is NoData Protect?
 
-A CLI tool that encrypts secrets in `.env` files. After encryption:
-- The `.env` file on disk contains only encrypted tokens (`ndc_enc_...`)
-- Even if the file is stolen, leaked, or committed to git — **nothing useful is exposed**
-- At runtime, secrets are decrypted **in memory only** — they never touch disk in plaintext
-- Every encryption/decryption is logged with cryptographic proof (HMAC-SHA256)
+A CLI tool that converts `.env` secrets to ciphertext via a blind-relay server. After encryption:
+- The `.env` file on disk contains encrypted tokens (`aes256gcm:v2:...` for CLI 1.2.0+, `aes256gcm:v1:...` for older installs)
+- v2: a stolen `.env` file alone is useless — the AES key is wrapped under a server-held KEK and only the owning device can request unwrap
+- Automated scraper bots and supply-chain stealers skip both formats (they don't match known plaintext patterns)
+- At runtime, `protect run` decrypts via HTTPS call and injects into subprocess RAM — never touches disk
+- Every encryption/decryption is logged server-side with cryptographic proof of access (metadata only)
 
 ## When to activate
 
@@ -121,15 +126,15 @@ The CLI auto-detects these key patterns as secrets:
 
 When you encrypt their project, explain:
 
-> Your secrets are now encrypted locally on your machine. Even if someone steals your `.env` file, they get useless tokens.
-> When you run your app with `npm run dev:safe`, the secrets are decrypted in memory only — no server involved, no network call.
-> Every encryption and decryption is logged with cryptographic proof, so you always have evidence of who accessed what.
+> Your `.env` is now in NoData's encrypted format (`aes256gcm:v2:...` if CLI ≥ 1.2.0, otherwise `aes256gcm:v1:...`). Scraper bots and supply-chain stealers skip it — that's ~95% of real-world .env leaks. **v2 also defeats targeted attackers**: the AES key for each value is wrapped under a server-held KEK and stored on our server; a stolen `.env` file alone is useless ciphertext, because decryption requires an authenticated server call from the owning device. (v1 files from older CLI installs keep working; opt-in re-encrypt with `nodata encrypt --upgrade` in the next release.)
+> When you run your app with `nodata run -- <your-cmd>`, the CLI calls our server over HTTPS to decrypt each secret, injects them into your subprocess's process.env (RAM only), and those values disappear when the process exits. Our server never persists plaintext — only metadata in the audit log.
+> Every encryption and decryption is logged server-side with a cryptographic proof chain, so you always have evidence of who accessed what and when.
 
 ## Environment variables (advanced)
 
 Instead of `~/.nodata/config.json`, users can set:
 - `NODATA_API_KEY` — API key override
-- `NODATA_SERVER` — Server URL override (default: https://www.nodatachat.com)
+- `NODATA_SERVER` — Server URL override (default: https://www.nodatacapsule.com)
 
 ## Privacy verification
 
@@ -139,10 +144,78 @@ Users can verify the privacy model themselves:
 3. Run `npx @nodatachat/protect run -- node -e "console.log(process.env)"` — it works (decryption is local)
 4. Only `init` (API key creation) and metadata logging require internet
 
+## Integration Hub Commands
+
+Beyond encrypting secrets, NoData offers a full feature ecosystem. These commands connect your project to the NoData Hub for tracking and feature management.
+
+### Connect to Hub
+
+```bash
+npx @nodatachat/protect connect
+```
+
+Links this project to the NoData Hub. The admin at nodatacapsule.com sees the project in `/admin/integrations`. Requires the API key to be linked to a project in the Hub.
+
+### Check available features
+
+```bash
+npx @nodatachat/protect features
+```
+
+Shows a table of all NoData features — what's installed, what's available, and what tier is needed:
+
+```
+Feature          Status       Tier         Description
+──────────────── ──────────── ──────────── ──────────────────────────────
+encrypt          ● active     free         AES-256-GCM field-level enc...
+burn             ○ available  free         Self-destructing links with...
+scan             ○ available  free         Deep compliance scanner — 4...
+channel          ○ available  business     Encrypted system-to-system ...
+capsule          ○ available  capsule      Daemon: auto-fix, git hooks...
+```
+
+### Health check
+
+```bash
+npx @nodatachat/protect check
+```
+
+Verifies: API key, server connection, heartbeat latency, .env encryption status.
+
+### Integration workflow (step by step)
+
+When a user says "integrate NoData" or "add NoData features", walk them through:
+
+1. **Init** — `npx @nodatachat/protect init` (if no API key yet)
+2. **Connect** — `npx @nodatachat/protect connect` (link to Hub)
+3. **Features** — `npx @nodatachat/protect features` (see what's available)
+4. **Encrypt** — `npx @nodatachat/protect encrypt` (protect secrets)
+5. **Check** — `npx @nodatachat/protect check` (verify everything works)
+
+The admin can install/uninstall features from the Hub at `/admin/integrations`. The CLI reflects changes automatically.
+
+### Available features
+
+| Feature | Tier | What it does |
+|---------|------|-------------|
+| encrypt | free | AES-256-GCM field-level encryption |
+| burn | free | Self-destructing links (TTL + read limits) |
+| proof | free | HMAC-SHA256 delivery receipts |
+| protect | free | .env encryption (this CLI!) |
+| scan | free | SOC compliance scanner (46+ controls) |
+| channel | business | Encrypted system-to-system transfer |
+| nda | business | Digital NDA before document access |
+| vault | business | Zero-knowledge document storage |
+| guard | business | Dual-report CLI (local + cloud metadata) |
+| webhook | business | Encrypted webhook relay |
+| deliver | business | Burn-after-read delivery + proof chain |
+| capsule | capsule | Daemon: auto-fix, git hooks, CI/CD, alerts |
+
 ## What makes this different
 
-- **100% local encryption**: AES-256-GCM on your machine. The server never sees your plaintext.
-- **Open source**: Full code on npm. Audit it before running.
-- **Proof of access**: Every access logged with HMAC-SHA256. Metadata only, never values.
+- **Stolen `.env` alone = useless** (v2): the per-encrypt key is wrapped server-side; the file on disk holds only an opaque ID.
+- **Blind relay**: plaintext transits the server's RAM during encrypt/decrypt but is never persisted.
+- **Open source**: full code on npm. Audit it before running.
+- **Proof of access**: every access logged with HMAC-SHA256. Metadata only, never values.
 - **Works with any stack**: Node.js, Python, Ruby, Go, Docker — anything that reads environment variables.
 - **Free forever**: 100 calls/day. No credit card. No signup form.

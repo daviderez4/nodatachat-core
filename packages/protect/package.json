@@ -1,7 +1,7 @@
 {
   "name": "@nodatachat/protect",
-  "version": "1.0.1",
-  "description": "NoData CLI — encrypt secrets, run apps safely. Your keys never touch disk in plaintext.",
+  "version": "1.3.0",
+  "description": "Encrypt .env secrets with AES-256-GCM. Decrypt in memory only. Cryptographic proof of every access. Claude Code Skill included.",
   "bin": {
     "nodata": "dist/cli.js",
     "nodata-protect": "dist/cli.js"
@@ -25,7 +25,7 @@
     "url": "https://github.com/daviderez4/nodatachat-core",
     "directory": "packages/protect"
   },
-  "homepage": "https://www.nodatachat.com/protect",
+  "homepage": "https://www.nodatacapsule.com/protect",
   "bugs": {
     "url": "https://github.com/daviderez4/nodatachat-core/issues"
   },
@@ -33,9 +33,16 @@
     "encryption",
     "secrets",
     "env",
+    "dotenv",
     "security",
     "zero-knowledge",
     "vault",
-    "nodata"
+    "nodata",
+    "protect",
+    "aes-256",
+    "claude-code",
+    "ai-security",
+    "env-encryption",
+    "secret-management"
   ]
 }
