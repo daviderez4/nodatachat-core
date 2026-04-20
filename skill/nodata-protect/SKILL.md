@@ -1,6 +1,6 @@
 ---
 name: nodata-protect
-description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. v2 (live since Apr 20 2026, CLI 1.2.0+) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Open source on npm. Use only when the user explicitly asks to secure their project.
+description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = 100 API calls/day. Open source on npm. Use only when the user explicitly asks to secure their project.
 ---
 
 # NoData Protect — .env Encryption via Blind Relay
@@ -11,8 +11,8 @@ description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-
 - **What the server persists:** Zero plaintext. The `field_access_log` table stores metadata only: field name, device_id, timestamp, hashed IP, action. NEVER the value.
 - **Runtime decrypt path.** `protect run` calls `/api/v1/decrypt` for each secret. Server returns plaintext over HTTPS → CLI injects into the subprocess's `process.env` → values live in that process's RAM only, never touch disk. Values disappear when the process exits.
 - **What the .env looks like after encrypt.**
-  - **v2 (default in CLI 1.2.0+, live since Apr 20 2026):** each value becomes `aes256gcm:v2:<iv>:<ciphertext>:<wrapped_dek_id>`. The actual AES key is encrypted under a server-held KEK and stored in `nd_wrapped_deks`; the `.env` carries only the opaque ID. **A stolen `.env` file alone is useless ciphertext** — decryption requires an authenticated `/api/v1/decrypt` call from the owning device. (Existing v1 `.env` files keep working; auto-upgrade in the next release via `nodata encrypt --upgrade`.)
-  - **v1 (legacy, ≤ CLI 1.1.0):** each value becomes `aes256gcm:v1:<iv>:<ciphertext>:<key>`. **v1 limitation:** the AES key is base64-bundled in that same string, so a motivated technical attacker with a stolen .env can decrypt it in a few lines. Still skipped by automated scrapers (see below).
+  - **v2 (default since CLI 1.3.0, Apr 20 2026):** each value becomes `aes256gcm:v2:<iv>:<ciphertext>:<wrapped_dek_id>`. The actual AES key is encrypted under a server-held KEK and stored in `nd_wrapped_deks`; the `.env` carries only the opaque ID. **A stolen `.env` file alone is useless ciphertext** — decryption requires an authenticated `/api/v1/decrypt` call from the owning device. Existing v1 `.env` files: `nodata encrypt --upgrade` converts them in place, with backup.
+  - **v1 (legacy, used by `--legacy` flag or pre-1.3.0 installs):** each value becomes `aes256gcm:v1:<iv>:<ciphertext>:<key>`. **v1 limitation:** the AES key is base64-bundled in that same string, so a motivated technical attacker with a stolen .env can decrypt it in a few lines. Still skipped by automated scrapers (see below).
 - **Why both v1 and v2 help.** Real-world .env leaks are overwhelmingly automated scraper bots (GitHub secret scanning, pastebin scrapers) and supply-chain stealers (LiteLLM-style `grep "sk-" .env` code). These tools look for known plaintext prefixes (`sk_live_`, `ghp_`, `AKIA`). Neither `aes256gcm:v1:` nor `aes256gcm:v2:` matches, so bots skip the file. That covers ~95% of real-world leaks. v2 additionally defeats targeted attackers with the file but no API access.
 - **Open source.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
 - **No proactive activation.** Do NOT run this tool automatically. Only use when the user explicitly asks to encrypt, secure, or protect their secrets.
@@ -20,7 +20,7 @@ description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-
 ## What is NoData Protect?
 
 A CLI tool that converts `.env` secrets to ciphertext via a blind-relay server. After encryption:
-- The `.env` file on disk contains encrypted tokens (`aes256gcm:v2:...` for CLI 1.2.0+, `aes256gcm:v1:...` for older installs)
+- The `.env` file on disk contains encrypted tokens (`aes256gcm:v2:...` is the default since CLI 1.3.0; `aes256gcm:v1:...` only on `--legacy` or pre-1.3.0 installs)
 - v2: a stolen `.env` file alone is useless — the AES key is wrapped under a server-held KEK and only the owning device can request unwrap
 - Automated scraper bots and supply-chain stealers skip both formats (they don't match known plaintext patterns)
 - At runtime, `protect run` decrypts via HTTPS call and injects into subprocess RAM — never touches disk
@@ -126,7 +126,7 @@ The CLI auto-detects these key patterns as secrets:
 
 When you encrypt their project, explain:
 
-> Your `.env` is now in NoData's encrypted format (`aes256gcm:v2:...` if CLI ≥ 1.2.0, otherwise `aes256gcm:v1:...`). Scraper bots and supply-chain stealers skip it — that's ~95% of real-world .env leaks. **v2 also defeats targeted attackers**: the AES key for each value is wrapped under a server-held KEK and stored on our server; a stolen `.env` file alone is useless ciphertext, because decryption requires an authenticated server call from the owning device. (v1 files from older CLI installs keep working; opt-in re-encrypt with `nodata encrypt --upgrade` in the next release.)
+> Your `.env` is now in NoData's encrypted format (`aes256gcm:v2:...` — the default since CLI 1.3.0). Scraper bots and supply-chain stealers skip it — that's ~95% of real-world .env leaks. **v2 also defeats targeted attackers**: the AES key for each value is wrapped under a server-held KEK and stored on our server; a stolen `.env` file alone is useless ciphertext, because decryption requires an authenticated server call from the owning device. (Older v1 files: `nodata encrypt --upgrade` converts them in place, with backup. Free tier = 100 API calls/day.)
 > When you run your app with `nodata run -- <your-cmd>`, the CLI calls our server over HTTPS to decrypt each secret, injects them into your subprocess's process.env (RAM only), and those values disappear when the process exits. Our server never persists plaintext — only metadata in the audit log.
 > Every encryption and decryption is logged server-side with a cryptographic proof chain, so you always have evidence of who accessed what and when.
 
