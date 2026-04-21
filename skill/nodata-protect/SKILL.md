@@ -1,6 +1,6 @@
 ---
 name: nodata-protect
-description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = 100 API calls/day. Open source on npm. Use only when the user explicitly asks to secure their project.
+description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = unlimited encrypt + decrypt, forever (burst protection only). Open source on npm. Use only when the user explicitly asks to secure their project.
 ---
 
 # NoData Protect — .env Encryption via Blind Relay
@@ -52,7 +52,7 @@ cat ~/.nodata/config.json 2>/dev/null
 npx @nodatachat/protect init
 ```
 
-This creates a free API key (100 calls/day, free forever) and saves it to `~/.nodata/config.json`. No credit card needed.
+This creates a free API key (unlimited encrypt + decrypt, forever) and saves it to `~/.nodata/config.json`. No credit card needed.
 
 ### 3. Encrypt secrets
 
@@ -218,4 +218,4 @@ The admin can install/uninstall features from the Hub at `/admin/integrations`. 
 - **Open source**: full code on npm. Audit it before running.
 - **Proof of access**: every access logged with HMAC-SHA256. Metadata only, never values.
 - **Works with any stack**: Node.js, Python, Ruby, Go, Docker — anything that reads environment variables.
-- **Free forever**: 100 calls/day. No credit card. No signup form.
+- **Free forever**: unlimited encrypt + decrypt on every tier. Burst protection only (120/min). No credit card, no signup form, no "upgrade for more calls" wall.

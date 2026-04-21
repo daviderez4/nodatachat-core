@@ -127,7 +127,7 @@ Every encryption and decryption generates **HMAC-SHA256 proof**:
 | | NoData | HashiCorp Vault | AWS Secrets Manager | SOPS | GitGuardian |
 |---|---|---|---|---|---|
 | Setup time | **10 seconds** | Hours | 30 min | 15 min | 10 min |
-| Free tier | **100/day forever** | Self-host | Paid | Self | Free (scan) |
+| Free tier | **Unlimited encrypt + decrypt, forever** | Self-host | Paid | Self | Free (scan) |
 | Access proof | **HMAC-SHA256** | Audit log | CloudTrail | No | No |
 | AI-native skill | **Yes** | No | No | No | No |
 | Zero knowledge | **Yes** | No | No | Partially | No |
