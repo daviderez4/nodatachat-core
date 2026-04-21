@@ -112,6 +112,19 @@ export function detectSecrets(entries: EnvEntry[]): EnvEntry[] {
 }
 
 /**
+ * Count entries still using the v1 ciphertext format (key bundled in file).
+ * Returns 0 on any read/parse error — a nudge is best-effort, never fatal.
+ */
+export function countV1Entries(filePath: string): number {
+  try {
+    const { entries } = parseEnvFile(filePath);
+    return entries.filter(e => e.value && e.value.startsWith(NODATA_AES_V1_PREFIX)).length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
  * Create a backup of the .env file before modifying.
  */
 export function backupEnvFile(filePath: string): string {

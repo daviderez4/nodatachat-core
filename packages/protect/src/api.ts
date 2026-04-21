@@ -78,6 +78,46 @@ export async function decryptValue(field: string, encrypted: string, opts: ApiOp
   throw new Error(res.error || (res as any).message || `Decryption failed (${JSON.stringify(res).slice(0, 100)})`);
 }
 
+export interface IssuedReceipt {
+  id: string;
+  chain_index: number;
+  event_hash: string;
+  created_at: string;
+  nickname: string;
+  proof_url: string;
+}
+
+export async function issueReceipt(
+  eventType: 'upgrade_v1_v2' | 'first_encrypt' | 'binding' | 'decrypt_batch' | 'kek_rotation',
+  payload: Record<string, unknown>,
+  opts: ApiOptions,
+): Promise<IssuedReceipt | null> {
+  const server = opts.server || DEFAULT_SERVER;
+  try {
+    const res = await request(
+      `${server}/api/v1/receipt`,
+      { event_type: eventType, payload },
+      opts.apiKey,
+    );
+    if (res.success && res.receipt && res.nickname && res.proof_url) {
+      const r = res.receipt as { id: string; chain_index: number; event_hash: string; created_at: string };
+      return {
+        id: r.id,
+        chain_index: r.chain_index,
+        event_hash: r.event_hash,
+        created_at: r.created_at,
+        nickname: res.nickname as string,
+        proof_url: res.proof_url as string,
+      };
+    }
+    return null;
+  } catch {
+    // Receipt is a bonus; if the server is old (no /api/v1/receipt) or the
+    // network blinks, don't fail the actual upgrade the user cares about.
+    return null;
+  }
+}
+
 // ── Integration endpoints ──────────────────────────────────
 
 export async function sendHeartbeat(opts: ApiOptions & {

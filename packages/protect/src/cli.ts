@@ -13,8 +13,8 @@
 // ═══════════════════════════════════════════════════════════
 
 import { loadConfig, saveConfig, getApiKey, NoDataConfig } from './config';
-import { parseEnvFile, writeEnvFile, isEncrypted, detectSecrets, backupEnvFile, findEnvFile } from './env';
-import { encryptValue, decryptValue, createApiKey, sendHeartbeat, getFeatureStatus, registerIdentity, loginIdentity, verifyBindings } from './api';
+import { parseEnvFile, writeEnvFile, isEncrypted, detectSecrets, backupEnvFile, findEnvFile, countV1Entries } from './env';
+import { encryptValue, decryptValue, createApiKey, sendHeartbeat, getFeatureStatus, registerIdentity, loginIdentity, verifyBindings, issueReceipt } from './api';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -54,7 +54,7 @@ function prompt(question: string, hidden = false): Promise<string> {
   });
 }
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const YELLOW = '\x1b[33m';
@@ -68,6 +68,21 @@ function ok(msg: string) { log(`${GREEN}✓${RESET} ${msg}`); }
 function warn(msg: string) { log(`${YELLOW}⚠${RESET} ${msg}`); }
 function err(msg: string) { log(`${RED}✗${RESET} ${msg}`); }
 function dim(msg: string) { return `${DIM}${msg}${RESET}`; }
+
+// Print a one-line upgrade hint if the nearest .env still has v1 entries.
+// Suppressed in CI / scripts via NODATA_NO_NUDGE=1. Never throws.
+function showUpgradeNudge() {
+  if (process.env.NODATA_NO_NUDGE) return;
+  try {
+    const filePath = findEnvFile();
+    if (!filePath) return;
+    const count = countV1Entries(filePath);
+    if (count === 0) return;
+    const word = count === 1 ? 'secret' : 'secrets';
+    log('');
+    log(`${DIM}ℹ  ${count} ${word} still use v1 format (key bundled in .env). Upgrade → ${RESET}${CYAN}nodata encrypt --upgrade${RESET}${DIM}  (seconds, auto-backup)${RESET}`);
+  } catch { /* nudges are best-effort */ }
+}
 
 function banner() {
   log('');
@@ -343,6 +358,24 @@ async function cmdEncryptUpgrade(envPath?: string) {
   );
   if (plaintextSecrets.length > 0) {
     log(`${DIM}Run \`nodata encrypt\` to protect the remaining plaintext secrets.${RESET}`);
+  }
+
+  // Issue a signed receipt so the user has public proof of the upgrade.
+  const receipt = await issueReceipt(
+    'upgrade_v1_v2',
+    {
+      count: upgradedValues.size,
+      keys: Array.from(upgradedValues.keys()),
+      env_file: path.basename(filePath),
+    },
+    opts,
+  );
+  if (receipt) {
+    log('');
+    log(`${CYAN}Signed receipt:${RESET}`);
+    log(`  ${BOLD}${receipt.id}${RESET}  ${DIM}(event #${receipt.chain_index} on your chain)${RESET}`);
+    log(`  ${GREEN}${receipt.proof_url}${RESET}`);
+    log(`  ${DIM}Share this URL — it proves your .env is now server-wrapped.${RESET}`);
   }
 }
 
@@ -912,7 +945,20 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  err(e.message);
-  process.exit(1);
-});
+// Commands where the nudge would be noisy or redundant.
+const NUDGE_SKIP = new Set(['help', '--help', '-h', '--version', '-v']);
+
+main()
+  .then(() => {
+    const args = process.argv.slice(2);
+    const command = args[0];
+    if (!command) return;
+    if (NUDGE_SKIP.has(command)) return;
+    // Don't nag during the very action that fixes the situation.
+    if (command === 'encrypt' && args.includes('--upgrade')) return;
+    showUpgradeNudge();
+  })
+  .catch((e) => {
+    err(e.message);
+    process.exit(1);
+  });
