@@ -6,6 +6,15 @@
 
 **Your code stays on your machine. Your secrets stay encrypted. Every access is proven.**
 
+---
+
+> **We encourage you not to pay.**
+> Developers — let's make a deal.
+> **If you encrypt, you don't pay. Ever.**
+> *(We only block abusive bots and unfair automation — never you.)*
+>
+> When you grow, you'll want [Capsule](https://www.nodatacapsule.com/pricing) — a personal vault, and a whole world of security, privacy, and ease of use.
+
 [![npm](https://img.shields.io/npm/v/@nodatachat/protect?color=%2300ffa3&label=%40nodatachat%2Fprotect)](https://www.npmjs.com/package/@nodatachat/protect)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://typescriptlang.org)
 [![Encryption](https://img.shields.io/badge/encryption-AES--256--GCM-green)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
