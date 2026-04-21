@@ -54,7 +54,7 @@ function prompt(question: string, hidden = false): Promise<string> {
   });
 }
 
-const VERSION = '1.5.0';
+const VERSION = '1.5.1';
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const YELLOW = '\x1b[33m';
@@ -361,13 +361,11 @@ async function cmdEncryptUpgrade(envPath?: string) {
   }
 
   // Issue a signed receipt so the user has public proof of the upgrade.
+  // Payload is minimum-metadata: count only. Field names are the user's
+  // business, not ours — see feedback_nodata_minimal_metadata.md.
   const receipt = await issueReceipt(
     'upgrade_v1_v2',
-    {
-      count: upgradedValues.size,
-      keys: Array.from(upgradedValues.keys()),
-      env_file: path.basename(filePath),
-    },
+    { count: upgradedValues.size },
     opts,
   );
   if (receipt) {
@@ -471,16 +469,11 @@ async function cmdEncrypt(envPath?: string, flags: { legacy?: boolean } = {}) {
 
     // Mint a signed receipt for this encrypt batch. Best-effort — never
     // fail the encrypt the user just ran because the proof API is down.
+    // Payload is minimum-metadata: count + version only. Field names are
+    // the user's business — see feedback_nodata_minimal_metadata.md.
     const receipt = await issueReceipt(
       'encrypt',
-      {
-        count: encrypted,
-        keys: entries
-          .filter((e) => secrets.find((s) => s.key === e.key))
-          .map((e) => e.key),
-        env_file: path.basename(filePath),
-        version,
-      },
+      { count: encrypted, version },
       opts,
     );
     if (receipt) {
