@@ -88,7 +88,7 @@ export interface IssuedReceipt {
 }
 
 export async function issueReceipt(
-  eventType: 'upgrade_v1_v2' | 'first_encrypt' | 'binding' | 'decrypt_batch' | 'kek_rotation',
+  eventType: 'upgrade_v1_v2' | 'encrypt' | 'binding' | 'decrypt_batch' | 'kek_rotation',
   payload: Record<string, unknown>,
   opts: ApiOptions,
 ): Promise<IssuedReceipt | null> {

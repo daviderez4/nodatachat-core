@@ -1,6 +1,6 @@
 {
   "name": "@nodatachat/protect",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Encrypt .env secrets with AES-256-GCM. Decrypt in memory only. Cryptographic proof of every access. Claude Code Skill included.",
   "bin": {
     "nodata": "dist/cli.js",

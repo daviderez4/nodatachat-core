@@ -54,7 +54,7 @@ function prompt(question: string, hidden = false): Promise<string> {
   });
 }
 
-const VERSION = '1.4.0';
+const VERSION = '1.5.0';
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const YELLOW = '\x1b[33m';
@@ -468,6 +468,28 @@ async function cmdEncrypt(envPath?: string, flags: { legacy?: boolean } = {}) {
     log(`  ${GREEN}nodata run -- node server.js${RESET}`);
     log(`  ${GREEN}nodata run -- npm start${RESET}`);
     log(`  ${GREEN}nodata run -- python app.py${RESET}`);
+
+    // Mint a signed receipt for this encrypt batch. Best-effort — never
+    // fail the encrypt the user just ran because the proof API is down.
+    const receipt = await issueReceipt(
+      'encrypt',
+      {
+        count: encrypted,
+        keys: entries
+          .filter((e) => secrets.find((s) => s.key === e.key))
+          .map((e) => e.key),
+        env_file: path.basename(filePath),
+        version,
+      },
+      opts,
+    );
+    if (receipt) {
+      log('');
+      log(`${CYAN}Signed receipt:${RESET}`);
+      log(`  ${BOLD}${receipt.id}${RESET}  ${DIM}(event #${receipt.chain_index} on your chain)${RESET}`);
+      log(`  ${GREEN}${receipt.proof_url}${RESET}`);
+      log(`  ${DIM}Share this URL — it proves this encryption happened.${RESET}`);
+    }
   }
 }
 
