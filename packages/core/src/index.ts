@@ -30,3 +30,13 @@ export {
   ALGORITHMS,
   CRYPTO_VERSION,
 } from '@nodatachat/crypto';
+
+// Witness · Merkle inclusion verifier for the public witness feed
+// at https://github.com/nodatachat/witness-feed. Pure SHA-256 math,
+// Web Crypto API only, no network calls, no NoData trust required.
+export {
+  merkleRoot,
+  inclusionProof,
+  verifyInclusion,
+  type InclusionStep,
+} from './witness';
