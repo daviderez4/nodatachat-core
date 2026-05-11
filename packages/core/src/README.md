@@ -119,7 +119,7 @@ This package is designed to be independently auditable:
 
 ## Merkle witness verification
 
-NoData publishes an hourly **public witness feed** of all operator receipts at [github.com/nodatachat/witness-feed](https://github.com/nodatachat/witness-feed). Every UTC hour, all receipts in that window are sealed into a Merkle tree, the root is signed with Ed25519, and the commitment is written as a JSON file to that public repo.
+NoData publishes an hourly **public witness feed** of all operator receipts at [github.com/proofbydefault/witness-feed](https://github.com/proofbydefault/witness-feed). Every UTC hour, all receipts in that window are sealed into a Merkle tree, the root is signed with Ed25519, and the commitment is written as a JSON file to that public repo.
 
 The feed contains **only commitments** · receipt counts, Merkle roots, timestamps, prev-epoch chain links. No proof refs, no receipt ids, no tenant ids, no payloads. Zero business detail.
 
@@ -134,7 +134,7 @@ const leaf = 'a3f2b1c8...';                   // your receipt's event_hash
 const proof: InclusionStep[] = [/* ... */];   // the sibling chain
 
 // 2. Get the merkle_root for that hour from the public witness feed:
-//    https://github.com/nodatachat/witness-feed/blob/main/epochs/2026-05/2026-05-11-18.json
+//    https://github.com/proofbydefault/witness-feed/blob/main/epochs/2026-05/2026-05-11-18.json
 const expectedRoot = '9c8a4d...';
 
 // 3. Verify locally · pure SHA-256 math, no network calls

@@ -32,7 +32,7 @@ export {
 } from '@nodatachat/crypto';
 
 // Witness · Merkle inclusion verifier for the public witness feed
-// at https://github.com/nodatachat/witness-feed. Pure SHA-256 math,
+// at https://github.com/proofbydefault/witness-feed. Pure SHA-256 math,
 // Web Crypto API only, no network calls, no NoData trust required.
 export {
   merkleRoot,

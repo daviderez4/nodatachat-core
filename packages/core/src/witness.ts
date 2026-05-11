@@ -2,7 +2,7 @@
 // @nodatachat/core/witness · Merkle inclusion verification
 //
 // Reference verifier for the public witness feed at
-//   https://github.com/nodatachat/witness-feed
+//   https://github.com/proofbydefault/witness-feed
 //
 // Every UTC hour, NoData seals all operator receipts issued in that
 // window into a Merkle tree, signs the root with Ed25519, and writes

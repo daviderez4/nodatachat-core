@@ -114,7 +114,7 @@ Every encryption and decryption generates **HMAC-SHA256 proof**:
 
 ## Public Witness Feed — Trustless Proof Anchoring
 
-Operator receipts issued by the NoData platform are sealed every UTC hour into a Merkle tree and published to a separate public repository: [**github.com/nodatachat/witness-feed**](https://github.com/nodatachat/witness-feed). Each file is **commitment-only** — root hashes, counts, timestamps, prev-epoch chain links. **No proof refs, no receipt ids, no tenant ids, no payloads.**
+Operator receipts issued by the NoData platform are sealed every UTC hour into a Merkle tree and published to a separate public repository: [**github.com/proofbydefault/witness-feed**](https://github.com/proofbydefault/witness-feed). Each file is **commitment-only** — root hashes, counts, timestamps, prev-epoch chain links. **No proof refs, no receipt ids, no tenant ids, no payloads.**
 
 Receipt holders can verify their inclusion locally with the `verifyInclusion()` primitive in `@nodatachat/core`:
 

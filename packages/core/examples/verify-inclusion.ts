@@ -8,7 +8,7 @@
 //   1. From your receipt page (https://nodatachat.com/verify/ref/<your-ref>)
 //      expand the "sibling chain" section and copy the JSON.
 //   2. Open the matching epoch file from the witness feed:
-//        https://github.com/nodatachat/witness-feed/blob/main/
+//        https://github.com/proofbydefault/witness-feed/blob/main/
 //          epochs/YYYY-MM/YYYY-MM-DD-HH.json
 //      Note its `merkle_root` value.
 //   3. Run this script · pass the receipt JSON via stdin or argument.
