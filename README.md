@@ -112,6 +112,29 @@ Every encryption and decryption generates **HMAC-SHA256 proof**:
 
 ---
 
+## Public Witness Feed — Trustless Proof Anchoring
+
+Operator receipts issued by the NoData platform are sealed every UTC hour into a Merkle tree and published to a separate public repository: [**github.com/proofbydefault/witness-feed**](https://github.com/proofbydefault/witness-feed). Each file is **commitment-only** — root hashes, counts, timestamps, prev-epoch chain links. **No proof refs, no receipt ids, no tenant ids, no payloads.**
+
+Receipt holders can verify their inclusion locally with the `verifyInclusion()` primitive in `@nodatachat/core`:
+
+```typescript
+import { verifyInclusion } from '@nodatachat/core';
+
+const ok = await verifyInclusion(
+  myReceiptLeaf,           // from /verify/ref/<ref> on nodatachat.com
+  inclusionProof,          // sibling chain from same page
+  witnessRoot,             // from the public witness feed JSON
+);
+// → pure SHA-256 math, no network calls, no NoData servers in the path
+```
+
+**Why the split:** the platform code stays private, but every cryptographic claim NoData makes is independently re-derivable from an open-source verifier (`@nodatachat/core`) plus a public, append-only data source (the witness feed). Even if NoData disappears, the proofs still verify.
+
+See [`packages/core/src/README.md`](packages/core/src/README.md#merkle-witness-verification) for the verification protocol.
+
+---
+
 ## Security Model
 
 | State | Without NoData | With NoData |
