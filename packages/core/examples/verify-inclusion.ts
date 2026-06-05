@@ -5,7 +5,7 @@
 // public witness feed. Pure math · no NoData servers in the path.
 //
 // Usage:
-//   1. From your receipt page (https://nodatachat.com/verify/ref/<your-ref>)
+//   1. From your receipt page (https://www.nodatacapsule.com/verify/ref/<your-ref>)
 //      expand the "sibling chain" section and copy the JSON.
 //   2. Open the matching epoch file from the witness feed:
 //        https://github.com/proofbydefault/witness-feed/blob/main/

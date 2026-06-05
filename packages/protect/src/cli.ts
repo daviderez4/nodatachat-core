@@ -14,7 +14,10 @@
 
 import { loadConfig, saveConfig, getApiKey, NoDataConfig } from './config';
 import { parseEnvFile, writeEnvFile, isEncrypted, detectSecrets, backupEnvFile, findEnvFile, countV1Entries } from './env';
-import { encryptValue, decryptValue, createApiKey, sendHeartbeat, getFeatureStatus, registerIdentity, loginIdentity, verifyBindings, issueReceipt } from './api';
+import { encryptValue, decryptValue, createApiKey, sendHeartbeat, getFeatureStatus, registerIdentity, loginIdentity, verifyBindings, issueReceipt, verifyContent, buildSidecar, licenseVerify, licenseRevoke, licenseHeartbeat, type NodataSigV1 } from './api';
+import { runDoctor } from './doctor';
+import { buildTreeManifest, verifyTreeManifest, readTreeSidecar, writeTreeSidecar } from './sign-tree';
+import { findRegionSpans, verifyAllRegions, upsertRegionSidecar, type SignedRegion } from './sign-region';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -54,7 +57,7 @@ function prompt(question: string, hidden = false): Promise<string> {
   });
 }
 
-const VERSION = '1.5.1';
+const VERSION = '1.9.0';
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const YELLOW = '\x1b[33m';
@@ -158,6 +161,7 @@ async function cmdInit() {
     log(`  ${GREEN}nodata run -- node app.js${RESET}   ${DIM}# Run with decrypted env${RESET}`);
     log(`  ${GREEN}nodata status${RESET}              ${DIM}# See your identity + bindings${RESET}`);
     log('');
+    log(`${DIM}Anything not working? Run: ${RESET}${GREEN}nodata doctor${RESET}${DIM} — 9 checks + tells you the next command.${RESET}`);
     log(`${DIM}On another machine? Run: nodata login${RESET}`);
   } catch (e: any) {
     if (e.message.includes('taken') || e.message.includes('Nickname')) {
@@ -827,6 +831,488 @@ async function cmdCheck() {
   log('');
 }
 
+// ── SIGN: Standalone content signing (writes .nodatasig sidecar) ──
+
+async function cmdSign(filePath?: string, flags: { label?: string; dir?: boolean; region?: string; exclude?: string[] } = {}) {
+  // Branch: --dir <path>  → sign whole folder (Merkle)
+  if (flags.dir) {
+    await cmdSignTree(filePath, flags.exclude);
+    return;
+  }
+  // Branch: --region <id> → sign one region inside the file
+  if (flags.region) {
+    await cmdSignRegion(filePath, flags.region, flags.label);
+    return;
+  }
+
+  if (!filePath) {
+    err('Usage: nodata sign <file> [--label "short label"]');
+    err('       nodata sign --dir <path> [--exclude=patterns]');
+    err('       nodata sign <file> --region <id>');
+    return;
+  }
+
+  const abs = path.resolve(filePath);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+    err(`File not found: ${abs}`);
+    return;
+  }
+
+  const config = loadConfig();
+  const apiKey = getApiKey(config);
+  if (!apiKey) {
+    err('No API key. Run `nodata init` or `nodata login` first.');
+    return;
+  }
+
+  log(`${CYAN}Hashing${RESET} ${dim(abs)}`);
+  const buf = fs.readFileSync(abs);
+  const contentHash = crypto.createHash('sha256').update(buf).digest('hex');
+  log(`  ${DIM}sha256: ${contentHash}${RESET}`);
+
+  log(`${CYAN}Signing...${RESET}`);
+  const receipt = await issueReceipt(
+    'content_signed',
+    {
+      content_hash: contentHash,
+      has_label: Boolean(flags.label),
+      ...(flags.label ? { label: flags.label } : {}),
+      filename: path.basename(abs).slice(0, 120),
+      size_bytes: buf.length,
+    },
+    { apiKey, server: config.server },
+  );
+
+  if (!receipt) {
+    err('Signing failed — server returned no receipt. Check your connection and that your device is bound.');
+    return;
+  }
+
+  if (!receipt.chain_hmac) {
+    warn('Server response missing chain_hmac — sidecar will lack a full HMAC anchor.');
+    warn('Upgrade your server to the latest release to fix this.');
+  }
+
+  const sidecar = buildSidecar({
+    contentHash,
+    receipt,
+    label: flags.label,
+    filename: path.basename(abs),
+  });
+
+  const sidecarPath = `${abs}.nodatasig`;
+  fs.writeFileSync(sidecarPath, JSON.stringify(sidecar, null, 2), 'utf8');
+
+  log('');
+  ok(`Signed by ${BOLD}${receipt.nickname}${RESET}`);
+  log(`  ${DIM}Chain position:${RESET} #${receipt.chain_index}`);
+  log(`  ${DIM}Receipt ID:    ${RESET} ${receipt.id}`);
+  log(`  ${DIM}Sidecar:       ${RESET} ${sidecarPath}`);
+  log(`  ${DIM}Proof page:    ${RESET} ${receipt.proof_url}`);
+  log('');
+  log(`${DIM}Share both <file> and <file>.nodatasig together; verify with:${RESET}`);
+  log(`  ${GREEN}nodata verify ${path.basename(abs)}${RESET}`);
+  log('');
+}
+
+// ── SIGN TREE: walk a folder, hash every file, anchor with one receipt ──
+
+async function cmdSignTree(rootDir?: string, exclude?: string[]) {
+  const target = rootDir || '.';
+  const abs = path.resolve(target);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isDirectory()) {
+    err(`Not a directory: ${abs}`);
+    return;
+  }
+
+  const config = loadConfig();
+  const apiKey = getApiKey(config);
+  if (!apiKey) {
+    err('No API key. Run `nodata init` or `nodata login` first.');
+    return;
+  }
+
+  log(`${CYAN}Walking${RESET} ${dim(abs)}`);
+  let manifest;
+  try {
+    manifest = buildTreeManifest(abs, { exclude });
+  } catch (e) {
+    err(`Tree walk failed: ${e instanceof Error ? e.message : e}`);
+    return;
+  }
+
+  log(`  ${DIM}Files:        ${RESET} ${manifest.file_count.toLocaleString()}`);
+  log(`  ${DIM}Total bytes:  ${RESET} ${manifest.total_bytes.toLocaleString()}`);
+  log(`  ${DIM}Merkle root:  ${RESET} ${manifest.merkle_root.slice(0, 32)}…`);
+  log(`  ${DIM}Excludes:     ${RESET} ${manifest.excludes_applied.length} patterns`);
+
+  log(`${CYAN}Signing tree...${RESET}`);
+  const receipt = await issueReceipt(
+    'content_signed',
+    {
+      content_hash: manifest.merkle_root,
+      kind: 'tree',
+      file_count: manifest.file_count,
+      total_bytes: manifest.total_bytes,
+      root_basename: manifest.root_basename,
+    },
+    { apiKey, server: config.server },
+  );
+
+  if (!receipt) {
+    err('Tree signing failed — server returned no receipt.');
+    return;
+  }
+
+  const sidecarPayload = {
+    schema: 'nodatatree-v1',
+    manifest,
+    receipt: {
+      receipt_id: receipt.id,
+      chain_index: receipt.chain_index,
+      prev_receipt_id: receipt.prev_receipt_id ?? null,
+      chain_hmac: receipt.chain_hmac ?? '',
+      event_hash: receipt.event_hash,
+      signer_nickname: receipt.nickname,
+      signed_at: receipt.created_at,
+      proof_url: receipt.proof_url,
+    },
+  };
+
+  const sidecarPath = writeTreeSidecar(abs, sidecarPayload);
+
+  log('');
+  ok(`Tree signed by ${BOLD}${receipt.nickname}${RESET}`);
+  log(`  ${DIM}Files signed:  ${RESET} ${manifest.file_count.toLocaleString()}`);
+  log(`  ${DIM}Chain position:${RESET} #${receipt.chain_index}`);
+  log(`  ${DIM}Sidecar:       ${RESET} ${sidecarPath}`);
+  log(`  ${DIM}Proof page:    ${RESET} ${receipt.proof_url}`);
+  log('');
+  log(`${DIM}Verify with:${RESET} ${GREEN}nodata verify --dir ${path.basename(abs)}${RESET}`);
+  log('');
+}
+
+// ── SIGN REGION: sign a marked span inside one file ──
+
+async function cmdSignRegion(filePath?: string, regionId?: string, label?: string) {
+  if (!filePath || !regionId) {
+    err('Usage: nodata sign <file> --region <id>');
+    err('  Mark the region in the file with:');
+    err('    // @nodata-sign-begin <id>');
+    err('    ... your code ...');
+    err('    // @nodata-sign-end <id>');
+    return;
+  }
+
+  const abs = path.resolve(filePath);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+    err(`File not found: ${abs}`);
+    return;
+  }
+
+  const config = loadConfig();
+  const apiKey = getApiKey(config);
+  if (!apiKey) {
+    err('No API key. Run `nodata init` or `nodata login` first.');
+    return;
+  }
+
+  let spans;
+  try {
+    spans = findRegionSpans(abs);
+  } catch (e) {
+    err(`Region scan failed: ${e instanceof Error ? e.message : e}`);
+    return;
+  }
+
+  const target = spans.find((s) => s.id === regionId);
+  if (!target) {
+    err(`Region "${regionId}" not found in ${path.basename(abs)}.`);
+    if (spans.length > 0) {
+      log(`${DIM}  Found regions: ${spans.map((s) => s.id).join(', ')}${RESET}`);
+    } else {
+      log(`${DIM}  No @nodata-sign-* markers in this file.${RESET}`);
+    }
+    return;
+  }
+
+  log(`${CYAN}Hashing region${RESET} ${BOLD}${target.id}${RESET} (${target.line_count} lines, ${dim(`L${target.begin_line}–L${target.end_line}`)})`);
+  log(`  ${DIM}sha256: ${target.content_hash}${RESET}`);
+
+  log(`${CYAN}Signing...${RESET}`);
+  const receipt = await issueReceipt(
+    'content_signed',
+    {
+      content_hash: target.content_hash,
+      kind: 'region',
+      region_id: target.id,
+      filename: path.basename(abs).slice(0, 120),
+      line_count: target.line_count,
+      ...(label ? { label } : {}),
+    },
+    { apiKey, server: config.server },
+  );
+
+  if (!receipt) {
+    err('Region signing failed — server returned no receipt.');
+    return;
+  }
+
+  const signed: SignedRegion = {
+    id: target.id,
+    begin_line: target.begin_line,
+    end_line: target.end_line,
+    content_hash: target.content_hash,
+    line_count: target.line_count,
+    signer_nickname: receipt.nickname,
+    signed_at: receipt.created_at,
+    receipt_id: receipt.id,
+    chain_index: receipt.chain_index,
+    prev_receipt_id: receipt.prev_receipt_id ?? null,
+    chain_hmac: receipt.chain_hmac ?? '',
+    event_hash: receipt.event_hash,
+  };
+
+  const sidecarPath = upsertRegionSidecar(abs, signed);
+
+  log('');
+  ok(`Region ${BOLD}${target.id}${RESET} signed by ${BOLD}${receipt.nickname}${RESET}`);
+  log(`  ${DIM}Chain position:${RESET} #${receipt.chain_index}`);
+  log(`  ${DIM}Sidecar:       ${RESET} ${sidecarPath}`);
+  log(`  ${DIM}Proof page:    ${RESET} ${receipt.proof_url}`);
+  log('');
+  log(`${DIM}Verify with:${RESET} ${GREEN}nodata verify ${path.basename(abs)} --region ${target.id}${RESET}`);
+  log('');
+}
+
+// ── VERIFY: Public verification via /api/verify (no auth required) ──
+
+async function cmdVerify(filePath?: string, flags: { sidecar?: string; receiptId?: string; dir?: boolean; region?: string } = {}) {
+  // Branch: --dir <path> → verify whole-folder Merkle manifest
+  if (flags.dir) {
+    cmdVerifyTree(filePath);
+    return;
+  }
+  // Branch: --region <id> (or "all" / no id) → verify region(s) in file
+  if (flags.region !== undefined) {
+    cmdVerifyRegion(filePath, flags.region);
+    return;
+  }
+
+  if (!filePath) {
+    err('Usage: nodata verify <file> [--sidecar <file.nodatasig>] [--receipt-id <id>]');
+    err('       nodata verify --dir <path>');
+    err('       nodata verify <file> --region <id|all>');
+    return;
+  }
+
+  const abs = path.resolve(filePath);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+    err(`File not found: ${abs}`);
+    return;
+  }
+
+  const config = loadConfig();
+
+  const buf = fs.readFileSync(abs);
+  const contentHash = crypto.createHash('sha256').update(buf).digest('hex');
+
+  // Locate the sidecar: explicit --sidecar flag wins; else look for <file>.nodatasig;
+  // if neither found, require --receipt-id.
+  let sidecar: NodataSigV1 | null = null;
+  const sidecarPath = flags.sidecar
+    ? path.resolve(flags.sidecar)
+    : `${abs}.nodatasig`;
+
+  if (fs.existsSync(sidecarPath)) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(sidecarPath, 'utf8')) as NodataSigV1;
+      if (parsed.schema !== 'nodatasig-v1') {
+        err(`Sidecar ${sidecarPath} is not a nodatasig-v1 (found schema=${(parsed as { schema?: string }).schema})`);
+        return;
+      }
+      sidecar = parsed;
+    } catch (e) {
+      err(`Failed to parse sidecar ${sidecarPath}: ${e instanceof Error ? e.message : e}`);
+      return;
+    }
+  } else if (!flags.receiptId) {
+    err(`No sidecar at ${sidecarPath} and no --receipt-id given.`);
+    log(`${DIM}Run: nodata verify ${path.basename(abs)} --sidecar <path>${RESET}`);
+    return;
+  }
+
+  log(`${CYAN}Hashing${RESET} ${dim(abs)}`);
+  log(`  ${DIM}sha256: ${contentHash}${RESET}`);
+  log(`${CYAN}Verifying...${RESET}`);
+
+  try {
+    const result = await verifyContent(contentHash, {
+      server: config.server,
+      receiptId: flags.receiptId || sidecar?.receipt_id,
+      sidecar: sidecar ?? undefined,
+    });
+
+    log('');
+    if (result.valid) {
+      ok(`${BOLD}Signature is valid${RESET}`);
+      log(`  ${DIM}Signer:        ${RESET} ${result.signer_nickname || '—'}`);
+      log(`  ${DIM}Event type:    ${RESET} ${result.event_type || '—'}`);
+      log(`  ${DIM}Signed at:     ${RESET} ${result.signed_at || '—'}`);
+      log(`  ${DIM}Chain position:${RESET} #${result.chain_index ?? '—'}`);
+      if (result.proof_url) log(`  ${DIM}Proof page:    ${RESET} ${config.server || 'https://www.nodatacapsule.com'}${result.proof_url}`);
+    } else {
+      err(`${BOLD}Signature is NOT valid${RESET}`);
+      if (result.reason) log(`  ${DIM}Reason: ${result.reason}${RESET}`);
+      if (result.checks) {
+        log(`  ${DIM}Content hash match: ${result.checks.content_hash_match ? 'ok' : 'FAIL'}${RESET}`);
+        log(`  ${DIM}Event hash match:   ${result.checks.event_hash_match ? 'ok' : 'FAIL'}${RESET}`);
+        log(`  ${DIM}Chain HMAC match:   ${result.checks.chain_hmac_match ? 'ok' : 'FAIL'}${RESET}`);
+        if (result.checks.sidecar) {
+          for (const [k, v] of Object.entries(result.checks.sidecar)) {
+            log(`  ${DIM}Sidecar ${k}: ${v ? 'ok' : 'FAIL'}${RESET}`);
+          }
+        }
+      }
+      process.exitCode = 2;
+    }
+    log('');
+  } catch (e) {
+    err(`Verification failed: ${e instanceof Error ? e.message : e}`);
+    process.exitCode = 3;
+  }
+}
+
+// ── VERIFY TREE: walk a folder, compare against manifest in .nodata-tree.sig ──
+
+function cmdVerifyTree(rootDir?: string) {
+  const target = rootDir || '.';
+  const abs = path.resolve(target);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isDirectory()) {
+    err(`Not a directory: ${abs}`);
+    return;
+  }
+
+  const stored = readTreeSidecar(abs);
+  if (!stored) {
+    err(`No .nodata-tree.sig found in ${abs}`);
+    log(`${DIM}  Sign the tree first: nodata sign --dir ${target}${RESET}`);
+    return;
+  }
+
+  log(`${CYAN}Re-walking${RESET} ${dim(abs)}`);
+  let result;
+  try {
+    result = verifyTreeManifest(abs, stored.manifest);
+  } catch (e) {
+    err(`Re-walk failed: ${e instanceof Error ? e.message : e}`);
+    return;
+  }
+
+  log('');
+  if (result.ok) {
+    ok(`${BOLD}Tree integrity verified${RESET}`);
+    log(`  ${DIM}Files unchanged: ${RESET} ${result.unchanged.toLocaleString()} / ${stored.manifest.file_count.toLocaleString()}`);
+    log(`  ${DIM}Merkle root:    ${RESET} ${result.actual_merkle_root.slice(0, 32)}…`);
+    const recv = stored.sidecar.receipt as { signer_nickname?: string; signed_at?: string; proof_url?: string } | undefined;
+    if (recv?.signer_nickname) log(`  ${DIM}Signer:         ${RESET} ${recv.signer_nickname}`);
+    if (recv?.signed_at) log(`  ${DIM}Signed at:      ${RESET} ${recv.signed_at}`);
+    if (recv?.proof_url) log(`  ${DIM}Proof page:     ${RESET} ${recv.proof_url}`);
+  } else {
+    err(`${BOLD}Tree integrity FAILED${RESET}`);
+    log(`  ${DIM}Expected root: ${RESET} ${result.expected_merkle_root.slice(0, 32)}…`);
+    log(`  ${DIM}Actual root:   ${RESET} ${result.actual_merkle_root.slice(0, 32)}…`);
+    if (result.modified.length > 0) {
+      log('');
+      log(`  ${RED}${result.modified.length} modified:${RESET}`);
+      for (const p of result.modified.slice(0, 20)) log(`    ${RED}~${RESET} ${p}`);
+      if (result.modified.length > 20) log(`    ${DIM}… and ${result.modified.length - 20} more${RESET}`);
+    }
+    if (result.added.length > 0) {
+      log('');
+      log(`  ${YELLOW}${result.added.length} added (unsigned):${RESET}`);
+      for (const p of result.added.slice(0, 20)) log(`    ${YELLOW}+${RESET} ${p}`);
+      if (result.added.length > 20) log(`    ${DIM}… and ${result.added.length - 20} more${RESET}`);
+    }
+    if (result.removed.length > 0) {
+      log('');
+      log(`  ${RED}${result.removed.length} removed (missing):${RESET}`);
+      for (const p of result.removed.slice(0, 20)) log(`    ${RED}-${RESET} ${p}`);
+      if (result.removed.length > 20) log(`    ${DIM}… and ${result.removed.length - 20} more${RESET}`);
+    }
+    process.exitCode = 2;
+  }
+  log('');
+}
+
+// ── VERIFY REGION: compare each region against its sidecar ──
+
+function cmdVerifyRegion(filePath?: string, regionId?: string) {
+  if (!filePath) {
+    err('Usage: nodata verify <file> --region <id|all>');
+    return;
+  }
+  const abs = path.resolve(filePath);
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+    err(`File not found: ${abs}`);
+    return;
+  }
+
+  let results;
+  try {
+    results = verifyAllRegions(abs);
+  } catch (e) {
+    err(`Region scan failed: ${e instanceof Error ? e.message : e}`);
+    return;
+  }
+
+  if (results.length === 0) {
+    err(`No region sidecar at ${abs}.nodatasig.regions and no @nodata-sign-* markers found.`);
+    return;
+  }
+
+  const filtered = (regionId && regionId !== 'all') ? results.filter((r) => r.id === regionId) : results;
+  if (filtered.length === 0) {
+    err(`Region "${regionId}" not found in this file.`);
+    log(`${DIM}  Found regions: ${results.map((r) => r.id).join(', ')}${RESET}`);
+    return;
+  }
+
+  log(`${CYAN}Verifying regions in${RESET} ${dim(path.basename(abs))}`);
+  log('');
+
+  let modifiedCount = 0;
+  let unsignedCount = 0;
+  for (const r of filtered) {
+    const tag = `${BOLD}${r.id}${RESET}`;
+    if (r.status === 'unchanged') {
+      ok(`${tag}  unchanged (L${r.begin_line}–L${r.end_line})`);
+    } else if (r.status === 'modified') {
+      err(`${tag}  ${RED}MODIFIED${RESET} (L${r.begin_line}–L${r.end_line})`);
+      log(`     ${DIM}expected: ${r.expected_hash?.slice(0, 16)}…  actual: ${r.actual_hash?.slice(0, 16)}…${RESET}`);
+      modifiedCount += 1;
+    } else if (r.status === 'missing_in_file') {
+      err(`${tag}  ${RED}MISSING from file${RESET} (signed but markers gone)`);
+      modifiedCount += 1;
+    } else if (r.status === 'missing_in_sidecar') {
+      warn(`${tag}  unsigned region in file (L${r.begin_line}–L${r.end_line})`);
+      log(`     ${DIM}Run: nodata sign ${path.basename(abs)} --region ${r.id}${RESET}`);
+      unsignedCount += 1;
+    }
+  }
+
+  log('');
+  if (modifiedCount > 0) {
+    err(`${modifiedCount} region${modifiedCount > 1 ? 's' : ''} failed integrity check.`);
+    process.exitCode = 2;
+  } else if (unsignedCount > 0) {
+    log(`${YELLOW}${unsignedCount} region${unsignedCount > 1 ? 's' : ''} present in file but not yet signed.${RESET}`);
+  } else {
+    ok(`All ${filtered.length} region${filtered.length > 1 ? 's' : ''} verified.`);
+  }
+  log('');
+}
+
 // ── HELP ──
 function cmdHelp() {
   banner();
@@ -839,12 +1325,23 @@ function cmdHelp() {
   log(`  ${GREEN}nodata encrypt${RESET} [.env]            Encrypt secrets in .env file`);
   log(`  ${GREEN}nodata decrypt${RESET} [.env]            Decrypt .env back to plaintext`);
   log(`  ${GREEN}nodata run -- <command>${RESET}          Run with decrypted env vars (in memory only)`);
+  log(`  ${GREEN}nodata sign <file>${RESET}               Sign any file → writes <file>.nodatasig sidecar`);
+  log(`  ${GREEN}nodata sign --dir <path>${RESET}         Sign a whole folder (Merkle) → writes .nodata-tree.sig at root`);
+  log(`  ${GREEN}nodata sign <file> --region <id>${RESET} Sign a marked region inside a file (// @nodata-sign-begin/end <id>)`);
+  log(`  ${GREEN}nodata verify <file>${RESET}             Verify a file against its .nodatasig sidecar`);
+  log(`  ${GREEN}nodata verify --dir <path>${RESET}       Verify whole folder against .nodata-tree.sig`);
+  log(`  ${GREEN}nodata verify <file> --region <id|all>${RESET} Verify region(s) in a file`);
+  log(`  ${GREEN}nodata license verify${RESET}            Show active license bindings on this device`);
+  log(`  ${GREEN}nodata license heartbeat${RESET}         Grace-aware enforcement check (active / grace / none)`);
+  log(`  ${GREEN}nodata license revoke <id>${RESET}       Revoke a license you issued (bulk or per-binding)`);
   log('');
   log(`${CYAN}Info:${RESET}`);
   log(`  ${GREEN}nodata status${RESET}                   Show identity + bindings + encryption status`);
   log(`  ${GREEN}nodata connect${RESET}                  Connect project to NoData Hub`);
   log(`  ${GREEN}nodata features${RESET}                 Show available & installed features`);
-  log(`  ${GREEN}nodata check${RESET}                    Verify connection health`);
+  log(`  ${GREEN}nodata check${RESET}                    Verify connection health (lightweight)`);
+  log(`  ${GREEN}nodata doctor${RESET}                   Full self-diagnostic — 9 checks + suggested next steps`);
+  log(`  ${GREEN}nodata doctor --verbose${RESET}         Same, but list every available command`);
   log(`  ${GREEN}nodata help${RESET}                     Show this help`);
   log('');
   log(`${CYAN}Examples:${RESET}`);
@@ -877,6 +1374,118 @@ function cmdHelp() {
   log(`    ${DIM}DATABASE_URL=postgres://user:pass@host/db${RESET}`);
   log(`    ${DIM}STRIPE_KEY=sk_live_xyz789...${RESET}`);
   log('');
+}
+
+// ── LICENSE: verify | revoke (plan 07 Track 2 §2B-CLI) ──
+//
+// Usage:
+//   nodata license verify              — show all bindings on this device
+//   nodata license verify <license_id> — narrow to one license
+//   nodata license revoke <license_id> [--reason "<text>"] — bulk revoke
+//   nodata license revoke --binding <binding_id> [--reason "..."]
+async function cmdLicense(args: string[]) {
+  banner();
+
+  const sub = args[0];
+  if (!sub || (sub !== 'verify' && sub !== 'revoke' && sub !== 'heartbeat')) {
+    err('Usage: nodata license <verify|revoke|heartbeat> [args]');
+    log(`  ${DIM}nodata license verify [<license_id>]${RESET}`);
+    log(`  ${DIM}nodata license heartbeat${RESET}                    grace-aware enforcement check`);
+    log(`  ${DIM}nodata license revoke <license_id> [--reason "..."]${RESET}`);
+    log(`  ${DIM}nodata license revoke --binding <binding_id> [--reason "..."]${RESET}`);
+    return;
+  }
+
+  const config = loadConfig();
+  const apiKey = getApiKey(config);
+  if (!apiKey) { err('No API key. Run: nodata init'); return; }
+
+  if (sub === 'verify') {
+    const licenseId = args[1] && !args[1].startsWith('--') ? args[1] : undefined;
+    try {
+      const res = await licenseVerify({ apiKey, server: config.server, license_id: licenseId });
+      if (!res.has_binding) {
+        warn('No active bindings on this device.');
+        return;
+      }
+      ok(`${res.bindings.length} active binding(s):`);
+      log('');
+      for (const b of res.bindings) {
+        log(`  ${BOLD}${b.name}${RESET} ${dim('· ' + b.type + ' · slot #' + b.slot)}`);
+        log(`    ${DIM}id: ${b.entitlement_id}${RESET}`);
+        log(`    ${DIM}bound: ${b.bound_at}${RESET}`);
+        if (b.expires_at) log(`    ${DIM}expires: ${b.expires_at}${RESET}`);
+        log('');
+      }
+    } catch (e: any) {
+      err(`Verify failed: ${e.message}`);
+    }
+    return;
+  }
+
+  if (sub === 'heartbeat') {
+    try {
+      const res = await licenseHeartbeat({ apiKey, server: config.server });
+      const stateLabel =
+        res.state === 'active' ? `${GREEN}active${RESET}` :
+        res.state === 'grace' ? `${YELLOW}grace${RESET}` :
+        `${DIM}none${RESET}`;
+      log(`State: ${stateLabel}  (active=${res.has_active}, grace=${res.has_grace})`);
+      log(`${DIM}Checked at: ${res.checked_at}${RESET}`);
+      log('');
+      if (res.bindings.length === 0) {
+        warn('No bindings on this device.');
+        return;
+      }
+      for (const b of res.bindings) {
+        const tag =
+          b.state === 'active' ? `${GREEN}● active${RESET}` :
+          b.state === 'grace' ? `${YELLOW}● grace${RESET}` :
+          b.state === 'expired' ? `${DIM}● expired${RESET}` :
+          `${RED}● revoked${RESET}`;
+        log(`  ${BOLD}${b.name}${RESET}  ${tag}  ${dim('slot #' + b.slot)}`);
+        log(`    ${DIM}id: ${b.entitlement_id}${RESET}`);
+        if (b.grace_until) log(`    ${DIM}grace_until: ${b.grace_until} (window: ${b.grace_period_seconds}s)${RESET}`);
+        if (b.expires_at) log(`    ${DIM}expires: ${b.expires_at}${RESET}`);
+        if (b.revoked_at) log(`    ${DIM}revoked: ${b.revoked_at}${RESET}`);
+        log('');
+      }
+    } catch (e: any) {
+      err(`Heartbeat failed: ${e.message}`);
+    }
+    return;
+  }
+
+  // revoke
+  const reasonIdx = args.indexOf('--reason');
+  const reason = reasonIdx >= 0 ? args[reasonIdx + 1] : undefined;
+  const bindingIdx = args.indexOf('--binding');
+  const bindingId = bindingIdx >= 0 ? args[bindingIdx + 1] : undefined;
+  const licenseId = !bindingId && args[1] && !args[1].startsWith('--') ? args[1] : undefined;
+
+  if (!licenseId && !bindingId) {
+    err('Usage: nodata license revoke <license_id>  OR  nodata license revoke --binding <binding_id>');
+    return;
+  }
+
+  try {
+    const res = await licenseRevoke({
+      apiKey, server: config.server,
+      license_id: licenseId, binding_id: bindingId, reason,
+    });
+    if (res.mode === 'bulk') {
+      ok(`Revoked license: ${BOLD}${res.entitlement_name}${RESET}`);
+      ok(`Bindings revoked: ${res.bindings_revoked}`);
+    } else {
+      ok(`Revoked binding on ${BOLD}${res.entitlement_name}${RESET}`);
+      ok(`Device: ${res.revoked_device_id}`);
+    }
+    if (res.receipt) {
+      log(`${DIM}Receipt: ${res.receipt.id} (chain #${res.receipt.chain_index})${RESET}`);
+    }
+  } catch (e: any) {
+    err(`Revoke failed: ${e.message}`);
+  }
 }
 
 // ── MAIN ──
@@ -937,6 +1546,44 @@ async function main() {
 
     case 'check':
       await cmdCheck();
+      break;
+
+    case 'doctor':
+      await runDoctor(VERSION, { verbose: args.includes('--verbose') || args.includes('-v') });
+      break;
+
+    case 'sign': {
+      const positional = args.slice(1).find((a) => !a.startsWith('--'));
+      const labelIdx = args.indexOf('--label');
+      const label = labelIdx >= 0 ? args[labelIdx + 1] : undefined;
+      const dir = args.includes('--dir');
+      const regionIdx = args.indexOf('--region');
+      const region = regionIdx >= 0 ? args[regionIdx + 1] : undefined;
+      const excludeIdx = args.indexOf('--exclude');
+      const exclude =
+        excludeIdx >= 0 && args[excludeIdx + 1]
+          ? args[excludeIdx + 1].split(',').map((s) => s.trim()).filter(Boolean)
+          : undefined;
+      await cmdSign(positional, { label, dir, region, exclude });
+      break;
+    }
+
+    case 'verify': {
+      const positional = args.slice(1).find((a) => !a.startsWith('--'));
+      const sidecarIdx = args.indexOf('--sidecar');
+      const sidecar = sidecarIdx >= 0 ? args[sidecarIdx + 1] : undefined;
+      const receiptIdx = args.indexOf('--receipt-id');
+      const receiptId = receiptIdx >= 0 ? args[receiptIdx + 1] : undefined;
+      const dir = args.includes('--dir');
+      const regionIdx = args.indexOf('--region');
+      // --region with no value defaults to "all"
+      const region = regionIdx >= 0 ? (args[regionIdx + 1] && !args[regionIdx + 1].startsWith('--') ? args[regionIdx + 1] : 'all') : undefined;
+      await cmdVerify(positional, { sidecar, receiptId, dir, region });
+      break;
+    }
+
+    case 'license':
+      await cmdLicense(args.slice(1));
       break;
 
     case 'help':

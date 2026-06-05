@@ -18,7 +18,7 @@ npx nodata-send "AWS_SECRET_KEY=wJalr..."
   Encrypting with AES-256-GCM... done
   Creating zero-data drop... done
 
-  Secure link: https://nodatachat.com/burn/Ab7K2m#x9f2...
+  Secure link: https://www.nodatacapsule.com/burn/Ab7K2m#x9f2...
 
   View once | 24h TTL | Zero storage
 ```
@@ -128,8 +128,8 @@ A receipt holder can prove inclusion **without trusting NoData servers**:
 ```typescript
 import { verifyInclusion, type InclusionStep } from '@nodatachat/core';
 
-// 1. Get your inclusion proof from your receipt page on nodatachat.com
-//    (https://nodatachat.com/verify/ref/<your-ref> → expand sibling chain)
+// 1. Get your inclusion proof from your receipt page on www.nodatacapsule.com
+//    (https://www.nodatacapsule.com/verify/ref/<your-ref> → expand sibling chain)
 const leaf = 'a3f2b1c8...';                   // your receipt's event_hash
 const proof: InclusionStep[] = [/* ... */];   // the sibling chain
 
@@ -150,11 +150,11 @@ See `examples/verify-inclusion.ts` for a runnable example.
 
 ---
 
-## NoDataChat Platform
+## NoData Platform
 
-This is the open-source cryptographic core of [**NoDataChat**](https://nodatachat.com) — a zero-data secret delivery platform.
+This is the source-available cryptographic core of [**NoData**](https://www.nodatacapsule.com) — a zero-data secret delivery platform.
 
-| Open source (this repo) | Closed source (platform) |
+| Source-available (this repo) | Closed source (platform) |
 |-------------------------|--------------------------|
 | Encryption primitives | Web & mobile apps |
 | Identity / seed phrase | Server infrastructure |
@@ -163,7 +163,7 @@ This is the open-source cryptographic core of [**NoDataChat**](https://nodatacha
 | | Report boxes |
 | | Enterprise features |
 
-**Website:** [nodatachat.com](https://nodatachat.com)
+**Website:** [www.nodatacapsule.com](https://www.nodatacapsule.com)
 
 **CLI:**
 ```bash

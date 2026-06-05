@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // ═══════════════════════════════════════════════════════════
 // nodata-proof — Prove the Zero-Data architecture
-// Shows exactly what NoDataChat does (and doesn't) store
+// Shows exactly what NoData does (and doesn't) store
 // ═══════════════════════════════════════════════════════════
 
 function sleep(ms: number) {
@@ -11,7 +11,7 @@ function sleep(ms: number) {
 async function main() {
   console.log('');
   console.log('  ╔══════════════════════════════════════════════╗');
-  console.log('  ║  NoDataChat — Zero-Data Delivery Protocol    ║');
+  console.log('  ║  NoData — Zero-Data Delivery Protocol    ║');
   console.log('  ╚══════════════════════════════════════════════╝');
   console.log('');
 
@@ -46,7 +46,7 @@ async function main() {
   console.log('    https://github.com/nodatachat/core');
   console.log('');
   console.log('  Full platform:');
-  console.log('    https://nodatachat.com');
+  console.log('    https://www.nodatacapsule.com');
   console.log('');
   console.log('  Audit the code. Verify the claims. Trust nothing.\n');
 }

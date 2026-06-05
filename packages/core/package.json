@@ -2,7 +2,7 @@
   "name": "@nodatachat/core",
   "version": "0.2.0",
   "private": true,
-  "description": "Zero-knowledge identity, E2E encryption, and Merkle witness verification — open-source core",
+  "description": "Zero-knowledge identity, E2E encryption, and Merkle witness verification — source-available core",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {

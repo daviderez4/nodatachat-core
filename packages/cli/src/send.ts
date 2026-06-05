@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // ═══════════════════════════════════════════════════════════
 // nodata-send — Send encrypted, self-destructing secrets
-// Uses the Zero-Data Delivery Protocol by NoDataChat
+// Uses the Zero-Data Delivery Protocol by NoData
 // ═══════════════════════════════════════════════════════════
 
-const NODATA_API = process.env.NODATA_API || 'https://nodatachat.com';
-const NODATA_WEB = process.env.NODATA_WEB || 'https://nodatachat.com';
+const NODATA_API = process.env.NODATA_API || 'https://www.nodatacapsule.com';
+const NODATA_WEB = process.env.NODATA_WEB || 'https://www.nodatacapsule.com';
 
 // ── Helpers (no external deps — uses Node.js built-in crypto) ──
 
@@ -124,7 +124,7 @@ async function main() {
     console.log('');
     console.log('  The decryption key is in the URL fragment (#...)');
     console.log('  The server never sees it.\n');
-    console.log('  Powered by NoDataChat — https://nodatachat.com\n');
+    console.log('  Powered by NoData — https://www.nodatacapsule.com\n');
   } catch (err) {
     console.error(` failed\n\n  Could not reach ${NODATA_API}`);
     console.error('  Set NODATA_API env var if using a custom server.\n');
@@ -152,8 +152,8 @@ function printHelp() {
     3. The decryption key is in the URL fragment (#...)
     4. The server NEVER sees your plaintext or key
 
-  Zero-Data Delivery Protocol by NoDataChat
-  https://nodatachat.com
+  Zero-Data Delivery Protocol by NoData
+  https://www.nodatacapsule.com
 `);
 }
 

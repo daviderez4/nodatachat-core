@@ -85,10 +85,12 @@ export interface IssuedReceipt {
   created_at: string;
   nickname: string;
   proof_url: string;
+  prev_receipt_id?: string | null;
+  chain_hmac?: string;
 }
 
 export async function issueReceipt(
-  eventType: 'upgrade_v1_v2' | 'encrypt' | 'binding' | 'decrypt_batch' | 'kek_rotation',
+  eventType: 'upgrade_v1_v2' | 'encrypt' | 'binding' | 'decrypt_batch' | 'kek_rotation' | 'content_signed',
   payload: Record<string, unknown>,
   opts: ApiOptions,
 ): Promise<IssuedReceipt | null> {
@@ -100,7 +102,14 @@ export async function issueReceipt(
       opts.apiKey,
     );
     if (res.success && res.receipt && res.nickname && res.proof_url) {
-      const r = res.receipt as { id: string; chain_index: number; event_hash: string; created_at: string };
+      const r = res.receipt as {
+        id: string;
+        chain_index: number;
+        event_hash: string;
+        created_at: string;
+        prev_receipt_id?: string | null;
+        chain_hmac?: string;
+      };
       return {
         id: r.id,
         chain_index: r.chain_index,
@@ -108,6 +117,8 @@ export async function issueReceipt(
         created_at: r.created_at,
         nickname: res.nickname as string,
         proof_url: res.proof_url as string,
+        prev_receipt_id: r.prev_receipt_id ?? null,
+        chain_hmac: r.chain_hmac,
       };
     }
     return null;
@@ -116,6 +127,120 @@ export async function issueReceipt(
     // network blinks, don't fail the actual upgrade the user cares about.
     return null;
   }
+}
+
+// ── Standalone content-signing: content_signed event + .nodatasig sidecar ──
+
+export interface NodataSigV1 {
+  schema: 'nodatasig-v1';
+  content_hash: string;          // "sha256:<hex>"
+  signer_nickname: string;
+  signed_at: string;
+  receipt_id: string;
+  chain_index: number;
+  prev_receipt_id: string | null;
+  chain_hmac: string;
+  event_hash: string;
+  signing_version: 1;
+  label?: string;
+  filename?: string;
+}
+
+export interface VerifyChecks {
+  content_hash_match: boolean;
+  event_hash_match: boolean;
+  chain_hmac_match: boolean;
+  sidecar: Record<string, boolean> | null;
+}
+
+export interface VerifyResult {
+  valid: boolean;
+  reason?: string;
+  receipt_id?: string;
+  event_type?: string;
+  signer_nickname?: string;
+  signed_at?: string;
+  chain_index?: number;
+  checks?: VerifyChecks;
+  proof_url?: string;
+}
+
+/**
+ * Verify a content hash + optional sidecar/receipt_id against the public
+ * /api/verify endpoint. No auth. Returns the structured result; callers
+ * typically branch on `result.valid`.
+ */
+export async function verifyContent(
+  contentHash: string,
+  opts: { server?: string; receiptId?: string; sidecar?: NodataSigV1 | Record<string, unknown> },
+): Promise<VerifyResult> {
+  const server = opts.server || DEFAULT_SERVER;
+  const body: Record<string, unknown> = { content_hash: contentHash };
+  if (opts.receiptId) body.receipt_id = opts.receiptId;
+  if (opts.sidecar) body.sidecar = opts.sidecar;
+
+  // /api/verify uses standard NoData response shape (not the /api/v1
+  // API-key-auth shape). It does not require the Authorization header,
+  // but the helper below sets one; empty key is accepted by the route.
+  const parsed = new URL(`${server}/api/verify`);
+  const isHttps = parsed.protocol === 'https:';
+  const mod = isHttps ? https : http;
+  const bodyStr = JSON.stringify(body);
+
+  return new Promise<VerifyResult>((resolve, reject) => {
+    const req = mod.request({
+      hostname: parsed.hostname,
+      port: parsed.port || (isHttps ? 443 : 80),
+      path: parsed.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(bodyStr),
+        'User-Agent': 'nodata-cli/sign-verify',
+      },
+    }, (res) => {
+      let raw = '';
+      res.on('data', (c) => { raw += c; });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(raw) as VerifyResult & { success?: boolean; error?: string };
+          resolve(parsed);
+        } catch {
+          reject(new Error(`Invalid verify response: ${raw.slice(0, 200)}`));
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(bodyStr);
+    req.end();
+  });
+}
+
+/**
+ * Build a .nodatasig sidecar from an issued receipt. Mirrors the shape
+ * returned by /api/sign (web UI) so both surfaces produce identical sidecars.
+ */
+export function buildSidecar(params: {
+  contentHash: string;       // 64-hex, no prefix
+  receipt: IssuedReceipt;
+  label?: string;
+  filename?: string;
+}): NodataSigV1 {
+  const { contentHash, receipt, label, filename } = params;
+  return {
+    schema: 'nodatasig-v1',
+    content_hash: `sha256:${contentHash}`,
+    signer_nickname: receipt.nickname,
+    signed_at: receipt.created_at,
+    receipt_id: receipt.id,
+    chain_index: receipt.chain_index,
+    prev_receipt_id: receipt.prev_receipt_id ?? null,
+    chain_hmac: receipt.chain_hmac ?? '',
+    event_hash: receipt.event_hash,
+    signing_version: 1,
+    ...(label ? { label } : {}),
+    ...(filename ? { filename } : {}),
+  };
 }
 
 // ── Integration endpoints ──────────────────────────────────
@@ -190,11 +315,140 @@ export async function loginIdentity(nickname: string, pin: string, deviceId: str
 
 export async function verifyBindings(deviceId: string, server?: string): Promise<{
   has_binding: boolean;
+  has_entitlement_binding: boolean;
+  has_identity_link: boolean;
+  identity_nickname: string | null;
+  identity_tier: string | null;
   bindings: Array<{ name: string; type: string; grants: Record<string, unknown>; slot: number }>;
 }> {
   const s = server || DEFAULT_SERVER;
   const res = await requestNoAuth(`${s}/api/verify-binding`, { device_id: deviceId });
-  return { has_binding: !!res.has_binding, bindings: (res.bindings as any[]) || [] };
+  return {
+    has_binding: !!res.has_binding,
+    has_entitlement_binding: !!res.has_entitlement_binding,
+    has_identity_link: !!res.has_identity_link,
+    identity_nickname: (res.identity_nickname as string) || null,
+    identity_tier: (res.identity_tier as string) || null,
+    bindings: (res.bindings as any[]) || [],
+  };
+}
+
+// ── License capability — plan 07 Track 2 §2B ──────────────────────────
+//
+// nodata license verify         → wraps POST /api/license/verify
+// nodata license revoke <id>    → wraps POST /api/license/revoke
+//
+// Both require a Bearer API key (loaded by the CLI from ~/.nodata/config.json).
+
+export interface LicenseVerifyResult {
+  has_binding: boolean;
+  device_id: string;
+  bindings: Array<{
+    entitlement_id: string;
+    name: string;
+    type: string;
+    grants: Record<string, unknown>;
+    slot: number;
+    binding_proof: string;
+    bound_at: string;
+    expires_at: string | null;
+  }>;
+  checked_at: string;
+}
+
+export async function licenseVerify(
+  opts: ApiOptions & { type?: string; license_id?: string },
+): Promise<LicenseVerifyResult> {
+  const s = opts.server || DEFAULT_SERVER;
+  const res = await request(
+    `${s}/api/license/verify`,
+    { type: opts.type, license_id: opts.license_id },
+    opts.apiKey,
+  );
+  if (!res.success) throw new Error((res.error as string) || 'License verify failed');
+  return {
+    has_binding: !!res.has_binding,
+    device_id: (res.device_id as string) || '',
+    bindings: (res.bindings as LicenseVerifyResult['bindings']) || [],
+    checked_at: (res.checked_at as string) || new Date().toISOString(),
+  };
+}
+
+export interface LicenseHeartbeatResult {
+  state: 'active' | 'grace' | 'none';
+  has_active: boolean;
+  has_grace: boolean;
+  device_id: string;
+  bindings: Array<{
+    binding_id: string;
+    entitlement_id: string;
+    name: string;
+    type: string;
+    grants: Record<string, unknown>;
+    slot: number;
+    bound_at: string;
+    expires_at: string | null;
+    revoked_at: string | null;
+    grace_until: string | null;
+    grace_period_seconds: number;
+    state: 'active' | 'grace' | 'expired' | 'revoked';
+  }>;
+  checked_at: string;
+}
+
+export async function licenseHeartbeat(
+  opts: ApiOptions & { type?: string },
+): Promise<LicenseHeartbeatResult> {
+  const s = opts.server || DEFAULT_SERVER;
+  const res = await request(
+    `${s}/api/license/heartbeat`,
+    { type: opts.type },
+    opts.apiKey,
+  );
+  if (!res.success) throw new Error((res.error as string) || 'License heartbeat failed');
+  return {
+    state: (res.state as LicenseHeartbeatResult['state']) || 'none',
+    has_active: !!res.has_active,
+    has_grace: !!res.has_grace,
+    device_id: (res.device_id as string) || '',
+    bindings: (res.bindings as LicenseHeartbeatResult['bindings']) || [],
+    checked_at: (res.checked_at as string) || new Date().toISOString(),
+  };
+}
+
+export interface LicenseRevokeResult {
+  mode: 'bulk' | 'single_binding';
+  license_id: string;
+  binding_id?: string;
+  bindings_revoked?: number;
+  revoked_device_id?: string;
+  entitlement_name: string;
+  receipt: { id: string; chain_index: number } | null;
+}
+
+export async function licenseRevoke(
+  opts: ApiOptions & { license_id?: string; binding_id?: string; reason?: string },
+): Promise<LicenseRevokeResult> {
+  const s = opts.server || DEFAULT_SERVER;
+  const res = await request(
+    `${s}/api/license/revoke`,
+    {
+      license_id: opts.license_id,
+      binding_id: opts.binding_id,
+      reason: opts.reason,
+    },
+    opts.apiKey,
+  );
+  if (!res.success) throw new Error((res.error as string) || 'License revoke failed');
+  return {
+    mode: (res.mode as LicenseRevokeResult['mode']) || 'bulk',
+    license_id: (res.license_id as string) || '',
+    binding_id: res.binding_id as string | undefined,
+    bindings_revoked: res.bindings_revoked as number | undefined,
+    revoked_device_id: res.revoked_device_id as string | undefined,
+    entitlement_name: (res.entitlement_name as string) || '',
+    receipt: (res.receipt as LicenseRevokeResult['receipt']) || null,
+  };
 }
 
 /** Request without auth header (for public endpoints) */

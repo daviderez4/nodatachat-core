@@ -6,7 +6,7 @@
 
 **Your code stays on your machine. Your secrets stay encrypted. Every access is proven.**
 
-The open-source core of the **NoData Information Access Processor** — the local node that encrypts your secrets and proves every access, with nothing ever leaving your machine in the clear.
+The source-available core of the **NoData Information Access Processor** — the local node that encrypts your secrets and proves every access, with nothing ever leaving your machine in the clear.
 
 ---
 
@@ -150,7 +150,7 @@ const ok = await verifyInclusion(
 // → pure SHA-256 math, no network calls, no NoData servers in the path
 ```
 
-**Why the split:** the platform code stays private, but every cryptographic claim NoData makes is independently re-derivable from an open-source verifier (`@nodatachat/core`) plus a public, append-only data source (the witness feed). Even if NoData disappears, the proofs still verify.
+**Why the split:** the platform code stays private, but every cryptographic claim NoData makes is independently re-derivable from a source-available verifier (`@nodatachat/core`) plus a public, append-only data source (the witness feed). Even if NoData disappears, the proofs still verify.
 
 See [`packages/core/src/README.md`](packages/core/src/README.md#merkle-witness-verification) for the verification protocol.
 
@@ -171,7 +171,7 @@ See [`packages/core/src/README.md`](packages/core/src/README.md#merkle-witness-v
 - **Server-held KEK** — your key is wrapped under a key-encryption-key on the server and bound to your device. The `.env` file alone is useless ciphertext.
 - **`run` is not a proxy** — decrypts to process memory only. Values die with the process.
 - **What IS sent:** only metadata (field name + timestamp + hash). Never the actual value. Disconnect your internet and verify.
-- **Open source** — read every line on GitHub, audit it, verify it before you run it.
+- **Source-available** — read every line on GitHub, audit it, verify it before you run it.
 - **Audit-ready** — cryptographic proof chain for compliance (SOC 2).
 
 ---
@@ -208,7 +208,7 @@ All packages are licensed **FSL-1.1-Apache-2.0** — source-available today, aut
 
 ## The Full Processor
 
-This repo is the **open-source core** — local encryption, code signing, proof primitives, CLI.
+This repo is the **source-available core** — local encryption, code signing, proof primitives, CLI.
 
 The full **NoData Information Access Processor** adds the governed side:
 - Deep PII/secret scanning across your data sources

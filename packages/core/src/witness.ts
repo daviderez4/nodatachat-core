@@ -12,7 +12,7 @@
 // A receipt holder can prove their receipt was included in a given
 // epoch WITHOUT trusting NoData servers, by:
 //   1. Fetching the inclusion proof from their receipt UI
-//      (https://nodatachat.com/verify/ref/<their-ref>)
+//      (https://www.nodatacapsule.com/verify/ref/<their-ref>)
 //   2. Fetching merkle_root from the witness feed for that hour
 //   3. Running verifyInclusion() locally · pure math.
 //

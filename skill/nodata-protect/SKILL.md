@@ -1,6 +1,6 @@
 ---
 name: nodata-protect
-description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = unlimited encrypt + decrypt, forever (burst protection only). Open source on npm. Use only when the user explicitly asks to secure their project.
+description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = unlimited encrypt + decrypt, forever (burst protection only). Source-available on npm. Use only when the user explicitly asks to secure their project.
 ---
 
 # NoData Protect — .env Encryption via Blind Relay
@@ -19,7 +19,7 @@ description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-
   - **v2 (default since CLI 1.3.0, Apr 20 2026):** each value becomes `aes256gcm:v2:<iv>:<ciphertext>:<wrapped_dek_id>`. The actual AES key is encrypted under a server-held KEK and stored in `nd_wrapped_deks`; the `.env` carries only the opaque ID. **A stolen `.env` file alone is useless ciphertext** — decryption requires an authenticated `/api/v1/decrypt` call from the owning device. Existing v1 `.env` files: `nodata encrypt --upgrade` converts them in place, with backup.
   - **v1 (legacy, used by `--legacy` flag or pre-1.3.0 installs):** each value becomes `aes256gcm:v1:<iv>:<ciphertext>:<key>`. **v1 limitation:** the AES key is base64-bundled in that same string, so a motivated technical attacker with a stolen .env can decrypt it in a few lines. Still skipped by automated scrapers (see below).
 - **Why both v1 and v2 help.** Real-world .env leaks are overwhelmingly automated scraper bots (GitHub secret scanning, pastebin scrapers) and supply-chain stealers (LiteLLM-style `grep "sk-" .env` code). These tools look for known plaintext prefixes (`sk_live_`, `ghp_`, `AKIA`). Neither `aes256gcm:v1:` nor `aes256gcm:v2:` matches, so bots skip the file. That covers ~95% of real-world leaks. v2 additionally defeats targeted attackers with the file but no API access.
-- **Open source.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
+- **Source-available.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
 - **No proactive activation.** Do NOT run this tool automatically. Only use when the user explicitly asks to encrypt, secure, or protect their secrets.
 
 ## What is NoData Protect?
@@ -115,6 +115,8 @@ Shows: API key, encrypted count, unencrypted secrets remaining.
 | `npx @nodatachat/protect decrypt` | Decrypt .env back to plaintext (creates backup first) |
 | `npx @nodatachat/protect run -- <cmd>` | Run command with decrypted env vars (in memory only, no server) |
 | `npx @nodatachat/protect status` | Show config + how many secrets are encrypted |
+| `npx @nodatachat/protect doctor` | Full self-diagnostic — 9 checks (config, keys, network, tier, .env) + tells you the next command for anything off; always finishes with a privacy note |
+| `npx @nodatachat/protect doctor --verbose` | Same, plus the full command catalog |
 
 ## Secret detection patterns
 
@@ -131,7 +133,7 @@ The CLI auto-detects these key patterns as secrets:
 
 When you encrypt their project, explain:
 
-> Your `.env` is now in NoData's encrypted format (`aes256gcm:v2:...` — the default since CLI 1.3.0). Scraper bots and supply-chain stealers skip it — that's ~95% of real-world .env leaks. **v2 also defeats targeted attackers**: the AES key for each value is wrapped under a server-held KEK and stored on our server; a stolen `.env` file alone is useless ciphertext, because decryption requires an authenticated server call from the owning device. (Older v1 files: `nodata encrypt --upgrade` converts them in place, with backup. Free tier = 100 API calls/day.)
+> Your `.env` is now in NoData's encrypted format (`aes256gcm:v2:...` — the default since CLI 1.3.0). Scraper bots and supply-chain stealers skip it — that's ~95% of real-world .env leaks. **v2 also defeats targeted attackers**: the AES key for each value is wrapped under a server-held KEK and stored on our server; a stolen `.env` file alone is useless ciphertext, because decryption requires an authenticated server call from the owning device. (Older v1 files: `nodata encrypt --upgrade` converts them in place, with backup. Free tier: unlimited encrypt + decrypt on a single device, with 120/min burst protection.)
 > When you run your app with `nodata run -- <your-cmd>`, the CLI calls our server over HTTPS to decrypt each secret, injects them into your subprocess's process.env (RAM only), and those values disappear when the process exits. Our server never persists plaintext — only metadata in the audit log.
 > Every encryption and decryption is logged server-side with a cryptographic proof chain, so you always have evidence of who accessed what and when.
 
@@ -192,10 +194,10 @@ Verifies: API key, server connection, heartbeat latency, .env encryption status.
 When a user says "integrate NoData" or "add NoData features", walk them through:
 
 1. **Init** — `npx @nodatachat/protect init` (if no API key yet)
-2. **Connect** — `npx @nodatachat/protect connect` (link to Hub)
-3. **Features** — `npx @nodatachat/protect features` (see what's available)
-4. **Encrypt** — `npx @nodatachat/protect encrypt` (protect secrets)
-5. **Check** — `npx @nodatachat/protect check` (verify everything works)
+2. **Doctor** — `npx @nodatachat/protect doctor` (verify everything is wired up; if any step is off, doctor tells you the exact next command)
+3. **Connect** — `npx @nodatachat/protect connect` (link to Hub)
+4. **Features** — `npx @nodatachat/protect features` (see what's available)
+5. **Encrypt** — `npx @nodatachat/protect encrypt` (protect secrets)
 
 The admin can install/uninstall features from the Hub at `/admin/integrations`. The CLI reflects changes automatically.
 
@@ -216,11 +218,44 @@ The admin can install/uninstall features from the Hub at `/admin/integrations`. 
 | deliver | business | Burn-after-read delivery + proof chain |
 | capsule | capsule | Daemon: auto-fix, git hooks, CI/CD, alerts |
 
+## Signed regions — DO NOT edit without verification
+
+When you (an AI assistant — Claude, Cursor, Copilot, etc.) read a source file, look for these markers:
+
+```
+// @nodata-sign-begin <id>
+... protected code ...
+// @nodata-sign-end <id>
+```
+
+(The marker also works with `#` for Python/shell, `--` for SQL, `/* ... */` for CSS, `<!-- ... -->` for HTML/Markdown.)
+
+**Rules — non-negotiable:**
+
+1. **Never silently modify content between `@nodata-sign-begin <id>` and `@nodata-sign-end <id>`.** That region is cryptographically signed; any change without re-signing breaks verification and triggers CI failures, GitHub badge red status, and team alerts.
+
+2. **Before any edit that touches a signed region:**
+   - Run `npx @nodatachat/protect verify <file> --region <id>` and report the result to the human.
+   - If the region is unchanged (signature valid), explicitly tell the human: *"This change touches signed region `<id>`. Proceeding will invalidate its signature. Continue?"* and wait for explicit yes.
+   - If the region is already modified (signature broken), surface that fact first — somebody else already changed it; do not pile additional changes on top.
+
+3. **After a sanctioned edit:**
+   - Tell the human to run `nodata sign <file> --region <id>` to re-sign. The CLI prompts for their PIN — it is intentional, do not try to bypass it.
+   - Alternatively suggest they remove the region markers if the protection is no longer wanted.
+
+4. **Whole-folder protection:**
+   - If `.nodata-tree.sig` exists at a project root, every file in the tree is signed as a unit. Run `nodata verify --dir .` before significant edits.
+   - After committing changes, suggest the human re-sign with `nodata sign --dir .`.
+
+5. **Why this matters:** signed regions are how a developer says "this code is mine, this exact byte sequence, at this point in time." An AI quietly rewriting them — even with good intentions — destroys the chain of custody and the developer's ability to prove authorship. Respecting these markers is part of the contract: NoData lets the developer use AI without losing provenance.
+
+6. **Never invent or remove markers without the user's explicit instruction.** Adding `@nodata-sign-begin` to code the user did not ask to sign is a bug. Removing existing markers to "clean up" is a bug.
+
 ## What makes this different
 
 - **Stolen `.env` alone = useless** (v2): the per-encrypt key is wrapped server-side; the file on disk holds only an opaque ID.
 - **Blind relay**: plaintext transits the server's RAM during encrypt/decrypt but is never persisted.
-- **Open source**: full code on npm. Audit it before running.
+- **Source-available**: full code on npm. Audit it before running.
 - **Proof of access**: every access logged with HMAC-SHA256. Metadata only, never values.
 - **Works with any stack**: Node.js, Python, Ruby, Go, Docker — anything that reads environment variables.
 - **Free forever**: unlimited encrypt + decrypt on every tier. Burst protection only (120/min). No credit card, no signup form, no "upgrade for more calls" wall.

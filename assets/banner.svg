@@ -15,7 +15,7 @@
   <rect width="1280" height="400" fill="url(#bgTop)"/>
   <rect width="1280" height="400" fill="url(#bgBot)"/>
 
-  <text x="640" y="84" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" letter-spacing="7" fill="#8B6914">OPEN-SOURCE CORE · AES-256-GCM · EVERY ACCESS PROVEN</text>
+  <text x="640" y="84" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" letter-spacing="7" fill="#8B6914">SOURCE-AVAILABLE CORE · AES-256-GCM · EVERY ACCESS PROVEN</text>
 
   <g transform="translate(330,118) scale(0.64)">
     <circle cx="128" cy="128" r="78" fill="url(#halo)" filter="url(#soft)"/>
@@ -39,5 +39,5 @@
   <text x="498" y="210" font-family="'Frank Ruhl Libre', Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" letter-spacing="-3" fill="#0E0E10">NoData</text>
   <text x="502" y="248" font-family="'Heebo', system-ui, sans-serif" font-size="17" font-weight="600" letter-spacing="6" fill="#8B6914">INFORMATION ACCESS PROCESSOR</text>
 
-  <text x="640" y="332" text-anchor="middle" font-family="'Heebo', system-ui, sans-serif" font-size="20" fill="#2A2A2E">Local-first secret encryption — the open-source core. A stolen file is useless ciphertext.</text>
+  <text x="640" y="332" text-anchor="middle" font-family="'Heebo', system-ui, sans-serif" font-size="20" fill="#2A2A2E">Local-first secret encryption — the source-available core. A stolen file is useless ciphertext.</text>
 </svg>
