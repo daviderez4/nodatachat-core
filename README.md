@@ -6,7 +6,7 @@
 
 **Your code stays on your machine. Your secrets stay encrypted. Every access is proven.**
 
-The source-available core of the **NoData Information Access Processor** — the local node that encrypts your secrets and proves every access, with nothing ever leaving your machine in the clear.
+The open source core of the **NoData Information Access Processor** — the local node that encrypts your secrets and proves every access, with nothing ever leaving your machine in the clear.
 
 ---
 
@@ -20,7 +20,7 @@ The source-available core of the **NoData Information Access Processor** — the
 [![npm](https://img.shields.io/npm/v/@nodatachat/protect?color=%231F3DD2&label=%40nodatachat%2Fprotect)](https://www.npmjs.com/package/@nodatachat/protect)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://typescriptlang.org)
 [![Encryption](https://img.shields.io/badge/encryption-AES--256--GCM-1F8A5F)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
-[![License: FSL-1.1-Apache-2.0](https://img.shields.io/badge/license-FSL--1.1--Apache--2.0-B8895A)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-1F3DD2)](LICENSE)
 
 </div>
 
@@ -150,7 +150,7 @@ const ok = await verifyInclusion(
 // → pure SHA-256 math, no network calls, no NoData servers in the path
 ```
 
-**Why the split:** the platform code stays private, but every cryptographic claim NoData makes is independently re-derivable from a source-available verifier (`@nodatachat/core`) plus a public, append-only data source (the witness feed). Even if NoData disappears, the proofs still verify.
+**Why the split:** the platform code stays private, but every cryptographic claim NoData makes is independently re-derivable from a open source verifier (`@nodatachat/core`) plus a public, append-only data source (the witness feed). Even if NoData disappears, the proofs still verify.
 
 See [`packages/core/src/README.md`](packages/core/src/README.md#merkle-witness-verification) for the verification protocol.
 
@@ -171,7 +171,7 @@ See [`packages/core/src/README.md`](packages/core/src/README.md#merkle-witness-v
 - **Server-held KEK** — your key is wrapped under a key-encryption-key on the server and bound to your device. The `.env` file alone is useless ciphertext.
 - **`run` is not a proxy** — decrypts to process memory only. Values die with the process.
 - **What IS sent:** only metadata (field name + timestamp + hash). Never the actual value. Disconnect your internet and verify.
-- **Source-available** — read every line on GitHub, audit it, verify it before you run it.
+- **Open source** — read every line on GitHub, audit it, verify it before you run it.
 - **Audit-ready** — cryptographic proof chain for compliance (SOC 2).
 
 ---
@@ -202,13 +202,13 @@ nodatachat-core/
     nodata-protect/   Claude Code Skill for .env protection
 ```
 
-All packages are licensed **FSL-1.1-Apache-2.0** — source-available today, automatically becoming Apache 2.0 two years after each release. Read it, audit it, fork it, build on it. The one thing the license forbids is repackaging this as a competing hosted service.
+All packages here are **Apache 2.0** — genuinely open source. Read it, audit it, fork it, ship it, build on it — no strings attached. This open core is what we give; the commercial **NoData Platform** (orchestration, policy engine, receipts, control plane) is what we sell — and the open core feeds it.
 
 ---
 
 ## The Full Processor
 
-This repo is the **source-available core** — local encryption, code signing, proof primitives, CLI.
+This repo is the **open source core** — local encryption, code signing, proof primitives, CLI.
 
 The full **NoData Information Access Processor** adds the governed side:
 - Deep PII/secret scanning across your data sources
@@ -227,7 +227,7 @@ The full **NoData Information Access Processor** adds the governed side:
 - **Protect page:** [nodatacapsule.com/protect](https://www.nodatacapsule.com/protect)
 - **npm:** [@nodatachat/protect](https://www.npmjs.com/package/@nodatachat/protect)
 - **LinkedIn:** [David Erez](https://www.linkedin.com/in/daviderez)
-- **License:** [FSL-1.1-Apache-2.0](LICENSE)
+- **License:** [Apache 2.0](LICENSE)
 
 ---
 

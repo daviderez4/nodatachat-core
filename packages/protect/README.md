@@ -122,7 +122,7 @@ Burst protection: 120 calls / minute (per IP). Daily volume: see your tier in `n
 
 ## License
 
-**Functional Source License (FSL-1.1-Apache-2.0).** Source-available. You can read every line on GitHub, audit it, fork it, contribute via PR. Personal and internal-business use is free forever. The one thing forbidden during the active window is offering Protect as a competing hosted service.
+**Functional Source License (Apache 2.0).** Open source. You can read every line on GitHub, audit it, fork it, contribute via PR. Personal and internal-business use is free forever. The one thing forbidden during the active window is offering Protect as a competing hosted service.
 
 The license **auto-converts to Apache 2.0 on 2028-04-25** — every version published before that date becomes fully open source. We're not closing the door, we're delaying it by two years.
 

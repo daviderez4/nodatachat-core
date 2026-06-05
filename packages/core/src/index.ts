@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// @nodatachat/core — Source-Available Core
+// @nodatachat/core — Open Source Core
 // ═══════════════════════════════════════════════════════════
 //
 // Zero-knowledge identity & E2E encryption primitives.

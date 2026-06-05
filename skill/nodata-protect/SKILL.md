@@ -1,6 +1,6 @@
 ---
 name: nodata-protect
-description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = unlimited encrypt + decrypt, forever (burst protection only). Source-available on npm. Use only when the user explicitly asks to secure their project.
+description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-relay server. The default format (v2, since CLI 1.3.0) wraps every per-encrypt key under a server-held KEK — a stolen .env file alone is useless ciphertext. Server never persists plaintext (in-memory only, audit log is metadata-only). Decrypted values live in subprocess RAM at runtime, never on disk. Free tier = unlimited encrypt + decrypt, forever (burst protection only). Open source on npm. Use only when the user explicitly asks to secure their project.
 ---
 
 # NoData Protect — .env Encryption via Blind Relay
@@ -19,7 +19,7 @@ description: Converts .env secrets to AES-256-GCM ciphertext via NoData's blind-
   - **v2 (default since CLI 1.3.0, Apr 20 2026):** each value becomes `aes256gcm:v2:<iv>:<ciphertext>:<wrapped_dek_id>`. The actual AES key is encrypted under a server-held KEK and stored in `nd_wrapped_deks`; the `.env` carries only the opaque ID. **A stolen `.env` file alone is useless ciphertext** — decryption requires an authenticated `/api/v1/decrypt` call from the owning device. Existing v1 `.env` files: `nodata encrypt --upgrade` converts them in place, with backup.
   - **v1 (legacy, used by `--legacy` flag or pre-1.3.0 installs):** each value becomes `aes256gcm:v1:<iv>:<ciphertext>:<key>`. **v1 limitation:** the AES key is base64-bundled in that same string, so a motivated technical attacker with a stolen .env can decrypt it in a few lines. Still skipped by automated scrapers (see below).
 - **Why both v1 and v2 help.** Real-world .env leaks are overwhelmingly automated scraper bots (GitHub secret scanning, pastebin scrapers) and supply-chain stealers (LiteLLM-style `grep "sk-" .env` code). These tools look for known plaintext prefixes (`sk_live_`, `ghp_`, `AKIA`). Neither `aes256gcm:v1:` nor `aes256gcm:v2:` matches, so bots skip the file. That covers ~95% of real-world leaks. v2 additionally defeats targeted attackers with the file but no API access.
-- **Source-available.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
+- **Open source.** The full CLI code is on npm (`@nodatachat/protect`). Users can read and audit every line.
 - **No proactive activation.** Do NOT run this tool automatically. Only use when the user explicitly asks to encrypt, secure, or protect their secrets.
 
 ## What is NoData Protect?
@@ -255,7 +255,7 @@ When you (an AI assistant — Claude, Cursor, Copilot, etc.) read a source file,
 
 - **Stolen `.env` alone = useless** (v2): the per-encrypt key is wrapped server-side; the file on disk holds only an opaque ID.
 - **Blind relay**: plaintext transits the server's RAM during encrypt/decrypt but is never persisted.
-- **Source-available**: full code on npm. Audit it before running.
+- **Open source**: full code on npm. Audit it before running.
 - **Proof of access**: every access logged with HMAC-SHA256. Metadata only, never values.
 - **Works with any stack**: Node.js, Python, Ruby, Go, Docker — anything that reads environment variables.
 - **Free forever**: unlimited encrypt + decrypt on every tier. Burst protection only (120/min). No credit card, no signup form, no "upgrade for more calls" wall.

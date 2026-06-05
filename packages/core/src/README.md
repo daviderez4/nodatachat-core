@@ -152,9 +152,9 @@ See `examples/verify-inclusion.ts` for a runnable example.
 
 ## NoData Platform
 
-This is the source-available cryptographic core of [**NoData**](https://www.nodatacapsule.com) — a zero-data secret delivery platform.
+This is the open source cryptographic core of [**NoData**](https://www.nodatacapsule.com) — a zero-data secret delivery platform.
 
-| Source-available (this repo) | Closed source (platform) |
+| Open source (this repo) | Closed source (platform) |
 |-------------------------|--------------------------|
 | Encryption primitives | Web & mobile apps |
 | Identity / seed phrase | Server infrastructure |
