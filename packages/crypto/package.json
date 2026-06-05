@@ -7,5 +7,6 @@
   "scripts": {
     "build": "tsc",
     "test": "jest"
-  }
+  },
+  "license": "FSL-1.1-Apache-2.0"
 }

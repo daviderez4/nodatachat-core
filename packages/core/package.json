@@ -9,7 +9,7 @@
     "build": "tsc",
     "test": "jest"
   },
-  "license": "SEE LICENSE FILE",
+  "license": "FSL-1.1-Apache-2.0",
   "dependencies": {
     "@nodatachat/crypto": "*"
   }
