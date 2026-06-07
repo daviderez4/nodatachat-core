@@ -17,10 +17,10 @@ The open source core of the **NoData Information Access Processor** — the loca
 >
 > When you grow, you'll want [Capsule](https://www.nodatacapsule.com/pricing) — a personal vault, and a whole world of security, privacy, and ease of use.
 
-[![npm](https://img.shields.io/npm/v/@nodatachat/protect?color=%231F3DD2&label=%40nodatachat%2Fprotect)](https://www.npmjs.com/package/@nodatachat/protect)
+[![npm](https://img.shields.io/npm/v/@nodatachat/protect?color=C8A24B&label=%40nodatachat%2Fprotect)](https://www.npmjs.com/package/@nodatachat/protect)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://typescriptlang.org)
-[![Encryption](https://img.shields.io/badge/encryption-AES--256--GCM-1F8A5F)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
-[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-1F3DD2)](LICENSE)
+[![Encryption](https://img.shields.io/badge/encryption-AES--256--GCM-C8A24B)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-C8A24B)](LICENSE)
 
 </div>
 
