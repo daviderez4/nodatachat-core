@@ -1,0 +1,8 @@
+@nodatachat/protect: NoData's verification layer
+Copyright 2026 Capsule Ltd.
+
+Licensed under the Apache License, Version 2.0 (see LICENSE.md).
+Only this verification layer is under Apache-2.0. NoData's product (the server, the
+MCP, the SDK, the CLI, the decision engine) is proprietary and is not part of it.
+
+SEAL-FORMAT.md cites one test vector from RFC 9180 (HPKE), Appendix A.2.1.

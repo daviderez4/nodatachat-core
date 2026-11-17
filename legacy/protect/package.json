@@ -1,0 +1,49 @@
+{
+  "name": "@nodatachat/protect",
+  "version": "1.9.0",
+  "description": "Encrypt .env secrets with AES-256-GCM. Decrypt in memory only. Cryptographic proof of every access. Claude Code Skill included.",
+  "bin": {
+    "nodata": "dist/cli.js",
+    "nodata-protect": "dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx tsx src/cli.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daviderez4/nodatachat-core",
+    "directory": "packages/protect"
+  },
+  "homepage": "https://www.nodatacapsule.com/protect",
+  "bugs": {
+    "url": "https://github.com/daviderez4/nodatachat-core/issues"
+  },
+  "keywords": [
+    "encryption",
+    "secrets",
+    "env",
+    "dotenv",
+    "security",
+    "zero-knowledge",
+    "vault",
+    "nodata",
+    "protect",
+    "aes-256",
+    "claude-code",
+    "ai-security",
+    "env-encryption",
+    "secret-management"
+  ]
+}

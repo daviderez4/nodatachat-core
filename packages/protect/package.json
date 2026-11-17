@@ -1,49 +1,55 @@
 {
   "name": "@nodatachat/protect",
-  "version": "1.9.0",
-  "description": "Encrypt .env secrets with AES-256-GCM. Decrypt in memory only. Cryptographic proof of every access. Claude Code Skill included.",
+  "version": "3.5.1",
+  "description": "NoData's verification layer: the formats, specs, test vectors and verifiers that let anyone check NoData's claims without trusting NoData.",
+  "main": "./dist/split-key.js",
+  "types": "./dist/split-key.d.ts",
   "bin": {
-    "nodata": "dist/cli.js",
-    "nodata-protect": "dist/cli.js"
+    "protect": "dist/bin.js"
   },
-  "main": "./dist/cli.js",
   "files": [
     "dist",
+    "SPLIT-KEY-FORMAT.md",
+    "EVIDENCE-PACK-FORMAT.md",
+    "SEAL-FORMAT.md",
+    "FABRIC-RECEIPT-FORMAT.md",
+    "EVIDENCE-PACK-EXAMPLE.json",
+    "EVIDENCE-PACK-EXAMPLE-KEYS.json",
+    "NODATA-KEYS.json",
     "README.md",
-    "LICENSE.md"
+    "LICENSE.md",
+    "NOTICE"
   ],
-  "scripts": {
-    "build": "tsc",
-    "dev": "npx tsx src/cli.ts",
-    "prepublishOnly": "npm run build"
+  "dependencies": {
+    "@noble/post-quantum": "^0.5.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.19.0"
   },
   "license": "Apache-2.0",
+  "homepage": "https://github.com/daviderez4/nodatachat-core#readme",
+  "keywords": [
+    "nodata",
+    "verification",
+    "split-key",
+    "hpke",
+    "seal-format",
+    "evidence-pack",
+    "test-vectors"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/daviderez4/nodatachat-core",
+    "url": "git+https://github.com/daviderez4/nodatachat-core.git",
     "directory": "packages/protect"
   },
-  "homepage": "https://www.nodatacapsule.com/protect",
   "bugs": {
     "url": "https://github.com/daviderez4/nodatachat-core/issues"
   },
-  "keywords": [
-    "encryption",
-    "secrets",
-    "env",
-    "dotenv",
-    "security",
-    "zero-knowledge",
-    "vault",
-    "nodata",
-    "protect",
-    "aes-256",
-    "claude-code",
-    "ai-security",
-    "env-encryption",
-    "secret-management"
-  ]
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
 }
