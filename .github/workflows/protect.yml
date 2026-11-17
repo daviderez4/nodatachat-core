@@ -1,6 +1,9 @@
-# Build and check @nodatachat/protect on every push; publish it to npm, with a
+# Build and check @nodatachat/protect on every push; stage it on npm, with a
 # provenance attestation, when a protect-v<version> tag is pushed.
 # Publishing uses npm Trusted Publishing (OIDC): no npm token is stored anywhere.
+# The trusted publisher may only STAGE (npm stage publish). A staged version is not
+# installable until a maintainer approves it on npmjs.com with 2FA (Staged Packages,
+# or `npm stage approve <id>`): a person releases it, never the workflow alone.
 
 name: protect
 
@@ -43,4 +46,5 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run build
       - run: node dist/bin.js check-vectors
-      - run: npm publish --provenance --access public
+      - name: Stage for a maintainer's 2FA approval
+        run: npm stage publish --provenance --access public
