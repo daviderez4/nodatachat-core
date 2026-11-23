@@ -131,8 +131,23 @@ data out. For each it keeps three things apart:
 An attempt is not an exposure. The report and the HTML card it writes hold numbers
 and category names only: never a path, a command or a value. The card has no
 script and loads nothing. It sees only what the agents wrote to their own history,
-so it is a floor, not a complete record. The rules are plain patterns in
-[`src/agent-history.ts`](src/agent-history.ts): read them, and argue with them.
+so it is a floor, not a complete record.
+
+### One set of rules (3.7.0)
+
+The rules are plain patterns in [`src/agent-rules.ts`](src/agent-rules.ts):
+which files hold logins, which commands print a credential, which variable
+names hold secrets, which searches look for them, and what a provider key looks
+like. NoData's read gate imports this same file, so what agent-check counts and
+what the gate looks at are classified by one piece of code, and a test in each
+holds them to it. Read the rules, and argue with them.
+
+They are a transparent basic layer, not the security boundary and not a list
+of everything the gate refuses. The free check counts by file type and open
+patterns; the NoData gate also reads the content, finds personal data in it,
+applies the organisation's rules, asks a person, and signs a receipt. None of
+that is in this package, and a test keeps it out: every shipped module may
+import only Node, this package's one dependency, and other shipped modules.
 
 ## Coming next
 
