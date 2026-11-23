@@ -188,6 +188,18 @@ function inspectSeal(file: string, out: (line: string) => void): number {
   return r.ok ? 0 : 1;
 }
 
+/**
+ * A reader that stops early (`agent-check --events | head`) closes the pipe: that is
+ * the reader's choice, not a failure, so exit quietly instead of printing a stack.
+ */
+export function quietOnClosedPipe(stream: NodeJS.EventEmitter, exit: (code: number) => void = (c) => process.exit(c)): void {
+  stream.on("error", (err: NodeJS.ErrnoException) => {
+    if (err && err.code === "EPIPE") return exit(0);
+    throw err;
+  });
+}
+
 if (require.main === module) {
+  quietOnClosedPipe(process.stdout);
   main(process.argv.slice(2)).then((code) => process.exit(code));
 }
