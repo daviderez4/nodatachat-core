@@ -29,6 +29,18 @@ export interface Scenario {
   logDisplay: string[];
 }
 
+export interface WebScenario {
+  id: string;
+  title: string;
+  attack: string[];
+  calls: Array<{ label: string; decided: Array<{ category: string; outcome: Outcome; exposed: Exposure }> }>;
+  transcript: string;
+  check: string;
+  checkNote: string;
+  limits: string[];
+  logDisplay: string[];
+}
+
 export interface Facts {
   package: string;
   version: string;
@@ -40,6 +52,7 @@ export interface Facts {
   flags: string[];
   changelog: Array<{ version: string; title: string; note: string }>;
   lab: Scenario[];
+  agenticWeb: WebScenario[];
   code: Record<"toEvents" | "exposure", { file: string; lines: Array<{ no: number; text: string }> }>;
   session: {
     lines: string[];

@@ -205,11 +205,12 @@ export default function Home() {
             <span style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>New rules and versions land there first. Latest: {facts.changelog[0].version}, {facts.changelog[0].title.toLowerCase()}.</span>
             <span style={{ marginTop: "auto", fontSize: 14, color: "var(--teal)" }}>On GitHub ↗</span>
           </a>
-          <div style={{ background: "var(--paper-2)", border: "1px dashed var(--line-2)", borderRadius: 16, padding: 28, display: "flex", flexDirection: "column", gap: 12 }}>
-            <span className="mono" style={{ fontSize: 11, color: "var(--faint)" }}>RESEARCH · IN PREPARATION</span>
-            <span style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 600, letterSpacing: "-0.02em" }}>Methodology first. Numbers second.</span>
-            <span style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>Studies of agent behavior, each with its method, scope, findings and limits. Nothing is published here until it has all four.</span>
-          </div>
+          <Link href="/agentic-web/" style={{ background: "var(--card)", border: "1px solid var(--line)", borderRadius: 16, padding: 28, display: "flex", flexDirection: "column", gap: 12, color: "var(--ink)", textDecoration: "none" }}>
+            <span className="mono" style={{ fontSize: 11, color: "var(--teal)" }}>RESEARCH · THE AGENTIC WEB</span>
+            <span style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 600, letterSpacing: "-0.02em" }}>When search results become attack vectors</span>
+            <span style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>Four ways an agent is compromised by what it reads, and where your history&apos;s view ends.</span>
+            <span style={{ marginTop: "auto", fontSize: 14, color: "var(--teal)" }}>Read it →</span>
+          </Link>
         </div>
       </section>
 

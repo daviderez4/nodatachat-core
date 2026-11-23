@@ -102,6 +102,25 @@ for (const s of scenarios) {
   lab.push({ ...rest, ...io, decided: got, logDisplay: lines.map(redact) });
 }
 
+// The Agentic Web: what agent-check records for each call of each scenario, decided by the code.
+// These scenarios are mostly about what the check does NOT record; the build holds the page to
+// that too, so the day a rule starts counting one of these calls, the page has to say so.
+const web = JSON.parse(readFileSync(join(SITE, "content", "agentic-web.json"), "utf8"));
+const agenticWeb = [];
+for (const s of web) {
+  const lines = s.log.map((l) => JSON.stringify(l));
+  const calls = history.readClaudeTranscript(lines.join("\n"));
+  if (calls.length !== s.calls.length) fail(`agentic-web "${s.id}": ${s.calls.length} calls on the page, ${calls.length} in the log`);
+  const perCall = calls.map((c, i) => {
+    const got = history.toEvents([c], { gateInstalled: false, salt }).map((e) => ({ category: e.category, outcome: e.outcome, exposed: e.exposed }));
+    const want = s.calls[i].expect.map((e) => ({ category: e.category, outcome: e.outcome, exposed: e.exposed }));
+    if (JSON.stringify(got) !== JSON.stringify(want)) fail(`agentic-web "${s.id}" call ${i + 1}: the page says ${JSON.stringify(want)}, the code decides ${JSON.stringify(got)}`);
+    return { label: s.calls[i].label, decided: got };
+  });
+  const { log, calls: _c, ...rest } = s;
+  agenticWeb.push({ ...rest, calls: perCall, logDisplay: lines });
+}
+
 // The code that decides, as it stands in src/, with its real line numbers.
 const srcLines = (file) => readFileSync(join(PROTECT, "src", file), "utf8").split("\n");
 const evLines = srcLines("agent-events.ts");
@@ -147,6 +166,7 @@ writeFileSync(
       lab,
       session: { report: sessionReport, lines: sessionLines, tally },
       code,
+      agenticWeb,
     },
     null,
     2,
