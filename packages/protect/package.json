@@ -1,6 +1,6 @@
 {
   "name": "@nodatachat/protect",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "description": "NoData's verification layer: the formats, specs, test vectors and verifiers that let anyone check NoData's claims without trusting NoData.",
   "main": "./dist/split-key.js",
   "types": "./dist/split-key.d.ts",
@@ -29,6 +29,10 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/daviderez4/nodatachat-core#readme",
   "keywords": [
+    "ai-agent",
+    "claude-code",
+    "codex",
+    "agent-audit",
     "nodata",
     "verification",
     "split-key",

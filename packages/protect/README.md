@@ -1,6 +1,6 @@
 # @nodatachat/protect: NoData's verification layer
 
-This package lets you check NoData's claims without trusting NoData. It does not
+This package lets you check NoData's claims without trusting NoData, and (agent-check) what your AI agent did, without trusting anyone. It does not
 run NoData, has no CLI for the product and makes no network calls. It holds the
 formats, their specs, test vectors, and the code that checks them. The code is
 shipped readable (not minified) because it is meant to be read.
@@ -108,6 +108,31 @@ npx @nodatachat/protect@3 verify-both-sides sender-pack.json recipient-pack.json
 ```
 
 Both verify only against the keys pinned in [`NODATA-KEYS.json`](NODATA-KEYS.json), never against a key the evidence names.
+
+## What did your AI agent touch? (agent-check, 3.6.0)
+
+One command checks your AI coding agent instead of NoData, from the history the
+agent already keeps on your computer. No install, no account, nothing sent.
+
+```sh
+npx @nodatachat/protect@3 agent-check            # the last 30 days
+npx @nodatachat/protect@3 agent-check --days 90 --lang he
+```
+
+It reads only `~/.claude/projects` (Claude Code) and `~/.codex/sessions` (Codex),
+and reports counts per category: credential files, commands that print a
+credential, searches for passwords and keys, data files, and commands that send
+data out. For each it keeps three things apart:
+
+- **tried**: the agent asked a tool to touch it;
+- **succeeded**: the tool did not report an error (Claude Code records this; Codex does not, so it shows "—");
+- **secrets returned**: secret-looking values (a key, a token, `NAME_KEY=value`) came back into the agent's context.
+
+An attempt is not an exposure. The report and the HTML card it writes hold numbers
+and category names only: never a path, a command or a value. The card has no
+script and loads nothing. It sees only what the agents wrote to their own history,
+so it is a floor, not a complete record. The rules are plain patterns in
+[`src/agent-history.ts`](src/agent-history.ts): read them, and argue with them.
 
 ## Coming next
 
