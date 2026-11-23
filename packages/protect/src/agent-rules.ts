@@ -16,7 +16,7 @@
 // both packages hold them to it.
 
 /** Bump when a rule changes, so a report can say which rules produced it. */
-export const AGENT_RULES_VERSION = "2";
+export const AGENT_RULES_VERSION = "3";
 
 // ── Files ────────────────────────────────────────────────────────────────
 
@@ -118,8 +118,15 @@ export function credentialPrintIn(tool: string, input: Record<string, unknown>, 
 
 // ── Searches for a secret ────────────────────────────────────────────────
 
+/**
+ * `git grep`, with any of git's own options before the subcommand: `git -C <folder> grep`,
+ * `git -c key=value grep`, `git --git-dir=<dir> grep`. Until 23.11.2026 only `git grep` with
+ * nothing between was a search, so `git -C ~ grep --no-index <word>` reached the home folder unseen.
+ */
+const GIT_GREP_SRC = String.raw`git(?:\s+(?:-C|-c|--git-dir|--work-tree|--namespace|--exec-path|--config-env)(?:=\S+|\s+\S+)|\s+--?[A-Za-z][\w-]*(?:=\S+)?)*\s+grep`;
+export const GIT_GREP = new RegExp(`^${GIT_GREP_SRC}\\b`, "i");
 /** A program that searches text. */
-export const SEARCHES = /^(?:grep|egrep|fgrep|rg|ag|ack|git\s+grep|findstr|select-string|sls)\b/i;
+export const SEARCHES = new RegExp(`^(?:grep|egrep|fgrep|rg|ag|ack|${GIT_GREP_SRC}|findstr|select-string|sls)\\b`, "i");
 // A lone & is the background operator only when it is not part of a redirection (2>&1, >&2, &>file, <&3).
 const LONE_AMP = String.raw`(?<![<>&|])&(?![&>])`;
 /** Statement separators. */
@@ -138,6 +145,23 @@ export function searchesBySecretName(aim: string): boolean {
 export function grepSearchesBySecretName(input: Record<string, unknown>): boolean {
   const aim = [input.pattern, input.glob, input.type].filter((v) => typeof v === "string").join(" ");
   return SECRET_VAR.test(aim) || /\.env|env\b/i.test(String(input.glob ?? ""));
+}
+
+// ── Samples, and what the agent wrote itself ─────────────────────────────
+
+/**
+ * Tests, fixtures, mocks, examples and minified bundles: a key-shaped value there is usually a
+ * sample. The scanner's own rule (@nodatachat/folder-scan SAMPLE_LIKE_PATH; a parity test holds
+ * them equal). Matched on a /-separated path.
+ */
+export const SAMPLE_PATH = /(^|\/)(__tests__|__mocks__|tests?|spec|fixtures?|mocks?|samples?|examples?|demo|testdata)(\/|$)|\.(test|spec)\.[a-z0-9]+$|\.min\.(m?js|css)$|(^|\/)[^/]*\.worker\.min\.m?js$/i;
+
+/** Tools whose result shows what the agent itself wrote: a key-shaped value there came from the agent. */
+export const AGENT_WRITES = /^(Write|Edit|MultiEdit|NotebookEdit|apply_patch)$/;
+
+/** Is this path a sample (a test, a fixture, an example)? */
+export function isSamplePath(path: string): boolean {
+  return SAMPLE_PATH.test(path.replace(/\\/g, "/"));
 }
 
 // ── Commands that send data out ──────────────────────────────────────────

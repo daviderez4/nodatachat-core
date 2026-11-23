@@ -47,6 +47,9 @@ export function reportLines(r: AgentReport, lang: Lang): string[] {
   out.push(he
     ? `ערכים שנראים כמו סודות שחזרו להקשר של הסוכן, בכל הקריאות: ${fmt(r.exposedTotal)}`
     : `Secret-looking values that came back into the agent's context, over all calls: ${fmt(r.exposedTotal)}`);
+  if (r.samplesSetApart) out.push(he
+    ? `עוד ${fmt(r.samplesSetApart)} ערכים כאלה הגיעו מקובצי בדיקה, דוגמאות או קוד שהסוכן כתב בעצמו. סביר שהם דוגמאות, ולכן לא נספרו.`
+    : `${fmt(r.samplesSetApart)} more came from tests, examples or code the agent wrote itself. They are likely samples, so they are not counted.`);
   out.push(r.gateInstalled
     ? (he ? `שער של NoData מותקן כאן: מה שהוא עצר מופיע כקריאות שנכשלו. הרישום שלו: ${CARD_COMMAND}` : `A NoData gate is installed here: what it refused shows as failed calls. Its own record: ${CARD_COMMAND}`)
     : (he ? "נחסמו: 0 — אין שער אכיפה במחשב הזה." : "Blocked: 0 — no gate is enforcing on this computer."));
@@ -94,6 +97,7 @@ code{font:13px ui-monospace,Consolas,monospace;direction:ltr;unicode-bidi:isolat
 <div class="card">
 <table><thead><tr><th>${t("מה", "What")}</th><th class="n">${t("ניסה", "Tried")}</th><th class="n">${t("הצליח", "Succeeded")}</th><th class="n">${t("סודות חזרו", "Secrets returned")}</th></tr></thead><tbody>${rows}</tbody></table>
 <div class="block"><span>${t("ערכים שנראים כמו סודות שחזרו להקשר של הסוכן", "Secret-looking values that came back into the agent's context")}</span><b>${fmt(r.exposedTotal)}</b></div>
+${r.samplesSetApart ? `<p class="fine">${t(`עוד ${fmt(r.samplesSetApart)} ערכים כאלה הגיעו מקובצי בדיקה, דוגמאות או קוד שהסוכן כתב בעצמו. סביר שהם דוגמאות, ולכן לא נספרו.`, `${fmt(r.samplesSetApart)} more came from tests, examples or code the agent wrote itself. They are likely samples, so they are not counted.`)}</p>` : ""}
 ${r.gateInstalled ? `<div class="block"><span>${t("שער של NoData מותקן כאן: מה שהוא עצר מופיע בעמודת ״הצליח״ כקריאות שנכשלו", "A NoData gate is installed here: what it refused shows as calls that did not succeed")}</span><b>✓</b></div>` : `<div class="block"><span>${t("נחסמו — אין שער אכיפה במחשב הזה", "Blocked — no gate is enforcing on this computer")}</span><b>0</b></div>`}
 <div class="next">
 ${r.gateInstalled ? `<div><span>${t("מה השער עצר:", "What the gate stopped:")}</span><code>${CARD_COMMAND}</code></div>` : `<div><span>${t("לעצור את זה בפעם הבאה:", "Stop it next time:")}</span><code>${GATE_COMMAND}</code></div>`}
