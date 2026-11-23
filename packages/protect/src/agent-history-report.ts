@@ -1,0 +1,107 @@
+// The agent-check report, as terminal lines and as one self-contained HTML card.
+// It is built from an AgentReport (agent-history.ts), which holds counts only,
+// so nothing here can print a path, a command or a value: there is none to print.
+// The HTML has no script and loads nothing.
+
+import type { AgentReport, Category } from "./agent-history";
+import { CATEGORIES } from "./agent-history";
+
+export type Lang = "en" | "he";
+
+const LABEL: Record<Category, { en: string; he: string }> = {
+  secret_file: { en: "Credential files (.env, keys, tokens)", he: "קובצי סודות (מפתחות, אסימונים, קובצי env)" },
+  credential_command: { en: "Commands that print a credential", he: "פקודות שמדפיסות פרטי גישה" },
+  secret_search: { en: "Searches for passwords and keys", he: "חיפושים של סיסמאות ומפתחות" },
+  data_file: { en: "Data files (tables, databases, dumps)", he: "קובצי נתונים (טבלאות, מסדי נתונים, גיבויים)" },
+  outbound_data: { en: "Commands that send data out", he: "פקודות ששולחות מידע החוצה" },
+};
+
+const AGENT_NAME = { "claude-code": "Claude Code", codex: "Codex" } as const;
+const fmt = (n: number) => n.toLocaleString("en-US");
+const day = (iso: string) => (iso ? iso.slice(0, 10) : "");
+
+export const CHECK_COMMAND = "npx @nodatachat/protect@3 agent-check";
+export const GATE_COMMAND = "npx -y @nodatachat/mcp@latest install-gate";
+export const CARD_COMMAND = "npx -y @nodatachat/mcp@latest agent-card";
+
+/** The terminal summary. */
+export function reportLines(r: AgentReport, lang: Lang): string[] {
+  const he = lang === "he";
+  if (!r.agents.length) {
+    return [he
+      ? `לא נמצאה היסטוריה של Claude Code או Codex ב-${r.days} הימים האחרונים במחשב הזה.`
+      : `No Claude Code or Codex history found on this computer in the last ${r.days} days.`];
+  }
+  const who = r.agents.map((a) => `${AGENT_NAME[a.agent]} (${fmt(a.calls)})`).join(", ");
+  const out = [
+    he ? `מה הסוכן שלך עשה ב-${r.days} הימים האחרונים · ${who} · ${fmt(r.calls)} קריאות לכלים`
+       : `What your AI agent did in the last ${r.days} days · ${who} · ${fmt(r.calls)} tool calls`,
+    "",
+  ];
+  for (const c of CATEGORIES) {
+    const k = r.categories[c];
+    const ok = k.succeeded === null ? (he ? "הצלחה לא נרשמה" : "outcome not recorded") : (he ? `${fmt(k.succeeded)} הצליחו` : `${fmt(k.succeeded)} succeeded`);
+    out.push(`  ${String(fmt(k.attempted)).padStart(6)}  ${LABEL[c][lang]}  ·  ${ok}${k.exposed ? (he ? `  ·  ${fmt(k.exposed)} ערכים סודיים חזרו לסוכן` : `  ·  ${fmt(k.exposed)} secret-looking values returned`) : ""}`);
+  }
+  out.push("");
+  out.push(he
+    ? `ערכים שנראים כמו סודות שחזרו להקשר של הסוכן, בכל הקריאות: ${fmt(r.exposedTotal)}`
+    : `Secret-looking values that came back into the agent's context, over all calls: ${fmt(r.exposedTotal)}`);
+  out.push(r.gateInstalled
+    ? (he ? `שער של NoData מותקן כאן: מה שהוא עצר מופיע כקריאות שנכשלו. הרישום שלו: ${CARD_COMMAND}` : `A NoData gate is installed here: what it refused shows as failed calls. Its own record: ${CARD_COMMAND}`)
+    : (he ? "נחסמו: 0 — אין שער אכיפה במחשב הזה." : "Blocked: 0 — no gate is enforcing on this computer."));
+  out.push(he
+    ? "אלה אירועים שנמצאו בהיסטוריה המקומית. לא כל ניסיון מעיד על חשיפה. שום דבר לא נשלח מהמחשב."
+    : "These are events found in the local history. An attempt is not an exposure. Nothing left this computer.");
+  if (!r.gateInstalled) out.push(he ? `לעצור את זה בפעם הבאה: ${GATE_COMMAND}` : `To stop it next time: ${GATE_COMMAND}`);
+  return out;
+}
+
+const esc = (s: string) => s.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]!);
+
+/** The shareable card: numbers and category names only. */
+export function reportHtml(r: AgentReport, lang: Lang): string {
+  const he = lang === "he";
+  const t = (h: string, e: string) => (he ? h : e);
+  const sensitive = r.categories.secret_file.attempted + r.categories.credential_command.attempted + r.categories.secret_search.attempted;
+  const rows = CATEGORIES.map((c) => {
+    const k = r.categories[c];
+    return `<tr><td>${esc(LABEL[c][lang])}</td><td class="n">${fmt(k.attempted)}</td><td class="n">${k.succeeded === null ? "—" : fmt(k.succeeded)}</td><td class="n ${k.exposed ? "x" : ""}">${k.exposed ? fmt(k.exposed) : "—"}</td></tr>`;
+  }).join("");
+  const who = r.agents.map((a) => `${AGENT_NAME[a.agent]} · ${fmt(a.calls)}`).join(" &nbsp;·&nbsp; ");
+  return `<!doctype html>
+<html lang="${lang}" dir="${he ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${t("מה הסוכן שלך עשה", "What your agent did")}</title>
+<style>
+:root{--bg:#FBFAF7;--card:#fff;--ink:#11161D;--muted:#5A6270;--line:#E5E0D6;--gold:#8C6D2F;--soft:#EFE6D2;--x:#7E3A35}
+@media (prefers-color-scheme:dark){:root{--bg:#181D25;--card:#212833;--ink:#EFEAE0;--muted:#A3ACB8;--line:#36404C;--gold:#D3B06A;--soft:#2A2416;--x:#E08C84}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;padding:32px 16px}
+.w{max-width:820px;margin:0 auto}.ey{font:12px ui-monospace,Consolas,monospace;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}
+h1{font:500 clamp(28px,5vw,44px)/1.14 Georgia,serif;margin:10px 0 10px}h1 em{color:var(--gold);font-style:normal}
+.sub{color:var(--muted);margin:0 0 24px}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px 26px}
+table{width:100%;border-collapse:collapse}th,td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:start}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--ink)}
+td.n,th.n{text-align:end;font-variant-numeric:tabular-nums;width:16%}td.n{font:500 20px Georgia,serif}td.x{color:var(--x)}
+.block{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:22px;padding:16px 18px;border:1px solid var(--x);border-radius:6px}
+.block b{font:500 28px Georgia,serif;color:var(--x)}
+.next{margin-top:14px;display:grid;gap:10px}.next div{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--gold);border-radius:6px;padding:12px 16px}
+code{font:13px ui-monospace,Consolas,monospace;direction:ltr;unicode-bidi:isolate;user-select:all}
+.fine{margin-top:18px;font-size:12.5px;color:var(--muted)}
+</style></head><body><div class="w">
+<div class="ey">${t("בדיקת סוכן · קוד פתוח", "Agent check · open source")} · <bdi dir="ltr">${esc(day(r.from))} – ${esc(day(r.to))}</bdi></div>
+<h1>${t(`ב-${r.days} הימים האחרונים הסוכן שלך נגע <em>${fmt(sensitive)} פעמים</em> בסודות.`, `In the last ${r.days} days your AI agent touched secrets <em>${fmt(sensitive)} times</em>.`)}</h1>
+<p class="sub"><bdi dir="ltr">${who}</bdi> · ${t(`${fmt(r.calls)} קריאות לכלים נבדקו, על המחשב הזה בלבד.`, `${fmt(r.calls)} tool calls checked, on this computer only.`)}</p>
+<div class="card">
+<table><thead><tr><th>${t("מה", "What")}</th><th class="n">${t("ניסה", "Tried")}</th><th class="n">${t("הצליח", "Succeeded")}</th><th class="n">${t("סודות חזרו", "Secrets returned")}</th></tr></thead><tbody>${rows}</tbody></table>
+<div class="block"><span>${t("ערכים שנראים כמו סודות שחזרו להקשר של הסוכן", "Secret-looking values that came back into the agent's context")}</span><b>${fmt(r.exposedTotal)}</b></div>
+${r.gateInstalled ? `<div class="block"><span>${t("שער של NoData מותקן כאן: מה שהוא עצר מופיע בעמודת ״הצליח״ כקריאות שנכשלו", "A NoData gate is installed here: what it refused shows as calls that did not succeed")}</span><b>✓</b></div>` : `<div class="block"><span>${t("נחסמו — אין שער אכיפה במחשב הזה", "Blocked — no gate is enforcing on this computer")}</span><b>0</b></div>`}
+<div class="next">
+${r.gateInstalled ? `<div><span>${t("מה השער עצר:", "What the gate stopped:")}</span><code>${CARD_COMMAND}</code></div>` : `<div><span>${t("לעצור את זה בפעם הבאה:", "Stop it next time:")}</span><code>${GATE_COMMAND}</code></div>`}
+<div><span>${t("לבדוק את המחשב שלך:", "Check your own computer:")}</span><code>${CHECK_COMMAND}</code></div>
+</div>
+<p class="fine">${t(
+    "אירועים שנמצאו בהיסטוריה המקומית של הסוכן בלבד: ניסיון אינו חשיפה, והיסטוריה שנמחקה לא נספרת. ״הצליח״ נרשם ב-Claude Code; ב-Codex מסומן ״—״. נספרו מספרים בלבד: אין כאן שם קובץ, פקודה או ערך, ושום דבר לא נשלח. הקוד פתוח: ‎@nodatachat/protect.",
+    "Events found in the agent's local history only: an attempt is not an exposure, and history that was deleted is not counted. \"Succeeded\" is recorded by Claude Code; Codex shows \"—\". Numbers only: no file name, command or value is here, and nothing was sent. The code is open: @nodatachat/protect.",
+  )}</p>
+</div></div></body></html>`;
+}
