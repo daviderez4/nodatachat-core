@@ -5,6 +5,7 @@
 
 import type { AgentReport, Category } from "./agent-history";
 import { CATEGORIES } from "./agent-history";
+import { MEASURED_CSS, measuredHtml, measuredLines, type Measured } from "./measured";
 
 export type Lang = "en" | "he";
 
@@ -56,8 +57,15 @@ export function reportLines(r: AgentReport, lang: Lang): string[] {
   out.push(he
     ? "אלה אירועים שנמצאו בהיסטוריה המקומית. לא כל ניסיון מעיד על חשיפה. שום דבר לא נשלח מהמחשב."
     : "These are events found in the local history. An attempt is not an exposure. Nothing left this computer.");
+  out.push("");
+  for (const line of measuredLines(measuredOf(r), lang)) out.push(line);
   if (!r.gateInstalled) out.push(he ? `לעצור את זה בפעם הבאה: ${GATE_COMMAND}` : `To stop it next time: ${GATE_COMMAND}`);
   return out;
+}
+
+/** Where these numbers come from, and over which window (measured.ts). */
+export function measuredOf(r: AgentReport): Measured {
+  return { source: "agent-history", from: r.from, to: r.to, days: r.days };
 }
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]!);
@@ -90,15 +98,17 @@ td.n,th.n{text-align:end;font-variant-numeric:tabular-nums;width:16%}td.n{font:5
 .next{margin-top:14px;display:grid;gap:10px}.next div{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--gold);border-radius:6px;padding:12px 16px}
 code{font:13px ui-monospace,Consolas,monospace;direction:ltr;unicode-bidi:isolate;user-select:all}
 .fine{margin-top:18px;font-size:12.5px;color:var(--muted)}
+${MEASURED_CSS}
 </style></head><body><div class="w">
 <div class="ey">${t("בדיקת סוכן · קוד פתוח", "Agent check · open source")} · <bdi dir="ltr">${esc(day(r.from))} – ${esc(day(r.to))}</bdi></div>
-<h1>${t(`ב-${r.days} הימים האחרונים הסוכן שלך נגע <em>${fmt(sensitive)} פעמים</em> בסודות.`, `In the last ${r.days} days your AI agent touched secrets <em>${fmt(sensitive)} times</em>.`)}</h1>
-<p class="sub"><bdi dir="ltr">${who}</bdi> · ${t(`${fmt(r.calls)} קריאות לכלים נבדקו, על המחשב הזה בלבד.`, `${fmt(r.calls)} tool calls checked, on this computer only.`)}</p>
+<h1>${t(`ב-${r.days} הימים האחרונים הסוכן שלך פנה <em>${fmt(sensitive)} פעמים</em> לפרטי גישה.`, `In the last ${r.days} days your AI agent reached for credentials <em>${fmt(sensitive)} times</em>.`)}</h1>
+<p class="sub"><bdi dir="ltr">${who}</bdi> · ${t(`${fmt(r.calls)} קריאות לכלים נבדקו, על המחשב הזה בלבד. ״פרטי גישה״ כאן הם שלוש השורות הראשונות בטבלה: קובצי סודות, פקודות שמדפיסות פרטי גישה וחיפושים של סיסמאות ומפתחות. פנייה אינה חשיפה.`, `${fmt(r.calls)} tool calls checked, on this computer only. "Credentials" here are the first three rows: credential files, commands that print a credential, searches for passwords and keys. Reaching is not exposure.`)}</p>
 <div class="card">
 <table><thead><tr><th>${t("מה", "What")}</th><th class="n">${t("ניסה", "Tried")}</th><th class="n">${t("הצליח", "Succeeded")}</th><th class="n">${t("סודות חזרו", "Secrets returned")}</th></tr></thead><tbody>${rows}</tbody></table>
 <div class="block"><span>${t("ערכים שנראים כמו סודות שחזרו להקשר של הסוכן", "Secret-looking values that came back into the agent's context")}</span><b>${fmt(r.exposedTotal)}</b></div>
 ${r.samplesSetApart ? `<p class="fine">${t(`עוד ${fmt(r.samplesSetApart)} ערכים כאלה הגיעו מקובצי בדיקה, דוגמאות או קוד שהסוכן כתב בעצמו. סביר שהם דוגמאות, ולכן לא נספרו.`, `${fmt(r.samplesSetApart)} more came from tests, examples or code the agent wrote itself. They are likely samples, so they are not counted.`)}</p>` : ""}
 ${r.gateInstalled ? `<div class="block"><span>${t("שער של NoData מותקן כאן: מה שהוא עצר מופיע בעמודת ״הצליח״ כקריאות שנכשלו", "A NoData gate is installed here: what it refused shows as calls that did not succeed")}</span><b>✓</b></div>` : `<div class="block"><span>${t("נחסמו — אין שער אכיפה במחשב הזה", "Blocked — no gate is enforcing on this computer")}</span><b>0</b></div>`}
+${measuredHtml(measuredOf(r), lang)}
 <div class="next">
 ${r.gateInstalled ? `<div><span>${t("מה השער עצר:", "What the gate stopped:")}</span><code>${CARD_COMMAND}</code></div>` : `<div><span>${t("לעצור את זה בפעם הבאה:", "Stop it next time:")}</span><code>${GATE_COMMAND}</code></div>`}
 <div><span>${t("לבדוק את המחשב שלך:", "Check your own computer:")}</span><code>${CHECK_COMMAND}</code></div>
