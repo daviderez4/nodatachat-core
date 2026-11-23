@@ -1,0 +1,6 @@
+What My Agent Saw
+Copyright 2026 NoData Capsule (nodatacapsule.com)
+
+Licensed under the Apache License, Version 2.0 (see LICENSE.md).
+It runs agent-check from @nodatachat/protect (Apache-2.0). NoData's product (the server,
+the MCP, the gate's decisions) is proprietary and is not part of it.

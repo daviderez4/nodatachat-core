@@ -1,0 +1,37 @@
+{
+  "name": "what-my-agent-saw",
+  "version": "1.0.0",
+  "description": "What did your AI agent try to access, and what did it actually see? Reads the history Claude Code and Codex keep on your computer. Local only, counts only, nothing is sent. By NoData.",
+  "bin": {
+    "what-my-agent-saw": "bin.js"
+  },
+  "files": [
+    "bin.js",
+    "README.md",
+    "LICENSE.md",
+    "NOTICE"
+  ],
+  "dependencies": {
+    "@nodatachat/protect": "^3.8.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/daviderez4/nodatachat-core/tree/main/packages/what-my-agent-saw#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviderez4/nodatachat-core.git",
+    "directory": "packages/what-my-agent-saw"
+  },
+  "keywords": [
+    "ai-agent",
+    "claude-code",
+    "codex",
+    "agent-audit",
+    "secrets",
+    "privacy",
+    "security",
+    "nodata"
+  ]
+}
