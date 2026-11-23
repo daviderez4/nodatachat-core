@@ -149,6 +149,23 @@ applies the organisation's rules, asks a person, and signs a receipt. None of
 that is in this package, and a test keeps it out: every shipped module may
 import only Node, this package's one dependency, and other shipped modules.
 
+### The event format (3.8.0)
+
+`agent-check --events` prints the **local** report: one finding per line, in the public
+event format v1 ([`src/agent-events.ts`](src/agent-events.ts)): source, agent, time to the
+minute, action, a general category, outcome, exposure, sample, whether NoData's gate stopped
+it, the exact rule, and the location (path, line, and a fingerprint made from the location
+only, with a salt that stays on your computer). It is printed and written nowhere else.
+
+The shareable card is built from the same events as counts per category over a window of
+days: no time of day, no path, no line, no fingerprint, no rule name. A test holds that.
+
+Exposure is decided by evidence only: **yes** when a key-shaped value is in what came back
+to the agent; **no** when nothing came back (the call failed, or the gate stopped it);
+**unknown** otherwise, a successful read with no key pattern found included.
+
+This is a reporting format. NoData's gate does not read it and does not decide by it.
+
 ## Coming next
 
 Each release adds only what is needed to verify a claim NoData makes: next is

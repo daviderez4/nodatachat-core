@@ -19,7 +19,8 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { checkAgents } from "./agent-history";
+import { localSalt } from "./agent-events";
+import { checkAgents, localEvents } from "./agent-history";
 import { reportHtml, reportLines, type Lang } from "./agent-history-report";
 import { runCheckVectors } from "./check-vectors";
 import { checkOrigin, contextEras, loadPinnedKeys, NODATA_KEYS_PATH } from "./pinned-keys";
@@ -140,7 +141,8 @@ async function bothSides(fileA: string, fileB: string, blobId: string, out: (lin
  * What the AI coding agent on this computer did, from its own history
  * (agent-history.ts). Local only, counts only. Writes one HTML card next to
  * where it runs (or --out <file>), unless --no-card.
- *   agent-check [--days N] [--lang he|en] [--out file.html] [--no-card] [--json]
+ *   agent-check [--days N] [--lang he|en] [--out file.html] [--no-card] [--json] [--events]
+ *   --events prints the LOCAL report (one finding per line, with where); nothing else carries it.
  */
 function agentCheck(rest: string[], out: (line: string) => void): number {
   const opt = (name: string) => {
@@ -149,6 +151,12 @@ function agentCheck(rest: string[], out: (line: string) => void): number {
   };
   const days = Math.min(Math.max(Number(opt("--days") ?? 30) || 30, 1), 3650);
   const lang: Lang = opt("--lang") === "he" ? "he" : "en";
+  if (rest.includes("--events")) {
+    // The LOCAL report: one event per finding, with where. For this computer only: it is
+    // printed here and written nowhere else, and the card never carries any of it.
+    for (const e of localEvents(days, localSalt())) out(JSON.stringify(e));
+    return 0;
+  }
   const report = checkAgents(days);
   if (rest.includes("--json")) {
     out(JSON.stringify(report, null, 2));

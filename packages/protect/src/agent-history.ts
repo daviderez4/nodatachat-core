@@ -34,16 +34,20 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { exposure, fingerprint, toMinute, type AgentEvent, type EventAction, type EventCategory, type GateResult } from "./agent-events";
 import {
   AGENT_RULES_VERSION,
   OUTBOUND_DATA,
   RECORD_FILE,
   SEARCHES,
   STAGE_SPLIT,
+  AGENT_WRITES,
   countSecrets,
   credentialPrintIn,
   grepSearchesBySecretName,
+  ENV_FILE,
   isKeyFile,
+  isSamplePath,
   searchesBySecretName,
   stageText,
 } from "./agent-rules";
@@ -72,6 +76,19 @@ export interface ToolCall {
   ok: boolean | null;
   /** Secret-looking values that came back into the agent's context. */
   exposed: number;
+  /**
+   * The same, from a test, a fixture or an example, or from what the agent wrote itself:
+   * usually a sample. Counted apart, never in `exposed`, and said on the report.
+   */
+  samples: number;
+  /** Set when the call touched a sample or was the agent's own writing (internal). */
+  sampleSource?: boolean;
+  /**
+   * For the LOCAL report only (agent-events.ts): never in AgentReport, never on the card.
+   * The tool, the first path it named, the first key rule found in what came back and on
+   * which line, and whether NoData's gate refused it.
+   */
+  detail?: { tool: string; path: string; keyRule: string; keyLine: number | null; gateStopped: boolean };
 }
 
 /** The categories a file path or a command falls in. The text itself is not returned. */
@@ -94,6 +111,16 @@ export function classify(tool: string, input: Record<string, unknown>): Category
   if (/^(Grep|Search)$/i.test(tool) && grepSearchesBySecretName(input)) out.add("secret_search");
   if ((path && RECORD_FILE.test(path)) || named.some((w) => RECORD_FILE.test(w))) out.add("data_file");
   return CATEGORIES.filter((c) => out.has(c));
+}
+
+/** A call whose output is the agent's own writing, or whose paths are all samples (tests, fixtures, examples). */
+export function fromSample(tool: string, input: Record<string, unknown>): boolean {
+  if (AGENT_WRITES.test(tool)) return true;
+  const path = [input.file_path, input.path, input.notebook_path].find((v): v is string => typeof v === "string") ?? "";
+  if (path) return isSamplePath(path);
+  const command = typeof input.command === "string" ? input.command : Array.isArray(input.command) ? input.command.join(" ") : "";
+  const paths = command ? words(command).filter((w) => /[\\/]/.test(w) && /\.[a-z0-9]+$/i.test(w)) : [];
+  return paths.length > 0 && paths.every(isSamplePath);
 }
 
 /** How many provider keys a tool's output carried (the gate's own patterns). The values are not returned. */
@@ -124,12 +151,21 @@ export function readClaudeTranscript(jsonl: string): ToolCall[] {
     for (const b of content as Array<Record<string, unknown>>) {
       if (b?.type === "tool_use" && typeof b.id === "string") {
         const input = (b.input && typeof b.input === "object" ? b.input : {}) as Record<string, unknown>;
-        calls.set(b.id, { agent: "claude-code", at, categories: classify(String(b.name ?? ""), input), ok: null, exposed: 0 });
+        const tool = String(b.name ?? "");
+        calls.set(b.id, { agent: "claude-code", at, categories: classify(tool, input), ok: null, exposed: 0, samples: 0, sampleSource: fromSample(tool, input), detail: { tool, path: firstPath(input), keyRule: "", keyLine: null, gateStopped: false } });
       } else if (b?.type === "tool_result" && typeof b.tool_use_id === "string") {
         const c = calls.get(b.tool_use_id);
         if (!c) continue;
         c.ok = b.is_error !== true;
-        c.exposed = countSecretValues(textOf(b.content));
+        if (!c.at) c.at = at;
+        const out = textOf(b.content);
+        const n = countSecretValues(out);
+        if (c.sampleSource) c.samples = n;
+        else c.exposed = n;
+        if (c.detail) {
+          c.detail.gateStopped = b.is_error === true && /hook (?:error|blocking)[\s\S]{0,80}NoData|NoData (?:refused|חסם)/i.test(out.slice(0, 600));
+          if (n) Object.assign(c.detail, firstKey(out));
+        }
       }
     }
   }
@@ -162,13 +198,103 @@ export function readCodexSession(jsonl: string): ToolCall[] {
           command = raw;
         }
       } else if (Array.isArray(raw)) command = raw.join(" ");
-      calls.set(id, { agent: "codex", at, categories: classify("shell", { command }), ok: null, exposed: 0 });
+      calls.set(id, { agent: "codex", at, categories: classify("shell", { command }), ok: null, exposed: 0, samples: 0, sampleSource: fromSample("shell", { command }), detail: { tool: "shell", path: firstPath({ command }), keyRule: "", keyLine: null, gateStopped: false } });
     } else if ((p.type === "custom_tool_call_output" || p.type === "function_call_output") && id) {
       const c = calls.get(id);
-      if (c) c.exposed = countSecretValues(typeof p.output === "string" ? p.output : textOf(p.output));
+      if (c) {
+        const out = typeof p.output === "string" ? p.output : textOf(p.output);
+        const n = countSecretValues(out);
+        if (c.sampleSource) c.samples = n;
+        else c.exposed = n;
+        if (n && c.detail) Object.assign(c.detail, firstKey(out));
+      }
     }
   }
   return [...calls.values()];
+}
+
+// ── The local events (agent-events.ts) ───────────────────────────────────
+
+/** The first path a call names: its file, or the first word of its command that looks like a file. */
+function firstPath(input: Record<string, unknown>): string {
+  const p = [input.file_path, input.path, input.notebook_path].find((v): v is string => typeof v === "string");
+  if (p) return p;
+  const command = typeof input.command === "string" ? input.command : Array.isArray(input.command) ? input.command.join(" ") : "";
+  return (command ? words(command) : []).find((w) => /[\\/]/.test(w) && /[\w.-]\.[a-z0-9]+$|[\\/]\.[\w.-]+$/i.test(w)) ?? "";
+}
+
+/**
+ * The first key rule found in a tool's output, and the line it is on when the output
+ * numbers its lines (Claude Code's Read does: "    41\t…" or "41→…"). The line's text is
+ * looked at here and dropped: only the rule id and the number are kept.
+ */
+function firstKey(out: string): { keyRule: string; keyLine: number | null } {
+  const lines = out.slice(0, 2_000_000).split("\n");
+  for (const l of lines) {
+    const ids = Object.keys(countSecrets(l));
+    if (!ids.length) continue;
+    const m = /^\s*(\d+)(?:\t|→)/.exec(l);
+    return { keyRule: ids[0], keyLine: m ? Number(m[1]) : null };
+  }
+  const ids = Object.keys(countSecrets(out));
+  return { keyRule: ids[0] ?? "", keyLine: null };
+}
+
+const EVENT_CATEGORY: Record<Category, EventCategory> = {
+  secret_file: "credential_file",
+  credential_command: "credential_command",
+  secret_search: "secret_search",
+  data_file: "data_file",
+  outbound_data: "outbound_data",
+};
+
+/** The public name of the rule behind a category (agent-rules.ts names them all). */
+function categoryRule(c: Category, path: string): string {
+  if (c === "secret_file") return ENV_FILE.test(path.replace(/\\/g, "/").split("/").pop() ?? "") ? "env-file" : "credential-store";
+  return ({ credential_command: "credential-command", secret_search: "secret-search", data_file: "record-file", outbound_data: "outbound-data" } as const)[c];
+}
+
+function actionOf(tool: string, cats: Category[]): EventAction {
+  if (/^(Write|Edit|MultiEdit|NotebookEdit|apply_patch)$/.test(tool)) return "write";
+  if (/^(Grep|Glob|Search)$/i.test(tool) || cats.includes("secret_search")) return "search";
+  if (/^(WebFetch|WebSearch)$/.test(tool) || cats.includes("outbound_data")) return "network";
+  if (/^(Read|NotebookRead)$/.test(tool)) return "read";
+  return "execute";
+}
+
+/**
+ * Calls → LOCAL events: one per category a call touched, and one for a key found in a
+ * call that touched none. Never handed to the card; the card is built from counts.
+ */
+export function toEvents(calls: ToolCall[], opts: { gateInstalled: boolean; salt: string }): AgentEvent[] {
+  const out: AgentEvent[] = [];
+  for (const c of calls) {
+    const d = c.detail;
+    if (!d) continue;
+    const keyFound = c.exposed + c.samples > 0;
+    const cats: Array<{ category: EventCategory; rule: string }> = c.categories.map((k) => ({ category: EVENT_CATEGORY[k], rule: keyFound && d.keyRule ? d.keyRule : categoryRule(k, d.path) }));
+    if (!cats.length && keyFound) cats.push({ category: "provider_key", rule: d.keyRule || "nodata-detector" });
+    if (!cats.length) continue;
+    const outcome = c.ok === null ? "not_recorded" : c.ok ? "succeeded" : "failed";
+    const gate: GateResult = d.gateStopped ? "stopped" : opts.gateInstalled ? "unknown" : "not_installed";
+    for (const { category, rule } of cats) {
+      out.push({
+        v: 1,
+        source: "agent-history",
+        agent: c.agent,
+        at: toMinute(c.at),
+        action: actionOf(d.tool, c.categories),
+        category,
+        outcome,
+        exposed: exposure({ outcome, keyFound, gate }),
+        sample: c.samples > 0 || (!!c.sampleSource && keyFound),
+        gate,
+        rule,
+        location: d.path ? { path: d.path, line: keyFound ? d.keyLine : null, fingerprint: fingerprint(opts.salt, d.path, keyFound ? d.keyLine : null, rule) } : null,
+      });
+    }
+  }
+  return out;
 }
 
 // ── The report ───────────────────────────────────────────────────────────
@@ -189,6 +315,8 @@ export interface AgentReport {
   categories: Record<Category, CategoryCount>;
   /** Secret-looking values returned to the agent, over every call, in any category. */
   exposedTotal: number;
+  /** Key-shaped values from tests, fixtures, examples or the agent's own writing: set apart, usually samples. */
+  samplesSetApart: number;
   /**
    * Whether a NoData read gate is installed here (its log file exists; only its
    * existence is checked, it is not read). With a gate, calls it refused show in
@@ -206,8 +334,10 @@ export function buildReport(calls: ToolCall[], files: Record<Agent, number>, day
   let from = "";
   let to = "";
   let exposedTotal = 0;
+  let samplesSetApart = 0;
   for (const c of inWindow) {
     exposedTotal += c.exposed;
+    samplesSetApart += c.samples;
     if (c.at && (!from || c.at < from)) from = c.at;
     if (c.at && c.at > to) to = c.at;
     for (const k of c.categories) {
@@ -220,7 +350,8 @@ export function buildReport(calls: ToolCall[], files: Record<Agent, number>, day
   const agents = (["claude-code", "codex"] as Agent[])
     .map((agent) => ({ agent, files: files[agent] ?? 0, calls: inWindow.filter((c) => c.agent === agent).length }))
     .filter((a) => a.files > 0);
-  return { from, to, days, agents, calls: inWindow.length, categories, exposedTotal, gateInstalled, rulesVersion: AGENT_RULES_VERSION };
+  // Days only: the time of day stays in the local events (agent-events.ts), never in the report.
+  return { from: from.slice(0, 10), to: to.slice(0, 10), days, agents, calls: inWindow.length, categories, exposedTotal, samplesSetApart, gateInstalled, rulesVersion: AGENT_RULES_VERSION };
 }
 
 // ── Reading the history from disk ────────────────────────────────────────
@@ -249,6 +380,20 @@ function jsonlFiles(dir: string, depth: number, out: string[] = []): string[] {
 
 /** Read both agents' histories under `home` and build the report. Only these two folders are read. */
 export function checkAgents(days: number, home = homedir(), now = Date.now()): AgentReport {
+  return collect(days, home, now).report;
+}
+
+/**
+ * The LOCAL events behind the report: one per finding, to the minute, with the exact
+ * rule and the location. For this computer only (agent-events.ts); never on the card.
+ */
+export function localEvents(days: number, salt: string, home = homedir(), now = Date.now()): AgentEvent[] {
+  const { calls, report } = collect(days, home, now);
+  const since = now - days * 86_400_000;
+  return toEvents(calls.filter((c) => !c.at || Date.parse(c.at) >= since), { gateInstalled: report.gateInstalled, salt });
+}
+
+function collect(days: number, home: string, now: number): { calls: ToolCall[]; report: AgentReport } {
   const since = now - days * 86_400_000;
   const recent = (f: string) => {
     try {
@@ -263,5 +408,5 @@ export function checkAgents(days: number, home = homedir(), now = Date.now()): A
   for (const f of claude) calls.push(...readClaudeTranscript(readFileSync(f, "utf8")));
   for (const f of codex) calls.push(...readCodexSession(readFileSync(f, "utf8")));
   const gateInstalled = existsSync(join(home, ".nodata", "gate.log"));
-  return buildReport(calls, { "claude-code": claude.length, codex: codex.length }, days, now, gateInstalled);
+  return { calls, report: buildReport(calls, { "claude-code": claude.length, codex: codex.length }, days, now, gateInstalled) };
 }
