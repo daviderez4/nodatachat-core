@@ -51,6 +51,7 @@ What each command proves, and what it does not, is in
 | Path | What |
 |---|---|
 | [`packages/protect`](packages/protect) | `@nodatachat/protect` 3.x: specs, vectors, verifiers, and `agent-check`. License: [Apache-2.0](packages/protect/LICENSE.md) |
+| [`packages/what-my-agent-saw`](packages/what-my-agent-saw) | `npx what-my-agent-saw`: what your AI agent tried to access, and what it actually saw. Runs `agent-check` from protect. License: Apache-2.0 |
 | [`legacy/`](legacy) | The 1.x open core (Apache-2.0), kept as published, not maintained |
 
 NoData's product (the server, the MCP, the SDK, the CLI, the read gate's decisions, the
