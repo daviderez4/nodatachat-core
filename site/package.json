@@ -1,0 +1,27 @@
+{
+  "name": "whatmyagentsaw-site",
+  "private": true,
+  "version": "0.1.0",
+  "description": "whatmyagentsaw.com: see what your AI agent attempted, what succeeded, and what actually reached it.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "facts": "node scripts/protect-facts.mjs",
+    "dev": "npm run facts && next dev",
+    "build": "npm run facts && next build",
+    "check": "npm run facts && tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "15.5.29",
+    "react": "19.2.9",
+    "react-dom": "19.2.9"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "postcss": "8.5.33"
+  }
+}
