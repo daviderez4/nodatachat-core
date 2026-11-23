@@ -100,8 +100,8 @@ ${r.gateInstalled ? `<div><span>${t("מה השער עצר:", "What the gate stop
 <div><span>${t("לבדוק את המחשב שלך:", "Check your own computer:")}</span><code>${CHECK_COMMAND}</code></div>
 </div>
 <p class="fine">${t(
-    "אירועים שנמצאו בהיסטוריה המקומית של הסוכן בלבד: ניסיון אינו חשיפה, והיסטוריה שנמחקה לא נספרת. ״הצליח״ נרשם ב-Claude Code; ב-Codex מסומן ״—״. נספרו מספרים בלבד: אין כאן שם קובץ, פקודה או ערך, ושום דבר לא נשלח. הקוד פתוח: ‎@nodatachat/protect.",
-    "Events found in the agent's local history only: an attempt is not an exposure, and history that was deleted is not counted. \"Succeeded\" is recorded by Claude Code; Codex shows \"—\". Numbers only: no file name, command or value is here, and nothing was sent. The code is open: @nodatachat/protect.",
+    "אירועים שנמצאו בהיסטוריה המקומית של הסוכן בלבד: ניסיון אינו חשיפה, והיסטוריה שנמחקה לא נספרת. ״הצליח״ נרשם ב-Claude Code; ב-Codex מסומן ״—״. נספרו מספרים בלבד: אין כאן שם קובץ, פקודה או ערך, ושום דבר לא נשלח. הבודק החינמי סופר לפי סוגי קבצים ודפוסים גלויים; שער NoData קורא גם את תוכן המידע, מזהה בו מידע אישי ומחליט מה מותר לחשוף. הקוד והכללים פתוחים: ‎@nodatachat/protect.",
+    "Events found in the agent's local history only: an attempt is not an exposure, and history that was deleted is not counted. \"Succeeded\" is recorded by Claude Code; Codex shows \"—\". Numbers only: no file name, command or value is here, and nothing was sent. The free check counts by file type and open patterns; the NoData gate also reads the content, finds personal data in it and decides what may be shown. The code and its rules are open: @nodatachat/protect.",
   )}</p>
 </div></div></body></html>`;
 }
