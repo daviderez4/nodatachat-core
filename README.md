@@ -35,6 +35,10 @@ The rules are plain patterns in
 [`packages/protect/src/agent-rules.ts`](packages/protect/src/agent-rules.ts) (from 3.7.0;
 3.6.0 keeps them in `agent-history.ts`). Read them, and argue with them.
 
+Step through real cases in the lab at **[whatmyagentsaw.com](https://whatmyagentsaw.com)**:
+the evidence in each log, the limits of what it proves, and the decision these rules make.
+The site is in [`site/`](site/) and is built from this repository, so it cannot drift from the code.
+
 ## Verify NoData's claims
 
 ```bash
