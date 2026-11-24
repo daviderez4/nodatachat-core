@@ -24,6 +24,29 @@ const day = (iso: string) => (iso ? iso.slice(0, 10) : "");
 export const CHECK_COMMAND = "npx @nodatachat/protect@3 agent-check";
 export const GATE_COMMAND = "npx -y @nodatachat/mcp@latest install-gate";
 export const CARD_COMMAND = "npx -y @nodatachat/mcp@latest agent-card";
+/** The page the steps below match, step for step. */
+export const NEXT_URL = "https://whatmyagentsaw.com/next/";
+
+/**
+ * What to do with the report, in the order of whatmyagentsaw.com/next: the five free
+ * steps first, NoData's gate last. The gate's line claims only what the gate does by
+ * default (packages/mcp-server gate.ts): it holds and asks, and it warns after outside
+ * content. Refusing is block mode or a rule the person sets, so it is not claimed here.
+ * No path and no value: the same steps go on the shareable card.
+ */
+export function nextSteps(gateInstalled: boolean, lang: Lang): { text: string; cmd?: string }[] {
+  const he = lang === "he";
+  return [
+    { text: he ? "לראות בדיוק איפה: ממצא בכל שורה, עם הקובץ והשורה, רק על המסך שלך:" : "See exactly where: one line per finding, with the file and the line, on your screen only:", cmd: `${CHECK_COMMAND} --events` },
+    { text: he ? "להחליף כל מפתח אמיתי שחזר. מפתח שהגיע להקשר של הסוכן כבר בשיחה, ואי אפשר להחזיר אותו." : "Rotate every real key that came back. A key that reached the agent's context is in the conversation, and nothing takes it back." },
+    { text: he ? "להוציא סודות מהישג היד של הסוכן: קובצי מפתחות מחוץ לתיקיות שהוא עובד בהן, וסודות שמוזרקים רק כשהפקודה רצה." : "Move secrets out of the agent's reach: key files outside the folders it works in, secrets injected only when a command runs." },
+    { text: he ? "לחסום את הקריאות האלה בהגדרות של הסוכן עצמו (ב-Claude Code: ‏permissions.deny)." : "Deny those reads in the agent's own settings (in Claude Code: permissions.deny)." },
+    { text: he ? "להריץ את הבדיקה שוב בשבוע הבא ולהשוות." : "Run the check again next week and compare." },
+    gateInstalled
+      ? { text: he ? "השער של NoData מותקן כאן ומחליט לפני הצעד. מה שהוא החליט:" : "NoData's gate is installed here and decides before the step. What it decided:", cmd: CARD_COMMAND }
+      : { text: he ? "השער של NoData מחליט לפני הצעד: קריאה של קובץ עם ממצאים, או פקודה שמדפיסה פרטי גישה, ממתינה לאישור של אדם; אחרי תוכן מבחוץ, אזהרה." : "NoData's gate decides before the step: a read of a file with findings, or a command that prints a credential, waits for a person to approve; after outside content, a warning.", cmd: GATE_COMMAND },
+  ];
+}
 
 /** The terminal summary. */
 export function reportLines(r: AgentReport, lang: Lang): string[] {
@@ -59,7 +82,13 @@ export function reportLines(r: AgentReport, lang: Lang): string[] {
     : "These are events found in the local history. An attempt is not an exposure. Nothing left this computer.");
   out.push("");
   for (const line of measuredLines(measuredOf(r), lang)) out.push(line);
-  if (!r.gateInstalled) out.push(he ? `לעצור את זה בפעם הבאה: ${GATE_COMMAND}` : `To stop it next time: ${GATE_COMMAND}`);
+  out.push("");
+  out.push(he ? "הצעדים הבאים, החינמיים קודם:" : "Next steps, the free ones first:");
+  nextSteps(r.gateInstalled, lang).forEach((s, i) => {
+    out.push(`  ${i + 1}. ${s.text}`);
+    if (s.cmd) out.push(`       ${s.cmd}`);
+  });
+  out.push(he ? `עוד: ${NEXT_URL}` : `More: ${NEXT_URL}`);
   return out;
 }
 
@@ -95,7 +124,9 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 td.n,th.n{text-align:end;font-variant-numeric:tabular-nums;width:16%}td.n{font:500 20px Georgia,serif}td.x{color:var(--x)}
 .block{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:22px;padding:16px 18px;border:1px solid var(--x);border-radius:6px}
 .block b{font:500 28px Georgia,serif;color:var(--x)}
-.next{margin-top:14px;display:grid;gap:10px}.next div{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--gold);border-radius:6px;padding:12px 16px}
+.next{margin:22px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}.next li{counter-increment:s;display:grid;grid-template-columns:2em 1fr;gap:4px 10px;background:var(--soft);border:1px solid var(--gold);border-radius:6px;padding:12px 16px}
+.next li::before{content:counter(s);font:500 20px Georgia,serif;color:var(--gold)}.next li code{grid-column:2}
+.nh{margin-top:22px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
 code{font:13px ui-monospace,Consolas,monospace;direction:ltr;unicode-bidi:isolate;user-select:all}
 .fine{margin-top:18px;font-size:12.5px;color:var(--muted)}
 ${MEASURED_CSS}
@@ -109,10 +140,11 @@ ${MEASURED_CSS}
 ${r.samplesSetApart ? `<p class="fine">${t(`עוד ${fmt(r.samplesSetApart)} ערכים כאלה הגיעו מקובצי בדיקה, דוגמאות או קוד שהסוכן כתב בעצמו. סביר שהם דוגמאות, ולכן לא נספרו.`, `${fmt(r.samplesSetApart)} more came from tests, examples or code the agent wrote itself. They are likely samples, so they are not counted.`)}</p>` : ""}
 ${r.gateInstalled ? `<div class="block"><span>${t("שער של NoData מותקן כאן: מה שהוא עצר מופיע בעמודת ״הצליח״ כקריאות שנכשלו", "A NoData gate is installed here: what it refused shows as calls that did not succeed")}</span><b>✓</b></div>` : `<div class="block"><span>${t("נחסמו — אין שער אכיפה במחשב הזה", "Blocked — no gate is enforcing on this computer")}</span><b>0</b></div>`}
 ${measuredHtml(measuredOf(r), lang)}
-<div class="next">
-${r.gateInstalled ? `<div><span>${t("מה השער עצר:", "What the gate stopped:")}</span><code>${CARD_COMMAND}</code></div>` : `<div><span>${t("לעצור את זה בפעם הבאה:", "Stop it next time:")}</span><code>${GATE_COMMAND}</code></div>`}
-<div><span>${t("לבדוק את המחשב שלך:", "Check your own computer:")}</span><code>${CHECK_COMMAND}</code></div>
-</div>
+<div class="nh">${t("הצעדים הבאים, החינמיים קודם", "Next steps, the free ones first")}</div>
+<ol class="next">
+${nextSteps(r.gateInstalled, lang).map((s) => `<li><span>${esc(s.text)}</span>${s.cmd ? `<code>${esc(s.cmd)}</code>` : ""}</li>`).join("\n")}
+</ol>
+<p class="fine">${t("עוד", "More")}: <bdi dir="ltr">${esc(NEXT_URL.replace(/^https:\/\//, "").replace(/\/$/, ""))}</bdi> · ${t("לבדוק את המחשב שלך:", "Check your own computer:")} <code>${CHECK_COMMAND}</code></p>
 <p class="fine">${t(
     "אירועים שנמצאו בהיסטוריה המקומית של הסוכן בלבד: ניסיון אינו חשיפה, והיסטוריה שנמחקה לא נספרת. ״הצליח״ נרשם ב-Claude Code; ב-Codex מסומן ״—״. נספרו מספרים בלבד: אין כאן שם קובץ, פקודה או ערך, ושום דבר לא נשלח. הבודק החינמי סופר לפי סוגי קבצים ודפוסים גלויים; שער NoData קורא גם את תוכן המידע, מזהה בו מידע אישי ומחליט מה מותר לחשוף. הקוד והכללים פתוחים: ‎@nodatachat/protect.",
     "Events found in the agent's local history only: an attempt is not an exposure, and history that was deleted is not counted. \"Succeeded\" is recorded by Claude Code; Codex shows \"—\". Numbers only: no file name, command or value is here, and nothing was sent. The free check counts by file type and open patterns; the NoData gate also reads the content, finds personal data in it and decides what may be shown. The code and its rules are open: @nodatachat/protect.",
