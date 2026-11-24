@@ -225,28 +225,38 @@
     "eyebrow": "Terms",
     "title": "Terms of use",
     "updated": "Last updated",
+    "intro": "Please read these terms carefully. They include a disclaimer of warranties (section 5), a limitation of liability (section 6) and your responsibility for how you use the tool (sections 7 and 8). By using this site or running agent-check, you agree to them. If you do not agree, do not use them.",
     "sections": [
-      ["What this is", "whatmyagentsaw.com explains AI agent behavior and links to agent-check, an open-source tool in [daviderez4/nodatachat-core](repo), maintained by [NoData](nodata)."],
-      ["The tool is provided as is", "agent-check is licensed under Apache-2.0. As that license says, it is provided \"AS IS\", without warranties or conditions of any kind, and its authors are not liable for damages arising from its use. Read the [license](license) before you run it."],
-      ["You run it on your own computer", "The tool reads the history your AI agents keep on your computer and sends nothing anywhere. Run it only on computers and accounts you are allowed to inspect. What you do with its output is your responsibility."],
-      ["Findings are indications, not guarantees", "A report shows what the agent recorded, within the tool's published rules. It is not a security audit, not legal advice, and not proof that nothing happened. Unknown is not safe."],
-      ["Simulated content", "The lab and the research pages use simulated logs, example domains and invented package names, for education. Do not use the techniques described against systems you do not own or have permission to test."],
-      ["Your data", "This site sets no cookies, runs no analytics and collects no personal data. When you agree to these terms, that agreement is stored only in your own browser."],
-      ["Links", "Links to GitHub, npm, NoData and LinkedIn lead to sites with their own terms."],
-      ["Changes", "These terms may change. When they do, the date above changes and the site asks you to agree again."],
-      ["Contact", "Questions: [open an issue](newIssue). Security: [the security policy](security)."]
+      ["Who we are", "whatmyagentsaw.com (the \"site\") and the agent-check tool (the \"tool\") are made available by NoData Ltd (\"NoData\", \"we\"), Israel. The tool is part of the open-source package {package}, published from [daviderez4/nodatachat-core](repo)."],
+      ["Agreement", "These terms are an agreement between you and NoData. You accept them by clicking to agree, or by using the site or the tool. If you use them on behalf of an organisation, you confirm that you may bind it, and \"you\" includes it. Your agreement is recorded only in your own browser and on your own computer; we do not receive it."],
+      ["The open-source license", "The tool's code is licensed under the Apache License 2.0 ([read it](license)). The license governs your rights in the code. These terms govern your use of the site and the tool. Where the two conflict about the code, the license prevails."],
+      ["What the tool does, and does not do", "The tool runs on your computer, reads the history that AI coding agents keep there (today `~/.claude/projects` and `~/.codex/sessions`), and prints counts. It sends nothing to us or to anyone. It is not a security audit, not a penetration test, not legal or compliance advice, and not a guarantee of anything. A finding is an indication within the tool's published rules. An empty result does not mean nothing happened: Unknown is not safe."],
+      ["No warranty", "The site, the tool and all content are provided \"AS IS\" and \"AS AVAILABLE\", without warranties or conditions of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, accuracy, completeness and non-infringement. We do not warrant that the tool will detect any particular event, that it is free of errors, or that the site will be available."],
+      ["Limitation of liability", "To the maximum extent permitted by law, NoData, its officers, employees and the tool's contributors will not be liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for any loss of data, profits, revenue, business or goodwill, or for any security incident, exposure of credentials or keys, or decision you take, arising from or related to the site or the tool, even if advised of the possibility. Our total liability for any claim relating to the site or the tool is limited to the amount you paid NoData for them in the twelve months before the claim. For the free site and tool, that amount is zero. Nothing in these terms limits liability that cannot be limited by law."],
+      ["Your responsibility", "You decide whether, where and how to run the tool, and you are responsible for that decision and for what you do with its output. Run it only on computers, accounts and data you own or are authorised to inspect, and in line with the law and with your employer's policies. Rotating keys, changing settings and protecting your systems remain your responsibility."],
+      ["Acceptable use", "The lab and the research pages describe attack techniques with simulated logs, example domains and invented package names, for education. Do not use them, or the tool, to access, test or attack systems, accounts or data you do not own or have written permission to test."],
+      ["Indemnity", "You agree to indemnify and hold harmless NoData, its officers, employees and the tool's contributors from claims, losses and costs (including reasonable legal fees) arising from your breach of these terms or your misuse of the site or the tool."],
+      ["Third parties", "The tool reads files written by third-party AI agents, such as Claude Code and Codex. Their names and marks belong to their owners; this site and the tool are not affiliated with, sponsored or endorsed by them. Links to GitHub, npm, LinkedIn and NoData lead to services with their own terms."],
+      ["Your data and privacy", "The site sets no cookies, runs no analytics and collects no personal data. Your agreement to these terms is kept in your browser's local storage. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."],
+      ["Intellectual property", "The tool's code is open source under its license. The site's content, design and the names \"NoData\" and \"What My Agent Saw\" belong to NoData. You may quote and link to the site with attribution."],
+      ["Changes", "We may change these terms. The date above shows the current version, and the site asks you to agree again when it changes. Continuing to use the site or the tool after a change means you accept it."],
+      ["Governing law and jurisdiction", "These terms are governed by the laws of the State of Israel, without regard to conflict-of-law rules. The competent courts of Tel Aviv-Jaffa have exclusive jurisdiction over any dispute relating to them."],
+      ["General", "If a provision is found unenforceable, it is limited to the minimum extent needed, and the rest stays in effect. Not enforcing a right is not a waiver of it. These terms, together with the tool's license, are the entire agreement between you and NoData about the site and the tool."],
+      ["Contact", "Questions: [open an issue](newIssue). Security reports: [the security policy](security)."]
     ]
   },
 
   "consent": {
     "title": "Before you continue",
     "points": [
-      "agent-check is open source (Apache-2.0) and provided as is, without warranty.",
+      "agent-check is open source (Apache-2.0) and provided as is, without any warranty.",
       "It runs on your computer, reads your agent's own history, and sends nothing.",
-      "Its findings are indications, not a security audit. Lab content is simulated."
+      "Its findings are indications, not a security audit. Lab content is simulated.",
+      "You use it at your own responsibility, only where you are allowed to, and NoData's liability is limited as the terms say."
     ],
     "termsLink": "[Read the full terms](/terms/)",
-    "agree": "I agree",
+    "checkbox": "I have read and agree to the Terms of Use, including the disclaimer of warranties and the limitation of liability.",
+    "agree": "Continue",
     "stored": "Stored only in this browser. No cookies, no tracking."
   },
 

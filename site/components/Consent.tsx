@@ -12,7 +12,8 @@ const c = copy.consent;
 export function Consent() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const button = useRef<HTMLButtonElement>(null);
+  const [checked, setChecked] = useState(false);
+  const box = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let agreed = false;
@@ -25,13 +26,15 @@ export function Consent() {
   }, []);
 
   useEffect(() => {
-    if (open) button.current?.focus();
+    if (open) box.current?.focus();
   }, [open]);
 
   // The terms page itself stays readable: the window would cover the text it asks you to read.
   if (!open || pathname?.startsWith("/terms")) return null;
 
+  // Clickwrap: the box starts unchecked and the button stays disabled until the person ticks it.
   const agree = () => {
+    if (!checked) return;
     try {
       localStorage.setItem(KEY, copy.terms.version);
     } catch {
@@ -48,7 +51,11 @@ export function Consent() {
           {c.points.map((p) => <li key={p}>{p}</li>)}
         </ul>
         <p style={{ margin: 0, fontSize: 14 }}><T s={c.termsLink} /></p>
-        <button ref={button} type="button" onClick={agree} className="btn btn-ink" style={{ width: "100%", minHeight: 48 }}>{c.agree}</button>
+        <label style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, lineHeight: 1.5, cursor: "pointer", padding: 12, borderRadius: 10, background: "var(--paper-2)" }}>
+          <input ref={box} type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} style={{ width: 20, height: 20, marginTop: 1, flex: "none", accentColor: "var(--ink)" }} />
+          <span>{c.checkbox}</span>
+        </label>
+        <button type="button" onClick={agree} disabled={!checked} aria-disabled={!checked} className="btn btn-ink" style={{ width: "100%", minHeight: 48, opacity: checked ? 1 : 0.4, cursor: checked ? "pointer" : "not-allowed" }}>{c.agree}</button>
         <p style={{ margin: 0, fontSize: 12, color: "var(--faint)", textAlign: "center" }}>{c.stored}</p>
       </div>
     </div>

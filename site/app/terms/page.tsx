@@ -15,6 +15,7 @@ export default function TermsPage() {
         <div className="eyebrow">{c.eyebrow}</div>
         <h1 style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(36px, 5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.035em", fontWeight: 700 }}>{c.title}</h1>
         <p className="mono" style={{ margin: 0, fontSize: 12, color: "var(--faint)" }}>{c.updated}: {c.version}</p>
+        <p style={{ margin: "8px 0 0", fontSize: 16, lineHeight: 1.6, fontWeight: 500, padding: 16, borderRadius: 10, background: "var(--paper-2)", border: "1px solid var(--line)" }}>{c.intro}</p>
       </div>
       {c.sections.map(([h, b], i) => (
         <section key={h} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
