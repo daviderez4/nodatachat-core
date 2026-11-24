@@ -5,9 +5,9 @@ import { Mark } from "./Mark";
 // Only places that exist. Sections not built yet are not in the menu.
 const items: Array<{ href: string; label: string; external?: boolean }> = [
   { href: "/#check", label: "Tool" },
+  { href: "/next/", label: "What next" },
   { href: "/lab/", label: "Lab" },
   { href: "/agentic-web/", label: "Agentic Web" },
-  { href: "/evidence/", label: "Evidence" },
   { href: "/#developers", label: "Developers" },
   { href: "/#threats", label: "Threat Library" },
   { href: links.readme, label: "Docs", external: true },

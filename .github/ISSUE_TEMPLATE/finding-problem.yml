@@ -1,0 +1,89 @@
+name: A result looks wrong
+description: Something was missed, found wrongly, not read, or decided against the rules. Reports of what did NOT happen are welcome too.
+title: "[report] "
+labels: ["report", "status: reported"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Every report is read, and gets a status you can follow here: reported, under review, reproduced, confirmed, fixed, verified, closed. See [REPORTING.md](https://github.com/daviderez4/nodatachat-core/blob/main/REPORTING.md).
+
+        **Never paste a key, a password, a token, a file's content or personal data here.** This is public. Describe the shape instead ("a Stripe live key in a .env file", "an IBAN in a CSV column"). If we need a sample, we will ask for a made-up one.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - Not found (something sensitive was there, and nothing was reported)
+        - Found wrongly (reported, but it was not sensitive)
+        - Wrong category (found, but counted under the wrong one)
+        - File not read (the tool could not read it)
+        - Read only in part
+        - File type not supported
+        - Decision does not match the rules
+        - Something else that looks wrong
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did you see it?
+      options:
+        - agent-check (the CLI)
+        - agent-check --events
+        - The lab or a page on whatmyagentsaw.com
+        - A verifier in @nodatachat/protect (check-vectors, verify-pack, inspect-seal)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 1. What did you expect it to find or decide?
+      placeholder: "e.g. a read of .env.production should count under credential files"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 2. What did it find or decide?
+      placeholder: "e.g. no event at all; or, the line from --events (it holds no values, but check before pasting)"
+    validations:
+      required: true
+  - type: textarea
+    id: should
+    attributes:
+      label: 3. What should have happened, and what happened instead?
+    validations:
+      required: false
+  - type: dropdown
+    id: layer
+    attributes:
+      label: 4. If you can tell, which part failed?
+      options:
+        - Detection (a pattern did not match, or matched wrongly)
+        - Reading (the file or log could not be read)
+        - Classification (the category is wrong)
+        - Decision or enforcement (the rule outcome is wrong)
+        - Not sure
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "The first line of the report shows it; or run `npm view @nodatachat/protect version`."
+      placeholder: "e.g. 3.10.0"
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      options:
+        - Claude Code
+        - Codex
+        - Not relevant
+  - type: checkboxes
+    id: clean
+    attributes:
+      label: Before you send
+      options:
+        - label: This report contains no key, password, token, file content or personal data.
+          required: true

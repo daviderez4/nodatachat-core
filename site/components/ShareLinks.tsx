@@ -1,5 +1,6 @@
 import type { EvidenceItem } from "@/lib/evidence";
 import { itemUrl } from "@/lib/evidence";
+import { copy } from "@/lib/copy";
 
 // Plain share links: no third-party script loads on this site, so a visit still contacts no one
 // else. The network is reached only when the reader clicks. Each item has its own page, so the
@@ -16,7 +17,7 @@ export function ShareLinks({ item, dark = false }: { item: EvidenceItem; dark?: 
   const line = dark ? "var(--night-line-2)" : "var(--line-2)";
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color }}>SHARE</span>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color, textTransform: "uppercase" }}>{copy.evidence.share}</span>
       {targets.map((t) => (
         <a
           key={t.label}

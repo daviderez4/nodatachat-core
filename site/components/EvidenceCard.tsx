@@ -2,6 +2,9 @@ import Link from "next/link";
 import type { EvidenceItem } from "@/lib/evidence";
 import { LEGAL_LABEL, TECH_LABEL, TYPE_LABEL } from "@/lib/evidence";
 import { ShareLinks } from "./ShareLinks";
+import { copy } from "@/lib/copy";
+
+const c = copy.evidence;
 
 const chip = (text: string, color: string) => (
   <span className="mono" style={{ fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color, border: `1px solid ${color}`, borderRadius: 999, padding: "2px 10px" }}>{text}</span>
@@ -16,8 +19,8 @@ export function EvidenceCard({ item, headingLevel = 2, link = true }: { item: Ev
         {chip(TYPE_LABEL[item.event_type] ?? item.event_type, "var(--ink-2)")}
         {item.technical_status && chip(TECH_LABEL[item.technical_status], item.technical_status === "exposed" ? "var(--amber)" : "var(--muted)")}
         {item.legal_stage !== "not_legal" && chip(LEGAL_LABEL[item.legal_stage], "var(--indigo)")}
-        {item.stale && chip("Needs re-verification", "var(--amber)")}
-        <span className="mono" style={{ fontSize: 12, color: "var(--faint)" }}>{item.date ?? "no date given by the source"} · {item.jurisdiction}</span>
+        {item.stale && chip(c.stale, "var(--amber)")}
+        <span className="mono" style={{ fontSize: 12, color: "var(--faint)" }}>{item.date ?? c.noDate} · {item.jurisdiction}</span>
       </div>
       <H style={{ margin: 0, fontFamily: "var(--display)", fontSize: headingLevel === 1 ? "clamp(28px, 4vw, 40px)" : 21, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
         {link ? <Link href={`/evidence/${item.id}/`} style={{ color: "inherit" }}>{item.headline}</Link> : item.headline}
@@ -27,11 +30,11 @@ export function EvidenceCard({ item, headingLevel = 2, link = true }: { item: Ev
         “{item.quote}”
         <footer style={{ marginTop: 8, fontFamily: "var(--sans)", fontSize: 13 }}>
           <a href={item.source_url} rel="noopener noreferrer">{item.source_name} ↗</a>
-          <span style={{ color: "var(--faint)" }}> · opened and matched {item.last_verified}</span>
+          <span style={{ color: "var(--faint)" }}> · {c.opened} {item.last_verified}</span>
         </footer>
       </blockquote>
-      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}><strong>Why it matters.</strong> {item.why}</p>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "var(--muted)" }}><strong>Where it stops.</strong> {item.limits}</p>
+      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}><strong>{c.why}</strong> {item.why}</p>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "var(--muted)" }}><strong>{c.limits}</strong> {item.limits}</p>
       <ShareLinks item={item} />
     </article>
   );

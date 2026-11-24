@@ -66,7 +66,7 @@ section { scroll-margin-top: 72px; }
 
 /* Evidence ticker: the latest items verified at their source. Dark strip, teal label. */
 .ev-ticker { display: flex; align-items: stretch; background: var(--night); color: var(--snow); border-bottom: 1px solid var(--night-line); font-size: 13px; }
-.ev-label { flex: 0 0 auto; display: flex; align-items: center; padding: 0 14px; color: var(--teal-hi); font-size: 11px; letter-spacing: 0.08em; border-right: 1px solid var(--night-line); white-space: nowrap; }
+.ev-label { text-transform: uppercase; flex: 0 0 auto; display: flex; align-items: center; padding: 0 14px; color: var(--teal-hi); font-size: 11px; letter-spacing: 0.08em; border-right: 1px solid var(--night-line); white-space: nowrap; }
 .ev-viewport { flex: 1 1 auto; overflow: hidden; min-width: 0; }
 .ev-track { display: flex; width: max-content; animation: ev-scroll 90s linear infinite; }
 .ev-dup { display: flex; }

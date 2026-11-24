@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { evidence, itemUrl } from "@/lib/evidence";
 import { EvidenceCard } from "@/components/EvidenceCard";
+import { copy } from "@/lib/copy";
 
 // One page per item, so a shared post carries that item's headline and claim.
 export const dynamicParams = false;
@@ -29,7 +30,7 @@ export default async function EvidenceItemPage({ params }: { params: Promise<{ i
   if (!item) notFound();
   return (
     <section className="wrap" style={{ paddingTop: 56, paddingBottom: 80, maxWidth: 880, marginLeft: "auto", marginRight: "auto", display: "flex", flexDirection: "column", gap: 20 }}>
-      <Link href="/evidence/" className="mono" style={{ fontSize: 12, letterSpacing: "0.06em" }}>← ALL EVIDENCE</Link>
+      <Link href="/evidence/" className="mono" style={{ fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase" }}>{copy.evidence.allEvidence}</Link>
       <EvidenceCard item={item} headingLevel={1} link={false} />
     </section>
   );
