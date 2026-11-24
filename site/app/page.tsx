@@ -204,7 +204,7 @@ export default function Home() {
           <a href={links.releases} style={{ background: "var(--card)", border: "1px solid var(--line)", borderRadius: 16, padding: 28, display: "flex", flexDirection: "column", gap: 12, color: "var(--ink)", textDecoration: "none" }}>
             <span className="mono" style={{ fontSize: 11, color: "var(--teal)" }}>RELEASES</span>
             <span style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 600, letterSpacing: "-0.02em" }}>Watch the repository</span>
-            <span style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>New rules and versions land there first. Latest: {facts.changelog[0].version}, {facts.changelog[0].title.toLowerCase()}.</span>
+            <span style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>Every version is a tag in the repo, built and published from it. Latest: {facts.changelog[0].version}, {facts.changelog[0].title.toLowerCase()}.</span>
             <span style={{ marginTop: "auto", fontSize: 14, color: "var(--teal)" }}>On GitHub ↗</span>
           </a>
           <Link href="/agentic-web/" style={{ background: "var(--card)", border: "1px solid var(--line)", borderRadius: 16, padding: 28, display: "flex", flexDirection: "column", gap: 12, color: "var(--ink)", textDecoration: "none" }}>
