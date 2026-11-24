@@ -32,6 +32,7 @@ export default function NextPage() {
         <h1 style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(40px, 6.4vw, 72px)", lineHeight: 1, letterSpacing: "-0.04em", fontWeight: 700 }}>{c.title}</h1>
         <p className="lede" style={{ fontSize: 19, maxWidth: 760 }}>{c.lede}</p>
         <p className="mono" style={{ margin: 0, fontSize: 13, color: "var(--teal)" }}>{c.promise}</p>
+        <p style={{ margin: 0, fontSize: 14, color: "var(--muted)" }}><T s={c.report} /></p>
       </section>
 
       {/* THE SIX STEPS */}
