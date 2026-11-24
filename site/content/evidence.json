@@ -1,14 +1,14 @@
 [
   {
     "id": "aiid-1846-claude-code-settings",
-    "date": "2026-11-02",
-    "headline": "AI Incident Database lists Incident 1846: credentials saved by an AI coding assistant reportedly reached public repositories",
-    "claim": "The AI Incident Database catalogues Incident 1846: credentials saved by Anthropic's Claude Code reportedly appeared in public repositories. The incident date it records is 2026-11-02.",
-    "quote": "Incident 1846: Credentials Saved by Anthropic's Claude Code AI Coding Assistant Reportedly Appeared in Public Repositories",
-    "why": "A file an agent writes for convenience can carry the credentials it was given. The database says \"reportedly\", and so do we.",
-    "source_id": "inc-aiid",
-    "source_name": "AI Incident Database",
-    "source_url": "https://incidentdatabase.ai/cite/1846/",
+    "date": "2026-11-09",
+    "headline": "GitGuardian: 31,088 secrets in Claude Code settings files on public GitHub, 5,343 still working when found",
+    "claim": "GitGuardian reports 31,088 distinct secrets in Claude Code’s .claude/settings.local.json on public GitHub, across 23,276 repositories, of which 5,343 worked when it detected them. It says answering \"Yes, and don’t ask again\" saves an allow rule that is the command itself, API key included. The AI Incident Database lists this as Incident 1846.",
+    "quote": "GitGuardian found 31,088 distinct secrets in Claude Code’s .claude/settings.local.json on public GitHub, across 23,276 repositories, and 5,343 of them worked when we detected them.",
+    "why": "A convenience click turned into a stored credential, and the file that holds it travels with the code. The agent did what it was allowed; the key went where the file went.",
+    "source_id": "res-gitguardian-claude-settings",
+    "source_name": "GitGuardian research (Guillaume Valadon)",
+    "source_url": "https://blog.gitguardian.com/claude-code-settings-local-json-secrets-docker-hub/",
     "last_verified": "2026-11-24",
     "event_type": "incident",
     "jurisdiction": "global",
@@ -16,7 +16,7 @@
     "legal_stage": "not_legal",
     "confidence": "medium",
     "verification_status": "opened_and_matched",
-    "limits": "The primary report the database cites (GitGuardian) was not opened, so its figures are not shown here."
+    "limits": "Vendor research: GitGuardian sells the scanning it recommends. \"Worked when we detected them\" is not evidence that anyone used them. Public GitHub and Docker Hub only. Catalogued by the AI Incident Database as Incident 1846 (incidentdatabase.ai/cite/1846/)."
   },
   {
     "id": "orca-agent-incident-archive",
