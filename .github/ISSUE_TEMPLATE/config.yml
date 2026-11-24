@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: A security vulnerability
+    url: https://github.com/daviderez4/nodatachat-core/blob/main/SECURITY.md
+    about: Do not open a public issue for a vulnerability. Follow the security policy.
+  - name: How reports are handled
+    url: https://github.com/daviderez4/nodatachat-core/blob/main/REPORTING.md
+    about: The statuses a report goes through, and what we do and do not promise.
