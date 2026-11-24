@@ -11,6 +11,7 @@
 //
 // Output: generated/facts.json (git-ignored, rebuilt on every build).
 
+import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -27,15 +28,23 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-// ── Compile the three modules the lab runs, as they are in src/ ─────────────
-const MODULES = ["agent-events", "agent-rules", "agent-history", "agent-history-report"];
+// ── Compile the modules the site runs, as they are in src/ ─────────────────
+// Start from the entry points and follow every local import, so a module a new
+// release adds (3.9.0 added measured.ts) is compiled without anyone listing it.
+const ENTRY = ["agent-events", "agent-rules", "agent-history", "agent-history-report"];
 mkdirSync(CACHE, { recursive: true });
-for (const m of MODULES) {
+const done = new Set();
+const queue = [...ENTRY];
+while (queue.length) {
+  const m = queue.shift();
+  if (done.has(m)) continue;
+  done.add(m);
   const src = readFileSync(join(PROTECT, "src", `${m}.ts`), "utf8");
   const { outputText } = ts.transpileModule(src, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
   });
-  // Local imports are extensionless in src/; point them at the compiled siblings.
+  // Local imports are extensionless in src/; point them at the compiled siblings, and compile those too.
+  for (const [, dep] of outputText.matchAll(/require\("\.\/([\w-]+)"\)/g)) queue.push(dep);
   writeFileSync(join(CACHE, `${m}.cjs`), outputText.replace(/require\("\.\/([\w-]+)"\)/g, 'require("./$1.cjs")'));
 }
 const require = createRequire(import.meta.url);
@@ -59,6 +68,15 @@ for (const c of history.CATEGORIES) {
   labels[c] = m[1];
 }
 if (typeof report.CHECK_COMMAND !== "string") fail("CHECK_COMMAND not found in agent-history-report.ts");
+
+// What npm serves today. The source can be ahead of npm: a release waits for a person's
+// 2FA approval. People run what npm serves, so the site must not show a version they cannot get.
+let npmLatest = null;
+try {
+  npmLatest = execFileSync("npm", ["view", pkg.name, "dist-tags.latest"], { encoding: "utf8", timeout: 20000, stdio: ["ignore", "pipe", "ignore"] }).trim() || null;
+} catch {
+  // Unreachable registry: the pages say only what the source is, never claim a published version.
+}
 
 const readme = readFileSync(join(PROTECT, "README.md"), "utf8");
 const changelog = [];
@@ -156,6 +174,7 @@ writeFileSync(
     {
       package: pkg.name,
       version: pkg.version,
+      npmLatest,
       license: pkg.license,
       node: pkg.engines?.node ?? "",
       checkCommand: report.CHECK_COMMAND,

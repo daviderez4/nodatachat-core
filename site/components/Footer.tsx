@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { founder, links } from "@/lib/links";
-import { facts } from "@/lib/facts";
+import { facts, published } from "@/lib/facts";
 
 export function Footer() {
   return (
@@ -32,7 +32,7 @@ export function Footer() {
       </div>
       <div className="wrap" style={{ paddingTop: 18, paddingBottom: 32, borderTop: "1px solid var(--night-line)", display: "flex", flexWrap: "wrap", gap: "8px 24px", justifyContent: "space-between", fontSize: 13, color: "var(--snow-3)" }}>
         <span>
-          {facts.package} {facts.version} · {facts.license} · Maintained by <a href={links.nodata} style={{ color: "var(--teal-hi)" }}>NoData</a>
+          {facts.package} {published ?? `${facts.version} (source)`} · {facts.license} · Maintained by <a href={links.nodata} style={{ color: "var(--teal-hi)" }}>NoData</a>
         </span>
         <span>
           Need this enforced across a team? <a href={links.nodata} style={{ color: "var(--teal-hi)" }}>From visibility to control →</a>

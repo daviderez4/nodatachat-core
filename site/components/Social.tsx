@@ -1,4 +1,4 @@
-import { facts } from "@/lib/facts";
+import { facts, published, sourceAhead } from "@/lib/facts";
 import { founder, links } from "@/lib/links";
 
 const GH = <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg>;
@@ -9,7 +9,9 @@ const IN = <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="c
 export function Social({ dark = false }: { dark?: boolean }) {
   const cards: Array<{ href: string; icon: React.ReactNode; kicker: string; title: string; body: string; cta: string; person?: boolean }> = [
     { href: links.repo, icon: GH, kicker: "OPEN SOURCE", title: "daviderez4/nodatachat-core", body: `The check, its rules and this site. ${facts.license}. Star it, watch releases, open an issue.`, cta: "Star on GitHub ↗" },
-    { href: links.npm, icon: NPM, kicker: "NPM", title: facts.package, body: `v${facts.version}, published from the public repo with provenance. Node ${facts.node}.`, cta: "View on npm ↗" },
+    { href: links.npm, icon: NPM, kicker: "NPM", title: facts.package, body: published
+        ? `v${published} on npm, published from the public repo with provenance.${sourceAhead ? ` ${facts.version} is in the repo, awaiting release.` : ""} Node ${facts.node}.`
+        : `Source at ${facts.version}. Node ${facts.node}.`, cta: "View on npm ↗" },
   ];
   if (founder.linkedin && founder.name)
     cards.push({ href: founder.linkedin, icon: IN, kicker: "THE PERSON BEHIND IT", title: founder.name, body: founder.title || "Follow the work as it happens.", cta: "Follow on LinkedIn ↗", person: true });

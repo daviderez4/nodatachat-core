@@ -44,6 +44,8 @@ export interface WebScenario {
 export interface Facts {
   package: string;
   version: string;
+  /** What `npm view <pkg> dist-tags.latest` returned at build time; null if the registry was unreachable. */
+  npmLatest: string | null;
   license: string;
   node: string;
   checkCommand: string;
@@ -79,3 +81,7 @@ export function succeededOf(s: Scenario): string {
   if (s.agent === "codex") return "not recorded";
   return s.toolError ? "no" : "yes";
 }
+
+/** The version people get from npm, and whether the source here is ahead of it. */
+export const published = facts.npmLatest;
+export const sourceAhead = !!facts.npmLatest && facts.npmLatest !== facts.version;

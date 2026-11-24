@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { facts, RUN } from "@/lib/facts";
+import { facts, published, RUN, sourceAhead } from "@/lib/facts";
 import { links } from "@/lib/links";
 import { ActivityMap } from "@/components/ActivityMap";
 import { CopyCommand } from "@/components/CopyCommand";
@@ -97,7 +97,7 @@ export default function Home() {
               {facts.session.lines.join("\n")}
             </pre>
             <figcaption style={{ padding: "12px 20px 16px", fontSize: 12, color: "var(--faint)" }}>
-              This is the CLI&apos;s real output for the {t.calls} demo calls above, produced by the report code at build time. Your report shows your own counts.
+              This is the CLI&apos;s real output for the {t.calls} demo calls above, produced by the report code of the source ({facts.version}) at build time.{sourceAhead ? ` npm serves ${published} until ${facts.version} is released, so its wording may differ.` : ""} Your report shows your own counts.
             </figcaption>
           </figure>
         </div>
@@ -112,7 +112,8 @@ export default function Home() {
               <h2 className="h2">Not just to read. To work.</h2>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              <span className="chip" style={{ borderColor: "#1F4D47", color: "var(--teal-hi)" }}>v{facts.version}</span>
+              {published ? <span className="chip" style={{ borderColor: "#1F4D47", color: "var(--teal-hi)" }}>v{published} on npm</span> : null}
+              {!published || sourceAhead ? <span className="chip">source {facts.version}{sourceAhead ? ", awaiting release" : ""}</span> : null}
               <span className="chip">Node {facts.node}</span>
               <span className="chip">{facts.license}</span>
             </div>

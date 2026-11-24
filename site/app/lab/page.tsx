@@ -29,7 +29,7 @@ export default function LabPage() {
         </div>
         <div className="mono" style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 11, color: "var(--faint)", alignItems: "flex-end", textAlign: "right" }}>
           <span style={{ color: "var(--amber)", border: "1px solid #f1d7ae", borderRadius: 4, padding: "3px 7px" }}>SIMULATED LOGS · REAL RULES</span>
-          <span>decided at build time by {facts.package}@{facts.version}</span>
+          <span>decided at build time by the source of {facts.package} {facts.version}</span>
         </div>
       </section>
 
