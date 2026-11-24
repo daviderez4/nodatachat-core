@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { copy, T } from "@/lib/copy";
+import { Emblem } from "./Emblem";
 
 // The visitor agrees to the terms once per terms version. The agreement is kept in
 // this browser only (localStorage): no cookie, no request, nothing leaves the page.
@@ -30,7 +31,7 @@ export function Consent() {
   }, [open]);
 
   // The terms page itself stays readable: the window would cover the text it asks you to read.
-  if (!open || pathname?.startsWith("/terms")) return null;
+  if (!open || pathname?.startsWith("/terms") || pathname?.startsWith("/principles")) return null;
 
   // Clickwrap: the box starts unchecked and the button stays disabled until the person ticks it.
   const agree = () => {
@@ -46,11 +47,14 @@ export function Consent() {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(10,13,16,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
       <div role="dialog" aria-modal="true" aria-labelledby="consent-title" style={{ width: "100%", maxWidth: 520, background: "var(--card)", borderRadius: 16, padding: 28, boxShadow: "0 30px 80px rgba(0,0,0,0.35)", display: "flex", flexDirection: "column", gap: 16 }}>
-        <h2 id="consent-title" style={{ margin: 0, fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em" }}>{c.title}</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Emblem size={56} />
+          <h2 id="consent-title" style={{ margin: 0, fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em" }}>{c.title}</h2>
+        </div>
         <ul style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8, fontSize: 15, lineHeight: 1.5, color: "var(--ink-2)" }}>
           {c.points.map((p) => <li key={p}>{p}</li>)}
         </ul>
-        <p style={{ margin: 0, fontSize: 14 }}><T s={c.termsLink} /></p>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5 }}><T s={c.principles} /> <T s={c.termsLink} /></p>
         <label style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, lineHeight: 1.5, cursor: "pointer", padding: 12, borderRadius: 10, background: "var(--paper-2)" }}>
           <input ref={box} type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} style={{ width: 20, height: 20, marginTop: 1, flex: "none", accentColor: "var(--ink)" }} />
           <span>{c.checkbox}</span>

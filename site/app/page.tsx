@@ -6,6 +6,7 @@ import { ActivityMap } from "@/components/ActivityMap";
 import { CopyCommand } from "@/components/CopyCommand";
 import { QuickstartTabs } from "@/components/QuickstartTabs";
 import { Social } from "@/components/Social";
+import { Emblem } from "@/components/Emblem";
 
 // The six calls of the homepage map, in the order they happen in the demo session.
 const MAP_IDS = ["env", "aws", "src", "grep", "mcp", "curl"];
@@ -52,6 +53,27 @@ export default function Home() {
       <section id="map" className="wrap" style={{ paddingTop: 16, paddingBottom: 96 }}>
         <ActivityMap scenarios={map} />
         <p style={{ margin: "14px 0 0", fontSize: 13, color: "var(--faint)", textAlign: "center" }}><T s={c.mapCaption} /></p>
+      </section>
+
+      {/* THE 10 PRINCIPLES: the site's own mark, right after the first thing it shows */}
+      <section className="dark" style={{ borderTop: "1px solid var(--night-line)", borderBottom: "1px solid var(--night-line)", backgroundImage: "radial-gradient(circle at 12% 50%, rgba(20,184,166,0.18), transparent 45%)" }}>
+        <div className="wrap" style={{ paddingTop: 64, paddingBottom: 64, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "28px 48px" }}>
+          <div style={{ flex: "none" }}><Emblem size={168} dark /></div>
+          <div style={{ flex: "1 1 420px", minWidth: 0, display: "flex", flexDirection: "column", gap: 14 }}>
+            <span className="mono" style={{ fontSize: 12, letterSpacing: "0.14em", color: "#5EEAD4" }}>{c.principles.kicker}</span>
+            <h2 className="h2" style={{ color: "var(--snow)" }}>{c.principles.title}</h2>
+            <p className="lede" style={{ maxWidth: 640 }}>{c.principles.lede}</p>
+            <ol style={{ listStyle: "none", margin: "4px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "8px 20px" }}>
+              {copy.principles.en.items.map(([h], i) => (
+                <li key={h} style={{ display: "flex", gap: 10, alignItems: "baseline", fontSize: 14, color: "var(--snow-2)" }}>
+                  <span className="mono" style={{ color: i === 6 ? "var(--teal-hi)" : "#6E7A84", fontWeight: 700, width: 20, flex: "none" }}>{i + 1}</span>
+                  <span style={{ color: i === 6 ? "var(--snow)" : undefined, fontWeight: i === 6 ? 600 : 400 }}>{h}</span>
+                </li>
+              ))}
+            </ol>
+            <Link href="/principles/" className="btn btn-teal" style={{ alignSelf: "flex-start", marginTop: 6 }}>{c.principles.cta}</Link>
+          </div>
+        </div>
       </section>
 
       {/* THE TOOL */}
@@ -236,6 +258,7 @@ export default function Home() {
           </p>
           <p className="lede" style={{ maxWidth: 720, fontSize: 19 }}>{c.vision.lede}</p>
           <p className="lede" style={{ maxWidth: 720 }}>{c.vision.second}</p>
+          <p style={{ margin: 0, fontSize: 16, fontWeight: 600 }}><T s={c.vision.principlesLink} linkStyle={{ color: "var(--teal-hi)" }} /></p>
           <ol style={{ listStyle: "none", margin: "24px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {c.vision.steps.map(([k, h, b]) => (
               <li key={k} style={{ border: "1px solid var(--night-line)", borderRadius: 12, padding: 20, display: "flex", flexDirection: "column", gap: 8 }}>

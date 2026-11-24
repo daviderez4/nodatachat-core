@@ -40,7 +40,7 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-          <p className="lede" style={{ marginTop: 8 }}>{c.visionClose}</p>
+          <p className="lede" style={{ marginTop: 8 }}><T s={c.visionClose} linkStyle={{ color: "var(--teal-hi)" }} /></p>
         </div>
       </section>
 

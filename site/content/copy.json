@@ -30,6 +30,13 @@
       "reportCaption": "This is the CLI's real output for the {calls} demo calls above, produced by the report code of the source ({version}) at build time."
     },
 
+    "principles": {
+      "kicker": "THE 10 PRINCIPLES",
+      "title": "Before you give AI access to your information, set the rules.",
+      "lede": "Know your data, set policy, enforce it at the point of access, and demand proof. Ten principles for anyone who lets AI near their information.",
+      "cta": "Read the 10 principles →"
+    },
+
     "nextBand": {
       "kicker": "GOT YOUR REPORT?",
       "title": "Six steps, in order. Five of them free.",
@@ -96,7 +103,8 @@
         ["02 · The reason to trust", "The method", "Evidence, limits and decisions, in the open."],
         ["03 · The reason to return", "The lab and the rules", "New scenarios, rules and releases."]
       ],
-      "nodata": ["04 · FROM VISIBILITY TO CONTROL", "NoData", "For teams that want to enforce what they now see. [Learn more →](nodata)"]
+      "nodata": ["04 · FROM VISIBILITY TO CONTROL", "NoData", "For teams that want to enforce what they now see. [Learn more →](nodata)"],
+      "principlesLink": "[The 10 principles for protecting information in the age of AI →](/principles/)"
     }
   },
 
@@ -220,12 +228,186 @@
     "outside": "The line \"secret-looking values … over all calls\" also counts keys that came back from ordinary files and command output. Those are often the most interesting: a key sitting in code. Find them in the events and treat them like step 2."
   },
 
+  "principles": {
+    "metaDescription": "Ten principles for protecting information in the age of AI: know your data, set policy, enforce it at the point of access, and demand proof.",
+    "tagline": "AI should empower. Your data should remain yours.",
+    "brand": "NoData — Possession is not access.",
+    "en": {
+      "title": "The 10 commandments for protecting information in the age of AI",
+      "eyebrow": "The vision",
+      "lead": "Before you give AI access to your information, set the rules.",
+      "intro": [
+        "We believe AI should help people and organisations, not at the expense of their confidentiality, their privacy, or their sovereignty over their information.",
+        "The traditional borders of the organisation are no longer enough. Information moves between users, agents, models, vendors and systems. Protecting it takes a new approach."
+      ],
+      "start": "Here is where to start:",
+      "items": [
+        [
+          "Know your data",
+          "Know what information you hold, where it is, what in it is sensitive, and who can reach it. You cannot protect information you do not know."
+        ],
+        [
+          "Do not assume information stays inside the organisation",
+          "Check what AI agents read, what they send, which tools they run, and which systems and vendors the information reaches."
+        ],
+        [
+          "Set policy before you grant access",
+          "Define what information may be disclosed, to whom, for what purpose, under which conditions and in which circumstances. Do not leave these decisions to a vendor's defaults."
+        ],
+        [
+          "Do not settle for vendors' promises",
+          "Read the terms of use, understand the privacy policy, check how information is retained, and use tools that let you see what really happens."
+        ],
+        [
+          "Separate holding information from the right to access it",
+          "Whoever holds a file, a database or a capsule is not necessarily allowed to open it. Demand a mechanism where access is decided by policy and permission, not by possession alone."
+        ],
+        [
+          "Enforce, do not only monitor",
+          "A policy that is not enforced is mostly a statement of intent. Use mechanisms that prevent access and the release of information when the conditions are not met."
+        ],
+        [
+          "Demand proof before every disclosure",
+          "Do not settle for a log written after the fact, or for a promise that access was checked. Demand verifiable evidence that the decision was made before the information was released, and that the release met the conditions set."
+        ],
+        [
+          "Do not ignore what the system does not know",
+          "Scanning, detection, decoding and classification can be wrong. Treat an unrecognised result as Unknown, not as confirmation that the information is safe. Allow reports of missed detections, wrong classifications and unsupported files."
+        ],
+        [
+          "Check, learn and improve, continuously",
+          "Use open tools, check the findings, learn the limits, apply the recommendations and report faults. Your protection policy should evolve with the information, the technology and the threats."
+        ],
+        [
+          "Keep control with the owner of the information",
+          "Users change, AI agents change, vendors change, and information moves between systems. The policy should stay in your control, and access to information should be decided anew on every request."
+        ]
+      ],
+      "closingTitle": "Responsibility starts with you. Enforcement should be part of the infrastructure.",
+      "closing": [
+        "NoData was built to help make these principles real: to know the paths by which information is reached, to set policy, to enforce it at the point of access, and to produce proof that can be verified.",
+        "Our open source and our tools are meant to let you understand what happens behind the scenes, even without using our commercial products. We encourage independent checking, learning, reporting of limits, and continuous improvement.",
+        "We do not ask you to trust us blindly. We ask you to know your information, check the mechanisms, and demand proof."
+      ],
+      "highlight": "Do not settle for knowing who accessed your information. Demand to know why access was allowed, and demand proof before the information is disclosed.",
+      "stages": [
+        [
+          "Know",
+          "1–2"
+        ],
+        [
+          "Set policy",
+          "3–4"
+        ],
+        [
+          "Enforce at the point of access",
+          "5–6"
+        ],
+        [
+          "Prove before disclosure",
+          "7"
+        ]
+      ],
+      "loop": "Report, learn, improve (8–9)",
+      "frame": "Control stays with the owner of the information (10)",
+      "diagramCaption": "From the commandments to practice",
+      "toTerms": "And now, the legal agreement: the Terms of Use →",
+      "lang": "עברית"
+    },
+    "he": {
+      "title": "10 הדיברות להגנה על המידע בעידן הבינה המלאכותית",
+      "eyebrow": "החזון",
+      "lead": "לפני שאתם נותנים ל-AI גישה למידע שלכם, קבעו את הכללים.",
+      "intro": [
+        "אנחנו מאמינים שבינה מלאכותית צריכה לעזור לאנשים ולארגונים, לא לבוא על חשבון הסודיות, הפרטיות והריבונות שלהם על המידע.",
+        "הגבולות המסורתיים של הארגון כבר אינם מספיקים. מידע עובר בין משתמשים, סוכנים, מודלים, ספקים ומערכות. האחריות להגן עליו מחייבת גישה חדשה."
+      ],
+      "start": "כך מתחילים:",
+      "items": [
+        [
+          "הכירו את הדאטה שלכם",
+          "דעו איזה מידע אתם מחזיקים, היכן הוא נמצא, מה רגיש בו ומי יכול לגשת אליו. אי אפשר להגן על מידע שאינכם מכירים."
+        ],
+        [
+          "אל תניחו שהמידע נשאר בגבולות הארגון",
+          "בדקו מה סוכני AI קוראים, מה הם שולחים, אילו כלים הם מפעילים ולאילו מערכות וספקים המידע מגיע."
+        ],
+        [
+          "גבשו מדיניות לפני שאתם נותנים גישה",
+          "הגדירו איזה מידע מותר לחשוף, למי, לאיזו מטרה, באילו תנאים ובאילו נסיבות. אל תשאירו את ההחלטות האלה לברירות המחדל של הספק."
+        ],
+        [
+          "אל תסתפקו בהבטחות של ספקים",
+          "קראו את תנאי השימוש, הבינו את מדיניות הפרטיות, בדקו את מנגנוני שמירת המידע והשתמשו בכלים שמאפשרים לכם לראות מה באמת מתרחש."
+        ],
+        [
+          "הפרידו בין החזקת מידע להרשאה לגשת אליו",
+          "מי שמחזיק בקובץ, במאגר או בקפסולה אינו בהכרח מורשה לפתוח אותם. דרשו מנגנון שבו הגישה נקבעת לפי מדיניות והרשאה, ולא רק לפי עצם ההחזקה במידע."
+        ],
+        [
+          "הפעילו מנגנוני אכיפה, לא רק ניטור",
+          "מדיניות שאינה נאכפת היא בעיקר הצהרת כוונות. השתמשו במנגנונים שמונעים גישה ושחרור מידע כאשר התנאים אינם מתקיימים."
+        ],
+        [
+          "דרשו הוכחה לפני כל חשיפה",
+          "אל תסתפקו בלוג שנכתב בדיעבד או בהבטחה שהגישה נבדקה. דרשו ראיה שניתן לאמת לכך שההחלטה התקבלה לפני שחרור המידע ושהשחרור עמד בתנאים שהוגדרו."
+        ],
+        [
+          "אל תתעלמו ממה שהמערכת אינה יודעת",
+          "סריקה, זיהוי, פענוח וסיווג עלולים לטעות. התייחסו לתוצאה לא מוכרת כאל Unknown, ולא כאל אישור שהמידע בטוח. אפשרו דיווח על זיהוי חסר, סיווג שגוי וקבצים שאינם נתמכים."
+        ],
+        [
+          "בדקו, למדו ושפרו באופן מתמשך",
+          "השתמשו בכלים פתוחים, בדקו את הממצאים, למדו את המגבלות, יישמו המלצות ודווחו על תקלות. מדיניות ההגנה צריכה להתפתח יחד עם המידע, הטכנולוגיה והאיומים."
+        ],
+        [
+          "שמרו את השליטה אצל בעל המידע",
+          "משתמשים מתחלפים, סוכני AI מתחלפים, ספקים מתחלפים והמידע עובר בין מערכות. המדיניות צריכה להישאר בשליטתכם, והגישה למידע צריכה להיבחן מחדש בכל בקשה."
+        ]
+      ],
+      "closingTitle": "האחריות מתחילה אצלכם. האכיפה צריכה להיות חלק מהתשתית.",
+      "closing": [
+        "NoData נבנתה כדי לסייע להפוך את העקרונות האלה למציאות: להכיר את מסלולי הגישה למידע, לגבש מדיניות, לאכוף אותה בנקודת הגישה ולייצר הוכחה שניתן לאמת.",
+        "הקוד הפתוח והכלים שלנו נועדו לאפשר לכם להבין מה מתרחש מאחורי הקלעים, גם בלי להשתמש במוצרים המסחריים שלנו. אנחנו מעודדים בדיקה עצמאית, למידה, דיווח על מגבלות ושיפור מתמשך.",
+        "אנחנו לא מבקשים מכם לסמוך עלינו בעיניים עצומות. אנחנו מבקשים מכם להכיר את המידע שלכם, לבדוק את המנגנונים ולדרוש הוכחות."
+      ],
+      "highlight": "אל תסתפקו בלדעת מי ניגש למידע שלכם. דרשו לדעת מדוע הותרה הגישה, ודרשו הוכחה לפני שהמידע נחשף.",
+      "stages": [
+        [
+          "להכיר",
+          "1–2"
+        ],
+        [
+          "לגבש מדיניות",
+          "3–4"
+        ],
+        [
+          "לאכוף בנקודת הגישה",
+          "5–6"
+        ],
+        [
+          "להוכיח לפני חשיפה",
+          "7"
+        ]
+      ],
+      "loop": "לדווח, ללמוד, לשפר (8–9)",
+      "frame": "השליטה נשארת אצל בעל המידע (10)",
+      "diagramCaption": "מהדיברות לפעולה",
+      "toTerms": "ועכשיו, ההסכם המשפטי: תנאי השימוש ←",
+      "lang": "English"
+    }
+  },
+
   "terms": {
     "version": "2026-11-24",
     "metaDescription": "The terms for using whatmyagentsaw.com and the agent-check tool.",
     "eyebrow": "Terms",
     "title": "Terms of use",
     "updated": "Last updated",
+    "principlesKicker": "BEFORE THE AGREEMENT",
+    "principlesTitle": "The 10 principles for protecting information in the age of AI",
+    "principlesBody": "What we stand for comes first: know your data, set policy, enforce it at the point of access, and demand proof. The terms below are the legal agreement that sets each side's rights and the limits of liability.",
+    "principlesLink": "Read the 10 principles →",
     "intro": "Please read these terms carefully. They include a disclaimer of warranties (section 5), a limitation of liability (section 6) and your responsibility for how you use the tool (sections 7 and 8). By using this site or running agent-check, you agree to them. If you do not agree, do not use them.",
     "sections": [
       ["Who we are", "whatmyagentsaw.com (the \"site\") and the agent-check tool (the \"tool\") are made available by NoData Capsule (\"NoData\", \"we\"), operating [nodatacapsule.com](nodata), Israel. The tool is part of the open-source package {package}, published from [daviderez4/nodatachat-core](repo)."],
@@ -257,6 +439,7 @@
       "You use it at your own responsibility, only where you are allowed to, and NoData's liability is limited as the terms say."
     ],
     "termsLink": "[Read the full terms](/terms/)",
+    "principles": "This site follows [the 10 principles for protecting information in the age of AI](/principles/).",
     "checkbox": "I have read and agree to the Terms of Use, including the disclaimer of warranties and the limitation of liability.",
     "agree": "Continue",
     "stored": "Stored only in this browser. No cookies, no tracking."
@@ -275,7 +458,7 @@
       ["People hold the keys", "An agent can ask. A person, or a rule a person set, decides. An agent is never the one who approves."],
       ["The owner sets the rules", "Every action an agent takes on your information follows rules you can read, change, and check afterwards."]
     ],
-    "visionClose": "Information moves. Control stays. Seeing what agents do is the first step.",
+    "visionClose": "Information moves. Control stays. Seeing what agents do is the first step. [Read the 10 principles →](/principles/)",
     "whoEyebrow": "Who builds it",
     "whoTitle": "Maintained by NoData.",
     "who": [

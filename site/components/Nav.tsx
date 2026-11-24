@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { links } from "@/lib/links";
 import { Mark } from "./Mark";
+import { Emblem } from "./Emblem";
 
 // Only places that exist. Sections not built yet are not in the menu.
 const items: Array<{ href: string; label: string; external?: boolean }> = [
@@ -33,6 +34,10 @@ export function Nav() {
           )}
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <Link href="/principles/" style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 40, padding: "0 12px 0 6px", borderRadius: 999, border: "1px solid #9FD9CF", background: "#F3FBFA", color: "var(--teal)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+            <Emblem size={28} label="" />
+            10 principles
+          </Link>
           <a href={links.repo} aria-label="GitHub repository" className="btn btn-ghost" style={{ padding: "0 12px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg>
           </a>
