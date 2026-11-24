@@ -13,7 +13,7 @@
 
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
@@ -68,6 +68,44 @@ for (const c of history.CATEGORIES) {
   labels[c] = m[1];
 }
 if (typeof report.CHECK_COMMAND !== "string") fail("CHECK_COMMAND not found in agent-history-report.ts");
+
+// ── The copy file: words only, never facts ─────────────────────────────────
+// content/copy.json is meant to be edited by hand. It may name facts only through
+// {tokens} (filled from this file's output), so it is refused if it types a version,
+// a command or the package, links to a key that does not exist, or documents a flag
+// the CLI does not have (or a number the CLI does not use).
+{
+  const copy = JSON.parse(readFileSync(join(SITE, "content", "copy.json"), "utf8"));
+  const linksSrc = readFileSync(join(SITE, "lib", "links.ts"), "utf8");
+  const linkBlock = /export const links = \{([\s\S]*?)\n\};/.exec(linksSrc)?.[1] ?? "";
+  const LINK_KEYS = new Set([...linkBlock.matchAll(/^\s+(\w+):/gm)].map((m) => m[1]));
+  const TOKENS = new Set(["package", "version", "license", "node", "labCount", "calls", "samples", "latest"]);
+  const strings = [];
+  const walk = (v, path) => {
+    if (typeof v === "string") strings.push([path, v]);
+    else if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${path}[${i}]`));
+    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) if (k !== "_readme") walk(x, path ? `${path}.${k}` : k);
+  };
+  walk(copy, "");
+  for (const [path, s] of strings) {
+    if (/\d+\.\d+\.\d+/.test(s)) fail(`copy.json ${path} types a version ("${s}"). Versions come from the code: use the page, not the copy.`);
+    if (/\bnpx\s+[@-]|@nodatachat\//.test(s)) fail(`copy.json ${path} types a command or the package. Use {package}; commands come from the code.`);
+    for (const [, k] of s.matchAll(/\{(\w+)\}/g)) if (!TOKENS.has(k)) fail(`copy.json ${path}: unknown token {${k}}. Known: ${[...TOKENS].join(", ")}`);
+    for (const [, target] of s.matchAll(/\]\(([^)]+)\)/g)) {
+      if (target.startsWith("/")) {
+        const page = target === "/" ? "app/page.tsx" : `app${target.replace(/\/$/, "")}/page.tsx`;
+        if (!existsSync(join(SITE, page))) fail(`copy.json ${path} links to ${target}, and there is no such page`);
+      } else if (!LINK_KEYS.has(target)) fail(`copy.json ${path} links to "${target}", which is not a key in lib/links.ts`);
+    }
+  }
+  const flagCopy = copy.home?.developers?.flags ?? {};
+  for (const f of FLAGS) if (!flagCopy[f]) fail(`copy.json home.developers.flags has no description for ${f}`);
+  for (const [f, text] of Object.entries(flagCopy)) {
+    if (!FLAGS.includes(f)) fail(`copy.json documents ${f}, which the site does not list (and may not exist)`);
+    for (const [n] of text.matchAll(/\d+/g)) if (!bin.includes(n)) fail(`copy.json describes ${f} with the number ${n}, which src/bin.ts does not use`);
+    for (const [file] of text.matchAll(/[\w-]+\.html/g)) if (!bin.includes(file)) fail(`copy.json describes ${f} with ${file}, which src/bin.ts does not name`);
+  }
+}
 
 // What npm serves today. The source can be ahead of npm: a release waits for a person's
 // 2FA approval. People run what npm serves, so the site must not show a version they cannot get.
