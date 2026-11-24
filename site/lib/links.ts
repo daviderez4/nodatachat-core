@@ -22,7 +22,7 @@ export const links = {
  * no guessed name, no guessed profile link.
  */
 export const founder = {
-  name: "",
-  title: "",
-  linkedin: "",
+  name: "David Erez",
+  title: "Founder, NoData",
+  linkedin: "https://www.linkedin.com/in/daviderez",
 };

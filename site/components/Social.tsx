@@ -7,12 +7,12 @@ const IN = <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="c
 
 /** Where the project lives and who is behind it. Every number shown is read from the package. */
 export function Social({ dark = false }: { dark?: boolean }) {
-  const cards: Array<{ href: string; icon: React.ReactNode; kicker: string; title: string; body: string; cta: string }> = [
+  const cards: Array<{ href: string; icon: React.ReactNode; kicker: string; title: string; body: string; cta: string; person?: boolean }> = [
     { href: links.repo, icon: GH, kicker: "OPEN SOURCE", title: "daviderez4/nodatachat-core", body: `The check, its rules and this site. ${facts.license}. Star it, watch releases, open an issue.`, cta: "Star on GitHub ↗" },
     { href: links.npm, icon: NPM, kicker: "NPM", title: facts.package, body: `v${facts.version}, published from the public repo with provenance. Node ${facts.node}.`, cta: "View on npm ↗" },
   ];
   if (founder.linkedin && founder.name)
-    cards.push({ href: founder.linkedin, icon: IN, kicker: "THE PERSON BEHIND IT", title: founder.name, body: founder.title || "Follow the work as it happens.", cta: "Follow on LinkedIn ↗" });
+    cards.push({ href: founder.linkedin, icon: IN, kicker: "THE PERSON BEHIND IT", title: founder.name, body: founder.title || "Follow the work as it happens.", cta: "Follow on LinkedIn ↗", person: true });
 
   const bg = dark ? "var(--night-2)" : "var(--card)";
   const line = dark ? "var(--night-line)" : "var(--line)";
@@ -23,7 +23,11 @@ export function Social({ dark = false }: { dark?: boolean }) {
       {cards.map((c) => (
         <a key={c.href} href={c.href} style={{ background: bg, border: `1px solid ${line}`, borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", gap: 12, color: "inherit", textDecoration: "none", minHeight: 200 }}>
           <span style={{ display: "flex", alignItems: "center", gap: 10, color: accent }}>{c.icon}<span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em" }}>{c.kicker}</span></span>
-          <span className="mono" style={{ fontSize: 15, fontWeight: 500, wordBreak: "break-all" }}>{c.title}</span>
+          {c.person ? (
+            <span style={{ fontFamily: "var(--display)", fontSize: 19, fontWeight: 600, letterSpacing: "-0.01em" }}>{c.title}</span>
+          ) : (
+            <span className="mono" style={{ fontSize: 15, fontWeight: 500, wordBreak: "break-all" }}>{c.title}</span>
+          )}
           <span style={{ fontSize: 14, lineHeight: 1.55, color: muted }}>{c.body}</span>
           <span style={{ marginTop: "auto", fontSize: 14, fontWeight: 600, color: accent }}>{c.cta}</span>
         </a>
