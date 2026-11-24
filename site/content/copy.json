@@ -1,0 +1,196 @@
+{
+  "_readme": "Every sentence on the site's pages. Edit freely. Three markers: `code` for code, [text](key) for a link (a key from lib/links.ts, or a path like /lab/), and {token} for a fact read from the code at build time ({package}, {version}, {license}, {node}, {labCount}, {calls}, {samples}, {latest}). Never type a version, a count or a command here: the build refuses it, because facts come from packages/protect.",
+
+  "home": {
+    "eyebrow": "Make the invisible behavior of AI agents visible",
+    "title": "What did your agent actually see?",
+    "lede": "See what your AI agent attempted, what succeeded, and what actually reached it.",
+    "exploreButton": "Explore a session ↓",
+    "badges": ["Claude Code · Codex", "No account", "Reads your agent's history on your machine and sends nothing", "{license}"],
+    "networkNote": "npx downloads the package from npm. After that the check makes no network request. [Read the source](history)",
+    "mapCaption": "Every verdict above was computed by the published code, at build time, from the session's log. [See the log](scenarios) · [Step through more in the lab →](/lab/)",
+
+    "tool": {
+      "eyebrow": "The tool",
+      "title": "Your own Agent Exposure Report, in one command.",
+      "lede": "It reads the history your agent already keeps on your computer and prints counts and category names. Never a path, a command or a value.",
+      "points": [
+        "Reads `~/.claude/projects` and `~/.codex/sessions`, nothing else",
+        "A floor, not a complete record: history that was deleted is not seen",
+        "Writes one HTML card where you run it, with no script and no paths (`--no-card` to skip)"
+      ],
+      "reportTitle": "Agent Exposure Report",
+      "reportTag": "the demo session",
+      "metrics": {
+        "attempted": ["ATTEMPTED", "events"],
+        "succeeded": ["SUCCEEDED", "recorded as succeeded"],
+        "exposed": ["EXPOSED", "{samples} of them a sample"],
+        "unknown": ["UNKNOWN", "not enough evidence"]
+      },
+      "reportCaption": "This is the CLI's real output for the {calls} demo calls above, produced by the report code of the source ({version}) at build time."
+    },
+
+    "developers": {
+      "eyebrow": "Developers",
+      "title": "Not just to read. To work.",
+      "quickstartKicker": "Quickstart",
+      "quickstartTitle": "Check your agent in one minute",
+      "quickstartLede": "No install, no account. The package runs from npm, reads your agent's own history, and prints a report.",
+      "tabs": {
+        "run": ["Run", "the last 30 days"],
+        "days": ["--days", "a longer window"],
+        "events": ["--events", "one local finding per line, event format v1"],
+        "he": ["--lang he", "the report in Hebrew"]
+      },
+      "docsLink": "Full documentation ↗",
+      "sourceLink": "Read the source ↗",
+      "cliTitle": "CLI REFERENCE · agent-check",
+      "flags": {
+        "--days": "The window, in days. Default 30, from 1 to 3650.",
+        "--lang": "The report language: en (default) or he.",
+        "--events": "The local report: one finding per line, with where. Printed only, never written.",
+        "--json": "The report as JSON, instead of text.",
+        "--out": "Where to write the HTML card. Default agent-check.html.",
+        "--no-card": "Print the report, write no card."
+      },
+      "changelogTitle": "CHANGELOG",
+      "allVersions": "All versions ↗"
+    },
+
+    "threats": {
+      "eyebrow": "Threat library",
+      "title": "Five things agents reach for. Every one is a rule you can read.",
+      "lede": "The categories below are the ones the tool counts, named as the tool prints them. Each links to its pattern in the open code.",
+      "ruleLink": "agent-rules.ts ↗"
+    },
+
+    "after": {
+      "eyebrow": "After your first check",
+      "title": "Learn what agents really do with the access you gave them.",
+      "lab": ["LAB · OPEN NOW", "Agent Exposure Lab", "{labCount} scenarios. The evidence, the limits of the conclusion, and the decision, step by step.", "Open the lab →"],
+      "contribute": ["CONTRIBUTE", "Argue with a rule", "A pattern that misses, a scenario the lab should have, a false alarm. Open an issue.", "Open an issue ↗"],
+      "releases": ["RELEASES", "Watch the repository", "Every version is a tag in the repo, built and published from it. Latest: {latest}.", "On GitHub ↗"],
+      "research": ["RESEARCH · THE AGENTIC WEB", "When search results become attack vectors", "Four ways an agent is compromised by what it reads, and where your history's view ends.", "Read it →"]
+    },
+
+    "open": {
+      "eyebrow": "Built in the open",
+      "title": "Read the code. Follow the work.",
+      "aboutLink": "Who is behind this →"
+    },
+
+    "vision": {
+      "eyebrow": "The vision",
+      "title": "Control and sovereignty in the age of",
+      "titleAccent": "AI.",
+      "lede": "Agents will read, decide and act for us. The information stays yours, the keys stay with people, and the rules belong to whoever owns the data. Information moves. Control stays.",
+      "second": "It starts with seeing. Knowing what an agent meant to do is not enough: you need to know what actually happened.",
+      "steps": [
+        ["01 · The way in", "The checker", "See what your agent did, in one command."],
+        ["02 · The reason to trust", "The method", "Evidence, limits and decisions, in the open."],
+        ["03 · The reason to return", "The lab and the rules", "New scenarios, rules and releases."]
+      ],
+      "nodata": ["04 · FROM VISIBILITY TO CONTROL", "NoData", "For teams that want to enforce what they now see. [Learn more →](nodata)"]
+    }
+  },
+
+  "lab": {
+    "metaDescription": "Step through real agent tool calls: the evidence in the log, the limits of what it proves, and the decision the open rules make.",
+    "eyebrow": "Lab 01 · Reading the evidence",
+    "title": "Agent Exposure Lab",
+    "lede": "{labCount} tool calls. For each: the evidence in the log, the limits of what it proves, and the decision the open rules make.",
+    "tag": "SIMULATED LOGS · REAL RULES",
+    "glossary": [
+      ["ATTEMPTED", "The action was tried."],
+      ["SUCCEEDED", "The tool reported no error."],
+      ["EXPOSED", "Evidence that sensitive content reached the agent. Not proof a key is valid."],
+      ["UNKNOWN", "Not enough evidence to decide."],
+      ["NO EVENT", "Outside every rule. Not recorded, which is not the same as safe."]
+    ],
+    "footer": "The logs are simulated. No real files, keys or services are touched. The decisions come from the published code.",
+    "footerLinks": "[The scenarios](scenarios) · [Propose a scenario](newIssue) · [Argue with a rule](rules)"
+  },
+
+  "agenticWeb": {
+    "metaDescription": "When search results become attack vectors: four ways an agent is compromised by what it reads, what your history can show, and what it cannot prove.",
+    "eyebrow": "Research · The Agentic Web",
+    "title": "Your agent can be compromised by what it reads, before it executes anything.",
+    "lede": "Nobody needs to hack the model. It is enough to put the right words where agents look: a docs page, a README, a search result. The attack is on the information the agent decides from.",
+    "layersHead": ["LAYER", "THE QUESTION", "WHAT IT TAKES", "WHERE THIS SITE STANDS"],
+    "layers": [
+      ["Source", "What content is the agent relying on?", "Who published it, and can it be trusted?", "Not what agent-check does. A source's address is not its identity."],
+      ["Exposure", "What did the agent actually receive?", "Evidence of what was read, run, and returned.", "This is agent-check: what was attempted, what succeeded, what came back."],
+      ["Execution", "May the action it now asks for happen?", "A decision before the action, by a rule a person set.", "Enforcement. Not a free tool reading history after the fact."]
+    ],
+    "scenariosEyebrow": "Four scenarios",
+    "scenariosTitle": "What happens, what your history shows, what it cannot prove.",
+    "scenariosLede": "These are not attacks agent-check detects. They are a map of where its view ends. Each verdict below was computed by the published rules from the session's log.",
+    "tableHead": ["SCENARIO", "WHAT HAPPENS", "WHAT AGENT-CHECK RECORDS", "WHAT IT CANNOT PROVE"],
+    "rows": {
+      "domain": ["A lapsed docs domain is re-registered and serves a changed install line.", "Who controlled the domain when the agent read it."],
+      "readme": ["A README addresses the agent and asks it to read a credential file.", "Whether the text is what made the agent act."],
+      "typo": ["A search result names a look-alike package, and the agent installs it.", "Whether the result, or the package, could be trusted."],
+      "cloak": ["A page serves the agent a version with a hidden instruction.", "What a person would have seen at the same moment."]
+    },
+    "visibility": "Visibility shows what happened.",
+    "enforcement": "Enforcement controls what can happen next.",
+    "principles": [
+      ["Origin is not trust", "Knowing a page came from the web, or from an API, says where it came from. Not whether it can be believed."],
+      ["A warning is not enforcement", "A step is stopped only where a rule says so. Anything that only warns should never be described as blocking."],
+      ["Proof of a decision is not proof of truth", "A record can prove what was decided and enforced. It cannot prove that what the agent read was true or harmless."]
+    ],
+    "nodata": "NoData does not judge whether content is malicious. Its gate marks a session that read content from outside, and decides the next outbound step by the owner's rules: a warning by default, a person's approval where the owner's rule asks for one. Every decision leaves a record.",
+    "nodataButton": "From visibility to control →",
+    "sourcesEyebrow": "Sources",
+    "sources": "Measurements of how often search results carry malicious content will appear here only after we have read the primary study, with its method, scope and limits. We do not build on secondary quotes. The scenarios above use example domains and invented package names.",
+    "sourcesLinks": ["[Step through the Exposure Lab →](/lab/)", "[Propose a scenario ↗](newIssue)", "[The scenarios as data ↗](agenticWebData)"]
+  },
+
+  "about": {
+    "metaDescription": "Who builds What My Agent Saw, what is open, what is not, and how the site works.",
+    "eyebrow": "About",
+    "title": "A place to see what AI agents actually do with the access you gave them.",
+    "lede": "Agents read files, run commands and fetch pages on your behalf. Most of it is invisible unless you go looking. What My Agent Saw is where you go looking: a free tool that reads your agent's own history, a lab that teaches how to read the evidence, and research on where agents can be misled.",
+    "visionEyebrow": "The vision",
+    "visionTitle": "Control and sovereignty in the age of",
+    "visionAccent": "AI.",
+    "visionCards": [
+      ["Your information", "Agents may use it. They do not own it, and it does not have to leave your hands for them to work."],
+      ["People hold the keys", "An agent can ask. A person, or a rule a person set, decides. An agent is never the one who approves."],
+      ["The owner sets the rules", "Every action an agent takes on your information follows rules you can read, change, and check afterwards."]
+    ],
+    "visionClose": "Information moves. Control stays. Seeing what agents do is the first step.",
+    "whoEyebrow": "Who builds it",
+    "whoTitle": "Maintained by NoData.",
+    "who": [
+      "[NoData](nodata) builds the layer that decides what an agent may do with information: which file it may read, which key it may use, which step needs a person. Before you can decide that, you need to see what agents do today. This site is that first step, and it is useful on its own.",
+      "The free check and NoData's gate classify with the same open rules ([agent-rules.ts](rules)): what this site counts is what the gate looks at. The difference is when. The check reads history after the fact; the gate decides before a step runs."
+    ],
+    "whoClose": "You do not need NoData to use anything here.",
+    "openKicker": "OPEN",
+    "open": "`{package}`: agent-check, its rules, the event format, and the verifiers that check NoData's own claims without trusting NoData. This site's code too.",
+    "notOpenKicker": "NOT OPEN",
+    "notOpen": "NoData's product: the gate, the server and the enforcement behind them. Only the verification layer is open source.",
+    "visitButton": "Visit NoData →",
+    "followEyebrow": "Follow the work",
+    "howEyebrow": "How we work",
+    "principles": [
+      ["Every fact comes from the code", "Versions, flags, categories and every verdict on this site are read from {package} when the site is built. If a page and the code disagree, the site does not build."],
+      ["Evidence, and its limits", "Every finding says what it shows and what it does not prove. Unknown is an answer. An attempt is not an exposure."],
+      ["No numbers without a source", "We quote a measurement only after reading the primary study, with its method, scope and limits. Simulated data is marked as simulated."],
+      ["You can argue with us", "The rules are plain patterns in the open. A wrong rule is an issue or a pull request, and the history of every change is public."]
+    ],
+    "siteEyebrow": "This site",
+    "site": [
+      "A static site: no accounts, no cookies, no analytics, and no request to anyone else. Fonts and scripts are served from this domain. The host keeps ordinary request logs, as every web host does.",
+      "The check itself runs on your computer. Nothing it reads is sent here, or anywhere."
+    ],
+    "contactEyebrow": "Get in touch",
+    "contact": [
+      "[A wrong rule, a scenario to add, a question: open an issue ↗](newIssue)",
+      "[A vulnerability: the security policy ↗](security)",
+      "[Enforcement for a team: NoData ↗](nodata)",
+      "[Or start with the lab →](/lab/)"
+    ]
+  }
+}

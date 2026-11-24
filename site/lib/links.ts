@@ -9,6 +9,8 @@ export const links = {
   history: `${REPO}/blob/main/packages/protect/src/agent-history.ts`,
   events: `${REPO}/blob/main/packages/protect/src/agent-events.ts`,
   scenarios: `${REPO}/blob/main/site/content/scenarios.json`,
+  agenticWebData: `${REPO}/blob/main/site/content/agentic-web.json`,
+  copy: `${REPO}/blob/main/site/content/copy.json`,
   issues: `${REPO}/issues`,
   newIssue: `${REPO}/issues/new`,
   security: `${REPO}/blob/main/SECURITY.md`,

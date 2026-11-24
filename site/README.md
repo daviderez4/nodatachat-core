@@ -22,6 +22,10 @@ true or stops it from deploying.
 
 No key-shaped literal is stored here: `{{KEY}}` in a scenario is expanded at build time.
 
+## Change the words
+
+Every sentence is in `content/copy.json`. Edit it (the GitHub editor is enough), open a PR, and check the Vercel preview. The build refuses a copy file that types a version, a command or a fact the code does not hold. The rules for every change are in `CLAUDE.md`.
+
 ## Run it
 
 ```bash
