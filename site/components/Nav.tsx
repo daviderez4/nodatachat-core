@@ -7,6 +7,7 @@ const items: Array<{ href: string; label: string; external?: boolean }> = [
   { href: "/#check", label: "Tool" },
   { href: "/lab/", label: "Lab" },
   { href: "/agentic-web/", label: "Agentic Web" },
+  { href: "/evidence/", label: "Evidence" },
   { href: "/#developers", label: "Developers" },
   { href: "/#threats", label: "Threat Library" },
   { href: links.readme, label: "Docs", external: true },

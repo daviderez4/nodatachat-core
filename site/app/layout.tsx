@@ -7,6 +7,7 @@ import "@fontsource-variable/newsreader";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { EvidenceTicker } from "@/components/EvidenceTicker";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://whatmyagentsaw.com"),
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a href="#main" className="sr-only">Skip to content</a>
         <Nav />
+        <EvidenceTicker />
         <main id="main">{children}</main>
         <Footer />
       </body>
