@@ -166,6 +166,29 @@ to the agent; **no** when nothing came back (the call failed, or the gate stoppe
 
 This is a reporting format. NoData's gate does not read it and does not decide by it.
 
+### Terms before the first run, and what to do next (3.10.0)
+
+Before it reads anything the first time, agent-check prints the four points of its terms
+(the full terms: [whatmyagentsaw.com/terms](https://whatmyagentsaw.com/terms/)), the
+sentence you agree to ("I have read and agree to the Terms of Use, including the disclaimer
+of warranties and the limitation of liability."), and asks `Agree and continue? [y/N]`.
+Anything but `y` or `yes` exits with code 0, having read nothing. The agreement is kept on
+your computer only, beside the salt, as `~/.agent-check/consent.json`: the terms version
+(a date, the same as the site's), when you accepted, and a hash of the two. No name, no
+email, no identifier, and nothing is sent. A new terms version asks again
+([`src/agent-terms.ts`](src/agent-terms.ts)).
+
+Without a terminal (CI, a pipe) it never waits: it prints one line and exits with code 2,
+unless you pass `--accept-terms`. With `--json` or `--events` the terms and the question go
+to stderr, so stdout stays clean.
+
+The report now ends with the next steps, in the order of
+[whatmyagentsaw.com/next](https://whatmyagentsaw.com/next/): the five free ones first (see
+where with `--events`, rotate what came back, move secrets out of reach, deny the reads in
+the agent's own settings, check again next week), then NoData's gate, described only by
+what it does by default: it holds and asks, and it warns after outside content. The card
+carries the same steps, with no path, no link and no script.
+
 ## Coming next
 
 Each release adds only what is needed to verify a claim NoData makes: next is

@@ -3,9 +3,10 @@
 // makes, offline, with what ships in this package; none of them runs NoData.
 // One checks your AI agent instead of NoData, from the agent's own history:
 //
-//   npx @nodatachat/protect@3 agent-check [--days N] [--lang he]
+//   npx @nodatachat/protect@3 agent-check [--days N] [--lang he] [--accept-terms]
 //                                                   what Claude Code / Codex did on this
-//                                                   computer: counts only, nothing sent
+//                                                   computer: counts only, nothing sent.
+//                                                   Asks you to agree to its terms first.
 //
 //   npx @nodatachat/protect@3 check-vectors          split-key format (SPLIT-KEY-FORMAT.md)
 //   npx @nodatachat/protect@3 verify-pack pack.json  an evidence pack (EVIDENCE-PACK-FORMAT.md),
@@ -18,10 +19,13 @@
 //                                                   one Mycelium envelope on both organisations' chains
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { homedir } from "node:os";
+import { join, resolve } from "node:path";
+import { createInterface } from "node:readline";
 import { localSalt } from "./agent-events";
 import { checkAgents, localEvents } from "./agent-history";
 import { reportHtml, reportLines, type Lang } from "./agent-history-report";
+import { acceptedByFlagLine, declinedLine, hasAgreed, isYes, noTerminalLine, recordAgreement, termsFile, termsLines, termsQuestion } from "./agent-terms";
 import { runCheckVectors } from "./check-vectors";
 import { checkOrigin, contextEras, loadPinnedKeys, NODATA_KEYS_PATH } from "./pinned-keys";
 import { inspectNdc, type NdcManifest } from "./seal-v3";
@@ -29,12 +33,31 @@ import { verifyApprovalInPack, verifyBothSides, verifyRelayReceipt } from "./ver
 import { verifyPack, type CheckResult, type EvidencePack } from "./verify-pack";
 
 const USAGE =
-  "usage: protect agent-check [--days N] [--lang he] | protect check-vectors | protect verify-pack <pack.json> [--keys <keys.json>] | protect inspect-seal <file.ndc>" +
+  "usage: protect agent-check [--days N] [--lang he] [--accept-terms] | protect check-vectors | protect verify-pack <pack.json> [--keys <keys.json>] | protect inspect-seal <file.ndc>" +
   " | protect verify-relay-receipt <receipt.json> [--opened <file>] [--approval <receiver-pack.json>] | protect verify-both-sides <a-pack.json> <b-pack.json> --blob <id>";
 
-export async function main(argv: string[], out: (line: string) => void = (l) => process.stdout.write(`${l}\n`)): Promise<number> {
+/** What agent-check needs from the outside world, so a test can stand in for it. */
+export interface AgentCheckIo {
+  /** The home whose agent history is read, and where the agreement is kept. */
+  home: string;
+  /** Can a person answer here? Without one, never wait for an answer. */
+  isTTY: boolean;
+  /** Ask one question and return the answer ("" when input closes). */
+  ask: (question: string, toStderr: boolean) => Promise<string>;
+  /** stderr: the terms for --json / --events, so stdout stays clean. */
+  err: (line: string) => void;
+}
+
+const defaultIo = (): AgentCheckIo => ({
+  home: homedir(),
+  isTTY: process.stdin.isTTY === true,
+  ask: askLine,
+  err: (l) => process.stderr.write(`${l}\n`),
+});
+
+export async function main(argv: string[], out: (line: string) => void = (l) => process.stdout.write(`${l}\n`), io: Partial<AgentCheckIo> = {}): Promise<number> {
   const [cmd, file, flag, keysFile] = argv;
-  if (cmd === "agent-check") return agentCheck(argv.slice(1), out);
+  if (cmd === "agent-check") return agentCheck(argv.slice(1), out, { ...defaultIo(), ...io });
   if (cmd === "check-vectors" || cmd === undefined) return runCheckVectors(out);
   if (cmd === "inspect-seal" && file && flag === undefined) return inspectSeal(file, out);
   if (cmd === "verify-relay-receipt" && file) {
@@ -141,23 +164,28 @@ async function bothSides(fileA: string, fileB: string, blobId: string, out: (lin
  * What the AI coding agent on this computer did, from its own history
  * (agent-history.ts). Local only, counts only. Writes one HTML card next to
  * where it runs (or --out <file>), unless --no-card.
- *   agent-check [--days N] [--lang he|en] [--out file.html] [--no-card] [--json] [--events]
+ *   agent-check [--days N] [--lang he|en] [--out file.html] [--no-card] [--json] [--events] [--accept-terms]
  *   --events prints the LOCAL report (one finding per line, with where); nothing else carries it.
+ * Before the first read, the terms (agent-terms.ts): agreed once per terms version.
  */
-function agentCheck(rest: string[], out: (line: string) => void): number {
+async function agentCheck(rest: string[], out: (line: string) => void, io: AgentCheckIo): Promise<number> {
   const opt = (name: string) => {
     const i = rest.indexOf(name);
     return i >= 0 ? rest[i + 1] : undefined;
   };
   const days = Math.min(Math.max(Number(opt("--days") ?? 30) || 30, 1), 3650);
   const lang: Lang = opt("--lang") === "he" ? "he" : "en";
+  const machine = rest.includes("--events") || rest.includes("--json");
+  // The agreement comes before anything is read: no history, no salt, no card.
+  const agreed = await agreeToTerms(rest.includes("--accept-terms"), lang, machine ? io.err : out, io);
+  if (agreed !== true) return agreed;
   if (rest.includes("--events")) {
     // The LOCAL report: one event per finding, with where. For this computer only: it is
     // printed here and written nowhere else, and the card never carries any of it.
-    for (const e of localEvents(days, localSalt())) out(JSON.stringify(e));
+    for (const e of localEvents(days, localSalt(join(io.home, ".agent-check", "salt")), io.home)) out(JSON.stringify(e));
     return 0;
   }
-  const report = checkAgents(days);
+  const report = checkAgents(days, io.home);
   if (rest.includes("--json")) {
     out(JSON.stringify(report, null, 2));
     return 0;
@@ -170,6 +198,52 @@ function agentCheck(rest: string[], out: (line: string) => void): number {
     out(lang === "he" ? `הכרטיס: ${file}` : `The card: ${file}`);
   }
   return 0;
+}
+
+/**
+ * true to go on, or the exit code. Agreed already (this terms version) → true, silently.
+ * --accept-terms → kept, true. No terminal → one line, exit 2, no wait. Otherwise the
+ * terms and one question: y / yes goes on, anything else exits 0 having read nothing.
+ */
+async function agreeToTerms(byFlag: boolean, lang: Lang, say: (line: string) => void, io: AgentCheckIo): Promise<true | number> {
+  const file = termsFile(io.home);
+  if (hasAgreed(file)) return true;
+  if (byFlag) {
+    for (const line of termsLines(lang)) say(line);
+    say(acceptedByFlagLine(lang));
+    say("");
+    recordAgreement(file);
+    return true;
+  }
+  if (!io.isTTY) {
+    io.err(noTerminalLine(lang));
+    return 2;
+  }
+  for (const line of termsLines(lang)) say(line);
+  const answer = await io.ask(termsQuestion(lang), say === io.err);
+  if (!isYes(answer)) {
+    say(declinedLine(lang));
+    return 0;
+  }
+  recordAgreement(file);
+  say("");
+  return true;
+}
+
+/** One line from the terminal; "" when input closes (Ctrl-D) rather than waiting forever. */
+function askLine(question: string, toStderr: boolean): Promise<string> {
+  return new Promise((done) => {
+    const rl = createInterface({ input: process.stdin, output: toStderr ? process.stderr : process.stdout });
+    let answered = false;
+    rl.on("close", () => {
+      if (!answered) done("");
+    });
+    rl.question(question, (a) => {
+      answered = true;
+      rl.close();
+      done(a);
+    });
+  });
 }
 
 /** Read a .ndc's structure and say whom it opens for. Uses no key, so it can be run on any sealed file. */
