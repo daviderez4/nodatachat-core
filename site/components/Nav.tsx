@@ -11,6 +11,7 @@ const items: Array<{ href: string; label: string; external?: boolean }> = [
   { href: "/#threats", label: "Threat Library" },
   { href: links.readme, label: "Docs", external: true },
   { href: links.repo, label: "Open Source", external: true },
+  { href: "/about/", label: "About" },
 ];
 
 export function Nav() {

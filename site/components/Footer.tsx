@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { links } from "@/lib/links";
+import { founder, links } from "@/lib/links";
 import { facts } from "@/lib/facts";
 
 export function Footer() {
@@ -25,6 +25,8 @@ export function Footer() {
             <a href={links.repo} style={{ color: "var(--snow-2)" }}>GitHub</a>
             <a href={links.npm} style={{ color: "var(--snow-2)" }}>npm</a>
             <a href={links.security} style={{ color: "var(--snow-2)" }}>Security</a>
+            <Link href="/about/" style={{ color: "var(--snow-2)" }}>About</Link>
+            {founder.linkedin ? <a href={founder.linkedin} style={{ color: "var(--snow-2)" }}>LinkedIn</a> : null}
           </div>
         </div>
       </div>

@@ -16,3 +16,13 @@ export const links = {
   npm: "https://www.npmjs.com/package/@nodatachat/protect",
   nodata: "https://nodatacapsule.com",
 };
+
+/**
+ * The person behind the project, as they asked to be shown. Empty = the card is not rendered:
+ * no guessed name, no guessed profile link.
+ */
+export const founder = {
+  name: "",
+  title: "",
+  linkedin: "",
+};

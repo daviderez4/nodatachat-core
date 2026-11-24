@@ -4,6 +4,7 @@ import { links } from "@/lib/links";
 import { ActivityMap } from "@/components/ActivityMap";
 import { CopyCommand } from "@/components/CopyCommand";
 import { QuickstartTabs } from "@/components/QuickstartTabs";
+import { Social } from "@/components/Social";
 
 // The six calls of the homepage map, in the order they happen in the demo session.
 const MAP_IDS = ["env", "aws", "src", "grep", "mcp", "curl"];
@@ -214,13 +215,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* BUILT IN THE OPEN */}
+      <section className="wrap" style={{ paddingTop: 24, paddingBottom: 96 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 16, marginBottom: 28 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div className="eyebrow">Built in the open</div>
+            <h2 className="h2">Read the code. Follow the work.</h2>
+          </div>
+          <Link href="/about/" style={{ fontSize: 15 }}>Who is behind this →</Link>
+        </div>
+        <Social />
+      </section>
+
       {/* VISION */}
       <section className="dark" style={{ borderBottom: "1px solid var(--night-line)" }}>
         <div className="wrap" style={{ paddingTop: 96, paddingBottom: 72, display: "flex", flexDirection: "column", gap: 22 }}>
-          <p style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(38px, 6vw, 64px)", lineHeight: 1.02, letterSpacing: "-0.04em", fontWeight: 700, maxWidth: 980 }}>
-            Make the invisible behavior of AI agents <span style={{ color: "var(--teal-hi)" }}>visible.</span>
+          <div className="eyebrow">The vision</div>
+          <p style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(38px, 6vw, 72px)", lineHeight: 1.0, letterSpacing: "-0.045em", fontWeight: 700, maxWidth: 1060 }}>
+            Control and sovereignty in the age of <span style={{ color: "var(--teal-hi)" }}>AI.</span>
           </p>
-          <p className="lede" style={{ maxWidth: 620 }}>Knowing what an agent meant to do is not enough. You need to know what actually happened.</p>
+          <p className="lede" style={{ maxWidth: 720, fontSize: 19 }}>
+            Agents will read, decide and act for us. The information stays yours, the keys stay with people, and the rules belong to whoever owns the data. Information moves. Control stays.
+          </p>
+          <p className="lede" style={{ maxWidth: 720 }}>It starts with seeing. Knowing what an agent meant to do is not enough: you need to know what actually happened.</p>
           <ol style={{ listStyle: "none", margin: "24px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {[
               ["01 · The way in", "The checker", "See what your agent did, in one command."],

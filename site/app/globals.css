@@ -26,10 +26,10 @@
   --amber-hi: #f5b455;
   --indigo-hi: #a5b4fc;
 
-  --sans: "Inter", system-ui, sans-serif;
-  --display: "Inter Tight", "Inter", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --serif: "Newsreader", Georgia, serif;
+  --sans: "Inter Variable", system-ui, sans-serif;
+  --display: "Inter Tight Variable", "Inter Variable", system-ui, sans-serif;
+  --mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --serif: "Newsreader Variable", Georgia, serif;
 }
 
 * { box-sizing: border-box; }
