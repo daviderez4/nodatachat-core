@@ -94,6 +94,20 @@ export default function Home() {
         </div>
       </section>
 
+      {/* WHAT NEXT: the continuation of the report, in order */}
+      <section className="wrap" style={{ paddingTop: 56, paddingBottom: 56 }}>
+        <Link href="/next/" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "18px 32px", justifyContent: "space-between", background: "var(--ink)", color: "var(--paper)", borderRadius: 18, padding: "28px 32px", textDecoration: "none" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: "1 1 420px", minWidth: 0 }}>
+            <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "#5EEAD4" }}>{c.nextBand.kicker}</span>
+            <span style={{ fontFamily: "var(--display)", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 700, letterSpacing: "-0.025em" }}>{c.nextBand.title}</span>
+            <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: "6px 18px", fontSize: 14, color: "#B4BDC5" }}>
+              {copy.next.steps.map((s, i) => <li key={s.title}><span className="mono" style={{ color: "#5EEAD4" }}>{i + 1}</span> {s.title}</li>)}
+            </ol>
+          </div>
+          <span className="btn btn-teal" style={{ flex: "none" }}>{c.nextBand.cta}</span>
+        </Link>
+      </section>
+
       {/* DEVELOPERS */}
       <section id="developers" className="dark">
         <div className="wrap" style={{ paddingTop: 96, paddingBottom: 96 }}>

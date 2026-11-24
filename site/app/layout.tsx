@@ -7,6 +7,7 @@ import "@fontsource-variable/newsreader";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { Consent } from "@/components/Consent";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://whatmyagentsaw.com"),
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main id="main">{children}</main>
         <Footer />
+        <Consent />
       </body>
     </html>
   );

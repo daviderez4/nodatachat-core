@@ -12,6 +12,7 @@ export const links = {
   agenticWebData: `${REPO}/blob/main/site/content/agentic-web.json`,
   copy: `${REPO}/blob/main/site/content/copy.json`,
   issues: `${REPO}/issues`,
+  license: `${REPO}/blob/main/LICENSE`,
   newIssue: `${REPO}/issues/new`,
   security: `${REPO}/blob/main/SECURITY.md`,
   releases: `${REPO}/tags`,

@@ -30,6 +30,12 @@
       "reportCaption": "This is the CLI's real output for the {calls} demo calls above, produced by the report code of the source ({version}) at build time."
     },
 
+    "nextBand": {
+      "kicker": "GOT YOUR REPORT?",
+      "title": "Six steps, in order. Five of them free.",
+      "cta": "What to do next →"
+    },
+
     "developers": {
       "eyebrow": "Developers",
       "title": "Not just to read. To work.",
@@ -146,6 +152,104 @@
     "sourcesLinks": ["[Step through the Exposure Lab →](/lab/)", "[Propose a scenario ↗](newIssue)", "[The scenarios as data ↗](agenticWebData)"]
   },
 
+  "next": {
+    "metaDescription": "Got your Agent Exposure Report? Six steps, in order: find where, rotate, move secrets out of reach, restrict your agent, check again, and decide before the step.",
+    "eyebrow": "After your report",
+    "title": "What to do with your report.",
+    "lede": "Six steps, in order. The first five are free and need nothing from us. The sixth is for when you want every step decided before it runs.",
+    "promise": "No finding without a next step. No step that needs NoData until step 6.",
+    "stepLabel": "STEP",
+    "steps": [
+      {
+        "title": "See exactly where",
+        "body": "The report counts. The events say where: one line per finding, with the file and the line, printed on your screen and written nowhere. Look first at every line with `\"exposed\":\"yes\"`.",
+        "cmd": "events",
+        "note": "PowerShell: add `| Select-String '\"exposed\":\"yes\"'`. macOS and Linux: add `| grep '\"exposed\":\"yes\"'`."
+      },
+      {
+        "title": "Rotate every real key that came back",
+        "body": "A key that reached your agent's context is in the conversation. Nothing takes it back. Replace it at its provider. A line marked `\"sample\":true` came from a test or an example: check it, it is usually fake, but real keys end up in fixtures too."
+      },
+      {
+        "title": "Move secrets out of reach",
+        "body": "Keep `.env` files and keys out of the folders your agent works in. Inject secrets when a command runs, from a secrets manager or the environment, instead of storing them next to the code. Prefer tokens that are scoped and short-lived."
+      },
+      {
+        "title": "Tell your agent what it may not read",
+        "body": "Agents have their own permission settings. In Claude Code, deny rules in `.claude/settings.json` stop reads of the paths you name. In Codex, use its sandbox and approval settings. Do not run an agent in auto-approve on a project that holds secrets.",
+        "snippet": "claude-deny"
+      },
+      {
+        "title": "Check again next week",
+        "body": "Run the check again and compare. A number that drops is a fix that worked. A number that rises is a habit to look at. The report is a floor: it only sees what the agent kept in its history.",
+        "cmd": "run"
+      },
+      {
+        "title": "Decide before the step: NoData",
+        "body": "Steps 1 to 5 look back, and a deny list never changes its mind. When you want each read decided before it happens, by a rule you set, with a person approving and a record of every decision, that is NoData. You do not need it to finish steps 1 to 5.",
+        "cmd": "gate"
+      }
+    ],
+    "nodataAdds": [
+      "Reads of files with findings (keys, personal data) are held for your approval, or refused in block mode.",
+      "Commands that print a credential, and searches for secret names, are held the same way.",
+      "A command that needs a secret can run with it and return the output with every value blanked.",
+      "A file can be sealed, so it stays encrypted at rest.",
+      "After a session reads content from outside, a step that sends data out gets a warning by default, and is held where your rule says so."
+    ],
+    "nodataLimits": [
+      "A path a program computes at run time is not seen.",
+      "A key that already reached the output is in the conversation: the gate says to replace it, it cannot take it back.",
+      "Defaults are hold-and-ask and warn. Refusing is block mode or a rule you set."
+    ],
+    "nodataAddsTitle": "What it adds",
+    "nodataLimitsTitle": "What it does not do",
+    "cardHint": "Its own record of what it decided:",
+    "byCategoryEyebrow": "By finding",
+    "byCategoryTitle": "One row per line of your report.",
+    "byCategoryHead": ["IN YOUR REPORT", "WHAT IT MEANS", "WHAT YOU CAN DO TODAY", "WHAT NODATA ADDS"],
+    "byCategory": {
+      "secret_file": ["Your agent read a file that holds logins. If a value came back, it is in the agent's context.", "Rotate what came back. Move the file out of the working folder. Deny it in the agent's settings.", "The file is scanned before the read and held for your approval."],
+      "credential_command": ["A command printed a credential into the conversation, and on to the model.", "Run such commands yourself, in a terminal, not through the agent.", "The command is held for your approval; a blanked-output way to run it is offered."],
+      "secret_search": ["The agent searched for secret names. Often routine in code, but matches can carry values.", "Look at the matches that returned a key, and rotate those keys.", "The search is held for your approval."],
+      "data_file": ["The agent read a table, a database or a dump. The free check does not read the content.", "Keep real exports out of the working folder. Work on sample data.", "The file is scanned, personal data included, and held. A clean copy can be made instead."],
+      "outbound_data": ["A command tried to send data off the machine. A failed attempt is still a finding.", "Read these commands in the events. Run the agent where its network is limited.", "After outside content, a warning by default; held where your rule says so."]
+    },
+    "outsideTitle": "Keys that came back outside these five",
+    "outside": "The line \"secret-looking values … over all calls\" also counts keys that came back from ordinary files and command output. Those are often the most interesting: a key sitting in code. Find them in the events and treat them like step 2."
+  },
+
+  "terms": {
+    "version": "2026-11-24",
+    "metaDescription": "The terms for using whatmyagentsaw.com and the agent-check tool.",
+    "eyebrow": "Terms",
+    "title": "Terms of use",
+    "updated": "Last updated",
+    "sections": [
+      ["What this is", "whatmyagentsaw.com explains AI agent behavior and links to agent-check, an open-source tool in [daviderez4/nodatachat-core](repo), maintained by [NoData](nodata)."],
+      ["The tool is provided as is", "agent-check is licensed under Apache-2.0. As that license says, it is provided \"AS IS\", without warranties or conditions of any kind, and its authors are not liable for damages arising from its use. Read the [license](license) before you run it."],
+      ["You run it on your own computer", "The tool reads the history your AI agents keep on your computer and sends nothing anywhere. Run it only on computers and accounts you are allowed to inspect. What you do with its output is your responsibility."],
+      ["Findings are indications, not guarantees", "A report shows what the agent recorded, within the tool's published rules. It is not a security audit, not legal advice, and not proof that nothing happened. Unknown is not safe."],
+      ["Simulated content", "The lab and the research pages use simulated logs, example domains and invented package names, for education. Do not use the techniques described against systems you do not own or have permission to test."],
+      ["Your data", "This site sets no cookies, runs no analytics and collects no personal data. When you agree to these terms, that agreement is stored only in your own browser."],
+      ["Links", "Links to GitHub, npm, NoData and LinkedIn lead to sites with their own terms."],
+      ["Changes", "These terms may change. When they do, the date above changes and the site asks you to agree again."],
+      ["Contact", "Questions: [open an issue](newIssue). Security: [the security policy](security)."]
+    ]
+  },
+
+  "consent": {
+    "title": "Before you continue",
+    "points": [
+      "agent-check is open source (Apache-2.0) and provided as is, without warranty.",
+      "It runs on your computer, reads your agent's own history, and sends nothing.",
+      "Its findings are indications, not a security audit. Lab content is simulated."
+    ],
+    "termsLink": "[Read the full terms](/terms/)",
+    "agree": "I agree",
+    "stored": "Stored only in this browser. No cookies, no tracking."
+  },
+
   "about": {
     "metaDescription": "Who builds What My Agent Saw, what is open, what is not, and how the site works.",
     "eyebrow": "About",
@@ -182,7 +286,7 @@
     ],
     "siteEyebrow": "This site",
     "site": [
-      "A static site: no accounts, no cookies, no analytics, and no request to anyone else. Fonts and scripts are served from this domain. The host keeps ordinary request logs, as every web host does.",
+      "A static site: no accounts, no cookies, no analytics, and no request to anyone else. Fonts and scripts are served from this domain. Your agreement to the [terms](/terms/) is kept only in this browser. The host keeps ordinary request logs, as every web host does.",
       "The check itself runs on your computer. Nothing it reads is sent here, or anywhere."
     ],
     "contactEyebrow": "Get in touch",

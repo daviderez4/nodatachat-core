@@ -49,6 +49,9 @@ export interface Facts {
   license: string;
   node: string;
   checkCommand: string;
+  /** The commands the CLI itself recommends for NoData's gate and its record. */
+  gateCommand: string;
+  cardCommand: string;
   categories: string[];
   labels: Record<string, string>;
   flags: string[];

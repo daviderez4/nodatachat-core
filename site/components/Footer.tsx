@@ -16,6 +16,7 @@ export function Footer() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <span className="mono" style={{ fontSize: 11, color: "var(--snow-3)" }}>BUILD</span>
             <Link href="/#check" style={{ color: "var(--snow-2)" }}>Run the check</Link>
+            <Link href="/next/" style={{ color: "var(--snow-2)" }}>What to do next</Link>
             <a href={links.readme} style={{ color: "var(--snow-2)" }}>Docs</a>
             <Link href="/lab/" style={{ color: "var(--snow-2)" }}>Lab</Link>
             <Link href="/agentic-web/" style={{ color: "var(--snow-2)" }}>The Agentic Web</Link>
@@ -26,6 +27,7 @@ export function Footer() {
             <a href={links.npm} style={{ color: "var(--snow-2)" }}>npm</a>
             <a href={links.security} style={{ color: "var(--snow-2)" }}>Security</a>
             <Link href="/about/" style={{ color: "var(--snow-2)" }}>About</Link>
+            <Link href="/terms/" style={{ color: "var(--snow-2)" }}>Terms</Link>
             {founder.linkedin ? <a href={founder.linkedin} style={{ color: "var(--snow-2)" }}>LinkedIn</a> : null}
           </div>
         </div>

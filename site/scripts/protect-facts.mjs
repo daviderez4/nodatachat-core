@@ -67,7 +67,8 @@ for (const c of history.CATEGORIES) {
   if (!m) fail(`no English label for ${c} in agent-history-report.ts`);
   labels[c] = m[1];
 }
-if (typeof report.CHECK_COMMAND !== "string") fail("CHECK_COMMAND not found in agent-history-report.ts");
+for (const k of ["CHECK_COMMAND", "GATE_COMMAND", "CARD_COMMAND"])
+  if (typeof report[k] !== "string") fail(`${k} not found in agent-history-report.ts`);
 
 // ── The copy file: words only, never facts ─────────────────────────────────
 // content/copy.json is meant to be edited by hand. It may name facts only through
@@ -98,6 +99,11 @@ if (typeof report.CHECK_COMMAND !== "string") fail("CHECK_COMMAND not found in a
       } else if (!LINK_KEYS.has(target)) fail(`copy.json ${path} links to "${target}", which is not a key in lib/links.ts`);
     }
   }
+  const rows = copy.next?.byCategory ?? {};
+  for (const c of history.CATEGORIES) if (!rows[c]) fail(`copy.json next.byCategory has no row for ${c}`);
+  for (const k of Object.keys(rows)) if (!history.CATEGORIES.includes(k)) fail(`copy.json next.byCategory has a row for ${k}, which is not a category the tool counts`);
+  for (const st of copy.next?.steps ?? []) if (st.cmd && !["run", "events", "gate"].includes(st.cmd)) fail(`copy.json next.steps: unknown command "${st.cmd}"`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(copy.terms?.version ?? "")) fail("copy.json terms.version must be a date, YYYY-MM-DD: changing it asks every visitor to agree again");
   const flagCopy = copy.home?.developers?.flags ?? {};
   for (const f of FLAGS) if (!flagCopy[f]) fail(`copy.json home.developers.flags has no description for ${f}`);
   for (const [f, text] of Object.entries(flagCopy)) {
@@ -216,6 +222,8 @@ writeFileSync(
       license: pkg.license,
       node: pkg.engines?.node ?? "",
       checkCommand: report.CHECK_COMMAND,
+      gateCommand: report.GATE_COMMAND,
+      cardCommand: report.CARD_COMMAND,
       categories: [...history.CATEGORIES],
       labels,
       flags: FLAGS,
