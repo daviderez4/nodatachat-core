@@ -12,7 +12,7 @@ export const links = {
   issues: `${REPO}/issues`,
   newIssue: `${REPO}/issues/new`,
   security: `${REPO}/blob/main/SECURITY.md`,
-  releases: `${REPO}/releases`,
+  releases: `${REPO}/tags`,
   npm: "https://www.npmjs.com/package/@nodatachat/protect",
   nodata: "https://nodatacapsule.com",
 };
