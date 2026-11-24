@@ -5,7 +5,7 @@
   "description": "whatmyagentsaw.com: see what your AI agent attempted, what succeeded, and what actually reached it.",
   "license": "Apache-2.0",
   "scripts": {
-    "facts": "node scripts/protect-facts.mjs",
+    "facts": "node scripts/protect-facts.mjs && node scripts/evidence-check.mjs",
     "dev": "npm run facts && next dev",
     "build": "npm run facts && next build",
     "check": "npm run facts && tsc --noEmit"
