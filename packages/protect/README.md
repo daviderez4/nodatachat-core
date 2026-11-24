@@ -168,12 +168,14 @@ This is a reporting format. NoData's gate does not read it and does not decide b
 
 ### Terms before the first run, and what to do next (3.10.0)
 
-Before it reads anything the first time, agent-check prints its short terms (the same as
-[whatmyagentsaw.com/terms](https://whatmyagentsaw.com/terms/)) and asks
-`Agree and continue? [y/N]`. Anything but `y` or `yes` exits with code 0, having read
-nothing. The agreement is kept on your computer only, beside the salt, as
-`~/.agent-check/consent.json` holding the terms version (a date) and nothing else: no
-name, no email, no identifier, and nothing is sent. A new terms version asks again
+Before it reads anything the first time, agent-check prints the four points of its terms
+(the full terms: [whatmyagentsaw.com/terms](https://whatmyagentsaw.com/terms/)), the
+sentence you agree to ("I have read and agree to the Terms of Use, including the disclaimer
+of warranties and the limitation of liability."), and asks `Agree and continue? [y/N]`.
+Anything but `y` or `yes` exits with code 0, having read nothing. The agreement is kept on
+your computer only, beside the salt, as `~/.agent-check/consent.json`: the terms version
+(a date, the same as the site's), when you accepted, and a hash of the two. No name, no
+email, no identifier, and nothing is sent. A new terms version asks again
 ([`src/agent-terms.ts`](src/agent-terms.ts)).
 
 Without a terminal (CI, a pipe) it never waits: it prints one line and exits with code 2,

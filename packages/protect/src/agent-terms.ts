@@ -7,9 +7,13 @@
 //
 // The agreement is kept on this computer only, next to the fingerprint salt
 // (agent-events.ts SALT_FILE), in the shape the NoData MCP keeps its own
-// (~/.nodata/consent.json): { "terms_version": "<date>" }. Only the version: no name,
-// no email, no time, no identifier of any kind. Nothing is sent anywhere.
+// (packages/mcp-server/src/terms.ts, ~/.nodata/consent.json): the terms version, when it
+// was accepted, and a hash of those two. That module cannot be imported here (the open
+// package imports only Node and itself), so the shape is copied, not a second design.
+// The MCP's agent and organisation fields are left out: no name, no email, no account,
+// no identifier of any kind. Nothing is sent anywhere.
 
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
@@ -38,11 +42,23 @@ export function hasAgreed(file = termsFile()): boolean {
   return agreedVersion(file) === TERMS_VERSION;
 }
 
-/** Keep the agreement: the terms version, and nothing else. False when it could not be kept. */
+/** What is kept: the MCP's ConsentFile without its agent and organisation. */
+export interface ConsentFile {
+  terms_version: string;
+  accepted_at: string;
+  consent_hash: string;
+}
+
+export function consentRecord(at = new Date().toISOString()): ConsentFile {
+  const consent_hash = createHash("sha256").update(`${TERMS_VERSION}|agent-check|${at}`).digest("hex");
+  return { terms_version: TERMS_VERSION, accepted_at: at, consent_hash };
+}
+
+/** Keep the agreement: version, time, hash. False when it could not be kept. */
 export function recordAgreement(file = termsFile()): boolean {
   try {
     mkdirSync(dirname(file), { recursive: true });
-    writeFileSync(file, JSON.stringify({ terms_version: TERMS_VERSION }) + "\n", { mode: 0o600 });
+    writeFileSync(file, JSON.stringify(consentRecord(), null, 2) + "\n", { mode: 0o600 });
     return true;
   } catch {
     // No place to keep it: the agreement holds for this run, and the next run asks again.
@@ -57,25 +73,35 @@ export function isYes(answer: string): boolean {
 
 export type TermsLang = "en" | "he";
 
-/** The short terms, as printed before the first run. */
+/** The sentence a person agrees to by answering y, as on the site's agreement box. */
+export const AGREEMENT_SENTENCE = {
+  en: "I have read and agree to the Terms of Use, including the disclaimer of warranties and the limitation of liability.",
+  he: "קראתי ואני מסכים/ה לתנאי השימוש, כולל ההסתלקות מאחריות והגבלת החבות.",
+} as const;
+
+/** The short terms, as printed before the first run: the site's four consent points. */
 export function termsLines(lang: TermsLang): string[] {
   if (lang === "he") {
     return [
       "לפני ש-agent-check קורא משהו:",
-      "  · קוד פתוח (Apache-2.0), מסופק כמות שהוא (AS IS), ללא אחריות.",
-      "  · רץ על המחשב הזה, קורא רק את ‎~/.claude/projects ואת ‎~/.codex/sessions, ולא שולח כלום.",
+      "  · agent-check הוא קוד פתוח (Apache-2.0), ומסופק כמות שהוא (AS IS), ללא אחריות מכל סוג.",
+      "  · הוא רץ על המחשב הזה, קורא רק את ההיסטוריה של הסוכן שלך (‎~/.claude/projects ו-‎~/.codex/sessions), ולא שולח כלום.",
       "  · הממצאים הם אינדיקציות, לא ביקורת אבטחה.",
-      "  · הריצו אותו רק על מחשבים וחשבונות שמותר לכם לבדוק.",
+      "  · השימוש באחריותך, רק על מחשבים וחשבונות שמותר לך לבדוק, והחבות של NoData מוגבלת כמפורט בתנאים.",
       `  התנאים המלאים: ${TERMS_URL}`,
+      "",
+      AGREEMENT_SENTENCE.he,
     ];
   }
   return [
     "Before agent-check reads anything:",
-    "  · It is open source (Apache-2.0), provided as is, without warranty.",
-    "  · It runs on this computer, reads only ~/.claude/projects and ~/.codex/sessions, and sends nothing.",
+    "  · agent-check is open source (Apache-2.0) and provided as is, without any warranty.",
+    "  · It runs on this computer, reads only your agent's own history (~/.claude/projects and ~/.codex/sessions), and sends nothing.",
     "  · Its findings are indications, not a security audit.",
-    "  · Run it only on computers and accounts you are allowed to inspect.",
+    "  · You use it at your own responsibility, only on computers and accounts you are allowed to inspect, and NoData's liability is limited as the terms say.",
     `  The full terms: ${TERMS_URL}`,
+    "",
+    AGREEMENT_SENTENCE.en,
   ];
 }
 
