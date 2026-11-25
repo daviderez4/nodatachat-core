@@ -27,7 +27,9 @@ export function Footer() {
             <a href={links.npm} style={{ color: "var(--snow-2)" }}>npm</a>
             <a href={links.security} style={{ color: "var(--snow-2)" }}>Security</a>
             <Link href="/about/" style={{ color: "var(--snow-2)" }}>About</Link>
+            <Link href="/principles/" style={{ color: "var(--snow-2)" }}>10 principles</Link>
             <Link href="/terms/" style={{ color: "var(--snow-2)" }}>Terms</Link>
+            <Link href="/privacy/" style={{ color: "var(--snow-2)" }}>Privacy</Link>
             {founder.linkedin ? <a href={founder.linkedin} style={{ color: "var(--snow-2)" }}>LinkedIn</a> : null}
           </div>
         </div>

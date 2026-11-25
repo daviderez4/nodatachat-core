@@ -8,6 +8,8 @@ export function CopyCommand({ command, dark = false }: { command: string; dark?:
     try {
       await navigator.clipboard.writeText(command);
       setCopied(true);
+      // Lets the repository invitation know the visitor is using the tool (StarInvite).
+      window.dispatchEvent(new Event("wmas:copied"));
       setTimeout(() => setCopied(false), 1600);
     } catch {
       /* clipboard refused: the command is still selectable */

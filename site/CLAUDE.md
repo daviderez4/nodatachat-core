@@ -14,6 +14,7 @@ where agents can be misled. NoData maintains it and is linked from it. The site 
 - `/lab`: 8 scenarios, request to decision, with the deciding source lines.
 - `/agentic-web`: agents compromised by what they read, and where the history's view ends.
 - `/about`: who maintains it, what is open, how we work, what the site collects.
+- `/privacy`: what is kept about the agreement, and the form to see or erase it.
 
 ## The rules (each one exists because it was broken once)
 
@@ -44,7 +45,11 @@ where agents can be misled. NoData maintains it and is linked from it. The site 
 7. **npm is what people run.** The site reads `dist-tags.latest` at build time. When the source is
    ahead, the pages say both. Never show a version npm does not serve as if it did.
 8. **No third-party requests.** Fonts are self-hosted (`@fontsource-variable/*`). Do not add analytics,
-   trackers, Google Fonts or CDNs: `/about` promises that a visit contacts no one else.
+   trackers, Google Fonts or CDNs. The one request the site makes elsewhere is to its operator's consent door
+   (`lib/consent-record.ts` → `nodatacapsule.com/api/public/signup`, `site_consent` mode): it records the
+   agreement to the terms (version, sentence, time, IP and browser, encrypted, 7 years), and `/privacy` lets
+   the person see or erase it (Privacy Protection Law, sections 13 and 14). Only on agree (or its retry on a later visit), view or erase, never
+   on a plain visit. `/about`, the terms (section 12) and `/privacy` say so; change all four together.
 9. **No key-shaped literal in the repo.** Scenarios use `{{KEY}}`, expanded at build time. GitHub's push
    protection would block a real-looking key anyway.
 10. **Example domains only** in scenarios (`*.example`, `example.net`) and invented package names.

@@ -9,6 +9,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { EvidenceTicker } from "@/components/EvidenceTicker";
 import { Consent } from "@/components/Consent";
+import { StarInvite } from "@/components/StarInvite";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://whatmyagentsaw.com"),
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <Consent />
+        <StarInvite />
       </body>
     </html>
   );
