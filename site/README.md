@@ -44,3 +44,19 @@ A Vercel project with **Root Directory** `site` (the build reads `../packages/pr
 
 Add an entry to `content/scenarios.json` with the two log lines and the `expect` you believe the
 code decides, then `npm run facts`. If you are wrong, the script says what the code decides instead.
+
+## Add an evidence item (the ticker and /evidence/)
+
+The strip under the menu and `/evidence/` show items from `content/evidence.json`. Each one is held
+by `scripts/evidence-check.mjs`, which runs before every build:
+
+- `source_url` is the original document (https, no `utm_`), and `quote` is copied word for word from it;
+- `verification_status` must be `opened_and_matched`: someone opened the page on `last_verified`;
+- a lawsuit, court decision or enforcement action names its `legal_stage` (a filing is an allegation);
+- `technical_status` is attempted, succeeded, exposed or unknown. `no_event` is refused: a news item
+  cannot prove an absence;
+- `date` is `null` when the source gives none, and the item then sorts last.
+
+An item not re-verified in 120 days leaves the ticker and is marked on `/evidence/`. `source_id` is
+the id in the NoData Evidence Intelligence registry. Share links are plain links: no third-party
+script loads until the reader clicks.

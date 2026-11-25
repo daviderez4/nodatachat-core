@@ -1,15 +1,18 @@
 {
   "_readme": "Every sentence on the site's pages. Edit freely. Three markers: `code` for code, [text](key) for a link (a key from lib/links.ts, or a path like /lab/), and {token} for a fact read from the code at build time ({package}, {version}, {license}, {node}, {labCount}, {calls}, {samples}, {latest}). Never type a version, a count or a command here: the build refuses it, because facts come from packages/protect.",
-
   "home": {
     "eyebrow": "Make the invisible behavior of AI agents visible",
     "title": "What did your agent actually see?",
     "lede": "See what your AI agent attempted, what succeeded, and what actually reached it.",
     "exploreButton": "Explore a session ↓",
-    "badges": ["Claude Code · Codex", "No account", "Reads your agent's history on your machine and sends nothing", "{license}"],
+    "badges": [
+      "Claude Code · Codex",
+      "No account",
+      "Reads your agent's history on your machine and sends nothing",
+      "{license}"
+    ],
     "networkNote": "npx downloads the package from npm. After that the check makes no network request. [Read the source](history)",
     "mapCaption": "Every verdict above was computed by the published code, at build time, from the session's log. [See the log](scenarios) · [Step through more in the lab →](/lab/)",
-
     "tool": {
       "eyebrow": "The tool",
       "title": "Your own Agent Exposure Report, in one command.",
@@ -22,27 +25,36 @@
       "reportTitle": "Agent Exposure Report",
       "reportTag": "the demo session",
       "metrics": {
-        "attempted": ["ATTEMPTED", "events"],
-        "succeeded": ["SUCCEEDED", "recorded as succeeded"],
-        "exposed": ["EXPOSED", "{samples} of them a sample"],
-        "unknown": ["UNKNOWN", "not enough evidence"]
+        "attempted": [
+          "ATTEMPTED",
+          "events"
+        ],
+        "succeeded": [
+          "SUCCEEDED",
+          "recorded as succeeded"
+        ],
+        "exposed": [
+          "EXPOSED",
+          "{samples} of them a sample"
+        ],
+        "unknown": [
+          "UNKNOWN",
+          "not enough evidence"
+        ]
       },
       "reportCaption": "This is the CLI's real output for the {calls} demo calls above, produced by the report code of the source ({version}) at build time."
     },
-
     "principles": {
       "kicker": "THE 10 PRINCIPLES",
       "title": "Before you give AI access to your information, set the rules.",
       "lede": "Know your data, set policy, enforce it at the point of access, and demand proof. Ten principles for anyone who lets AI near their information.",
       "cta": "Read the 10 principles →"
     },
-
     "nextBand": {
       "kicker": "GOT YOUR REPORT?",
       "title": "Six steps, in order. Five of them free.",
       "cta": "What to do next →"
     },
-
     "developers": {
       "eyebrow": "Developers",
       "title": "Not just to read. To work.",
@@ -50,10 +62,22 @@
       "quickstartTitle": "Check your agent in one minute",
       "quickstartLede": "No install, no account. The package runs from npm, reads your agent's own history, and prints a report.",
       "tabs": {
-        "run": ["Run", "the last 30 days"],
-        "days": ["--days", "a longer window"],
-        "events": ["--events", "one local finding per line, event format v1"],
-        "he": ["--lang he", "the report in Hebrew"]
+        "run": [
+          "Run",
+          "the last 30 days"
+        ],
+        "days": [
+          "--days",
+          "a longer window"
+        ],
+        "events": [
+          "--events",
+          "one local finding per line, event format v1"
+        ],
+        "he": [
+          "--lang he",
+          "the report in Hebrew"
+        ]
       },
       "docsLink": "Full documentation ↗",
       "sourceLink": "Read the source ↗",
@@ -69,29 +93,45 @@
       "changelogTitle": "CHANGELOG",
       "allVersions": "All versions ↗"
     },
-
     "threats": {
       "eyebrow": "Threat library",
       "title": "Five things agents reach for. Every one is a rule you can read.",
       "lede": "The categories below are the ones the tool counts, named as the tool prints them. Each links to its pattern in the open code.",
       "ruleLink": "agent-rules.ts ↗"
     },
-
     "after": {
       "eyebrow": "After your first check",
       "title": "Learn what agents really do with the access you gave them.",
-      "lab": ["LAB · OPEN NOW", "Agent Exposure Lab", "{labCount} scenarios. The evidence, the limits of the conclusion, and the decision, step by step.", "Open the lab →"],
-      "contribute": ["CONTRIBUTE", "Argue with a rule", "A pattern that misses, a scenario the lab should have, a false alarm. Open an issue.", "Open an issue ↗"],
-      "releases": ["RELEASES", "Watch the repository", "Every version is a tag in the repo, built and published from it. Latest: {latest}.", "On GitHub ↗"],
-      "research": ["RESEARCH · THE AGENTIC WEB", "When search results become attack vectors", "Four ways an agent is compromised by what it reads, and where your history's view ends.", "Read it →"]
+      "lab": [
+        "LAB · OPEN NOW",
+        "Agent Exposure Lab",
+        "{labCount} scenarios. The evidence, the limits of the conclusion, and the decision, step by step.",
+        "Open the lab →"
+      ],
+      "contribute": [
+        "CONTRIBUTE",
+        "Argue with a rule",
+        "A pattern that misses, a scenario the lab should have, a false alarm. Open an issue.",
+        "Open an issue ↗"
+      ],
+      "releases": [
+        "RELEASES",
+        "Watch the repository",
+        "Every version is a tag in the repo, built and published from it. Latest: {latest}.",
+        "On GitHub ↗"
+      ],
+      "research": [
+        "RESEARCH · THE AGENTIC WEB",
+        "When search results become attack vectors",
+        "Four ways an agent is compromised by what it reads, and where your history's view ends.",
+        "Read it →"
+      ]
     },
-
     "open": {
       "eyebrow": "Built in the open",
       "title": "Read the code. Follow the work.",
       "aboutLink": "Who is behind this →"
     },
-
     "vision": {
       "eyebrow": "The vision",
       "title": "Control and sovereignty in the age of",
@@ -99,15 +139,30 @@
       "lede": "Agents will read, decide and act for us. The information stays yours, the keys stay with people, and the rules belong to whoever owns the data. Information moves. Control stays.",
       "second": "It starts with seeing. Knowing what an agent meant to do is not enough: you need to know what actually happened.",
       "steps": [
-        ["01 · The way in", "The checker", "See what your agent did, in one command."],
-        ["02 · The reason to trust", "The method", "Evidence, limits and decisions, in the open."],
-        ["03 · The reason to return", "The lab and the rules", "New scenarios, rules and releases."]
+        [
+          "01 · The way in",
+          "The checker",
+          "See what your agent did, in one command."
+        ],
+        [
+          "02 · The reason to trust",
+          "The method",
+          "Evidence, limits and decisions, in the open."
+        ],
+        [
+          "03 · The reason to return",
+          "The lab and the rules",
+          "New scenarios, rules and releases."
+        ]
       ],
-      "nodata": ["04 · FROM VISIBILITY TO CONTROL", "NoData", "For teams that want to enforce what they now see. [Learn more →](nodata)"],
+      "nodata": [
+        "04 · FROM VISIBILITY TO CONTROL",
+        "NoData",
+        "For teams that want to enforce what they now see. [Learn more →](nodata)"
+      ],
       "principlesLink": "[The 10 principles for protecting information in the age of AI →](/principles/)"
     }
   },
-
   "lab": {
     "metaDescription": "Step through real agent tool calls: the evidence in the log, the limits of what it proves, and the decision the open rules make.",
     "eyebrow": "Lab 01 · Reading the evidence",
@@ -115,51 +170,114 @@
     "lede": "{labCount} tool calls. For each: the evidence in the log, the limits of what it proves, and the decision the open rules make.",
     "tag": "SIMULATED LOGS · REAL RULES",
     "glossary": [
-      ["ATTEMPTED", "The action was tried."],
-      ["SUCCEEDED", "The tool reported no error."],
-      ["EXPOSED", "Evidence that sensitive content reached the agent. Not proof a key is valid."],
-      ["UNKNOWN", "Not enough evidence to decide."],
-      ["NO EVENT", "Outside every rule. Not recorded, which is not the same as safe."]
+      [
+        "ATTEMPTED",
+        "The action was tried."
+      ],
+      [
+        "SUCCEEDED",
+        "The tool reported no error."
+      ],
+      [
+        "EXPOSED",
+        "Evidence that sensitive content reached the agent. Not proof a key is valid."
+      ],
+      [
+        "UNKNOWN",
+        "Not enough evidence to decide."
+      ],
+      [
+        "NO EVENT",
+        "Outside every rule. Not recorded, which is not the same as safe."
+      ]
     ],
     "footer": "The logs are simulated. No real files, keys or services are touched. The decisions come from the published code.",
     "footerLinks": "[The scenarios](scenarios) · [Propose a scenario](newIssue) · [Argue with a rule](rules) · [Report a wrong result](reportProblem)"
   },
-
   "agenticWeb": {
     "metaDescription": "When search results become attack vectors: four ways an agent is compromised by what it reads, what your history can show, and what it cannot prove.",
     "eyebrow": "Research · The Agentic Web",
     "title": "Your agent can be compromised by what it reads, before it executes anything.",
     "lede": "Nobody needs to hack the model. It is enough to put the right words where agents look: a docs page, a README, a search result. The attack is on the information the agent decides from.",
-    "layersHead": ["LAYER", "THE QUESTION", "WHAT IT TAKES", "WHERE THIS SITE STANDS"],
+    "layersHead": [
+      "LAYER",
+      "THE QUESTION",
+      "WHAT IT TAKES",
+      "WHERE THIS SITE STANDS"
+    ],
     "layers": [
-      ["Source", "What content is the agent relying on?", "Who published it, and can it be trusted?", "Not what agent-check does. A source's address is not its identity."],
-      ["Exposure", "What did the agent actually receive?", "Evidence of what was read, run, and returned.", "This is agent-check: what was attempted, what succeeded, what came back."],
-      ["Execution", "May the action it now asks for happen?", "A decision before the action, by a rule a person set.", "Enforcement. Not a free tool reading history after the fact."]
+      [
+        "Source",
+        "What content is the agent relying on?",
+        "Who published it, and can it be trusted?",
+        "Not what agent-check does. A source's address is not its identity."
+      ],
+      [
+        "Exposure",
+        "What did the agent actually receive?",
+        "Evidence of what was read, run, and returned.",
+        "This is agent-check: what was attempted, what succeeded, what came back."
+      ],
+      [
+        "Execution",
+        "May the action it now asks for happen?",
+        "A decision before the action, by a rule a person set.",
+        "Enforcement. Not a free tool reading history after the fact."
+      ]
     ],
     "scenariosEyebrow": "Four scenarios",
     "scenariosTitle": "What happens, what your history shows, what it cannot prove.",
     "scenariosLede": "These are not attacks agent-check detects. They are a map of where its view ends. Each verdict below was computed by the published rules from the session's log.",
-    "tableHead": ["SCENARIO", "WHAT HAPPENS", "WHAT AGENT-CHECK RECORDS", "WHAT IT CANNOT PROVE"],
+    "tableHead": [
+      "SCENARIO",
+      "WHAT HAPPENS",
+      "WHAT AGENT-CHECK RECORDS",
+      "WHAT IT CANNOT PROVE"
+    ],
     "rows": {
-      "domain": ["A lapsed docs domain is re-registered and serves a changed install line.", "Who controlled the domain when the agent read it."],
-      "readme": ["A README addresses the agent and asks it to read a credential file.", "Whether the text is what made the agent act."],
-      "typo": ["A search result names a look-alike package, and the agent installs it.", "Whether the result, or the package, could be trusted."],
-      "cloak": ["A page serves the agent a version with a hidden instruction.", "What a person would have seen at the same moment."]
+      "domain": [
+        "A lapsed docs domain is re-registered and serves a changed install line.",
+        "Who controlled the domain when the agent read it."
+      ],
+      "readme": [
+        "A README addresses the agent and asks it to read a credential file.",
+        "Whether the text is what made the agent act."
+      ],
+      "typo": [
+        "A search result names a look-alike package, and the agent installs it.",
+        "Whether the result, or the package, could be trusted."
+      ],
+      "cloak": [
+        "A page serves the agent a version with a hidden instruction.",
+        "What a person would have seen at the same moment."
+      ]
     },
     "visibility": "Visibility shows what happened.",
     "enforcement": "Enforcement controls what can happen next.",
     "principles": [
-      ["Origin is not trust", "Knowing a page came from the web, or from an API, says where it came from. Not whether it can be believed."],
-      ["A warning is not enforcement", "A step is stopped only where a rule says so. Anything that only warns should never be described as blocking."],
-      ["Proof of a decision is not proof of truth", "A record can prove what was decided and enforced. It cannot prove that what the agent read was true or harmless."]
+      [
+        "Origin is not trust",
+        "Knowing a page came from the web, or from an API, says where it came from. Not whether it can be believed."
+      ],
+      [
+        "A warning is not enforcement",
+        "A step is stopped only where a rule says so. Anything that only warns should never be described as blocking."
+      ],
+      [
+        "Proof of a decision is not proof of truth",
+        "A record can prove what was decided and enforced. It cannot prove that what the agent read was true or harmless."
+      ]
     ],
     "nodata": "NoData does not judge whether content is malicious. Its gate marks a session that read content from outside, and decides the next outbound step by the owner's rules: a warning by default, a person's approval where the owner's rule asks for one. Every decision leaves a record.",
     "nodataButton": "From visibility to control →",
     "sourcesEyebrow": "Sources",
     "sources": "Measurements of how often search results carry malicious content will appear here only after we have read the primary study, with its method, scope and limits. We do not build on secondary quotes. The scenarios above use example domains and invented package names.",
-    "sourcesLinks": ["[Step through the Exposure Lab →](/lab/)", "[Propose a scenario ↗](newIssue)", "[The scenarios as data ↗](agenticWebData)"]
+    "sourcesLinks": [
+      "[Step through the Exposure Lab →](/lab/)",
+      "[Propose a scenario ↗](newIssue)",
+      "[The scenarios as data ↗](agenticWebData)"
+    ]
   },
-
   "next": {
     "metaDescription": "Got your Agent Exposure Report? Six steps, in order: find where, rotate, move secrets out of reach, restrict your agent, check again, and decide before the step.",
     "eyebrow": "After your report",
@@ -216,18 +334,42 @@
     "cardHint": "Its own record of what it decided:",
     "byCategoryEyebrow": "By finding",
     "byCategoryTitle": "One row per line of your report.",
-    "byCategoryHead": ["IN YOUR REPORT", "WHAT IT MEANS", "WHAT YOU CAN DO TODAY", "WHAT NODATA ADDS"],
+    "byCategoryHead": [
+      "IN YOUR REPORT",
+      "WHAT IT MEANS",
+      "WHAT YOU CAN DO TODAY",
+      "WHAT NODATA ADDS"
+    ],
     "byCategory": {
-      "secret_file": ["Your agent read a file that holds logins. If a value came back, it is in the agent's context.", "Rotate what came back. Move the file out of the working folder. Deny it in the agent's settings.", "The file is scanned before the read and held for your approval."],
-      "credential_command": ["A command printed a credential into the conversation, and on to the model.", "Run such commands yourself, in a terminal, not through the agent.", "The command is held for your approval; a blanked-output way to run it is offered."],
-      "secret_search": ["The agent searched for secret names. Often routine in code, but matches can carry values.", "Look at the matches that returned a key, and rotate those keys.", "The search is held for your approval."],
-      "data_file": ["The agent read a table, a database or a dump. The free check does not read the content.", "Keep real exports out of the working folder. Work on sample data.", "The file is scanned, personal data included, and held. A clean copy can be made instead."],
-      "outbound_data": ["A command tried to send data off the machine. A failed attempt is still a finding.", "Read these commands in the events. Run the agent where its network is limited.", "After outside content, a warning by default; held where your rule says so."]
+      "secret_file": [
+        "Your agent read a file that holds logins. If a value came back, it is in the agent's context.",
+        "Rotate what came back. Move the file out of the working folder. Deny it in the agent's settings.",
+        "The file is scanned before the read and held for your approval."
+      ],
+      "credential_command": [
+        "A command printed a credential into the conversation, and on to the model.",
+        "Run such commands yourself, in a terminal, not through the agent.",
+        "The command is held for your approval; a blanked-output way to run it is offered."
+      ],
+      "secret_search": [
+        "The agent searched for secret names. Often routine in code, but matches can carry values.",
+        "Look at the matches that returned a key, and rotate those keys.",
+        "The search is held for your approval."
+      ],
+      "data_file": [
+        "The agent read a table, a database or a dump. The free check does not read the content.",
+        "Keep real exports out of the working folder. Work on sample data.",
+        "The file is scanned, personal data included, and held. A clean copy can be made instead."
+      ],
+      "outbound_data": [
+        "A command tried to send data off the machine. A failed attempt is still a finding.",
+        "Read these commands in the events. Run the agent where its network is limited.",
+        "After outside content, a warning by default; held where your rule says so."
+      ]
     },
     "outsideTitle": "Keys that came back outside these five",
     "outside": "The line \"secret-looking values … over all calls\" also counts keys that came back from ordinary files and command output. Those are often the most interesting: a key sitting in code. Find them in the events and treat them like step 2."
   },
-
   "principles": {
     "metaDescription": "Ten principles for protecting information in the age of AI: know your data, set policy, enforce it at the point of access, and demand proof.",
     "tagline": "AI should empower. Your data should remain yours.",
@@ -397,7 +539,6 @@
       "lang": "English"
     }
   },
-
   "terms": {
     "version": "2026-11-24",
     "metaDescription": "The terms for using whatmyagentsaw.com and the agent-check tool.",
@@ -410,36 +551,89 @@
     "principlesLink": "Read the 10 principles →",
     "intro": "Please read these terms carefully. They include a disclaimer of warranties (section 5), a limitation of liability (section 6) and your responsibility for how you use the tool (sections 7 and 8). By using this site or running agent-check, you agree to them. If you do not agree, do not use them.",
     "sections": [
-      ["Who we are", "whatmyagentsaw.com (the \"site\") and the agent-check tool (the \"tool\") are made available by NoData Capsule (\"NoData\", \"we\"), operating [nodatacapsule.com](nodata), Israel. The tool is part of the open-source package {package}, published from [daviderez4/nodatachat-core](repo)."],
-      ["Agreement", "These terms are an agreement between you and NoData. You accept them by clicking to agree, or by using the site or the tool. If you use them on behalf of an organisation, you confirm that you may bind it, and \"you\" includes it. Your agreement is recorded only in your own browser and on your own computer; we do not receive it."],
-      ["The open-source license", "The tool's code is licensed under the Apache License 2.0 ([read it](license)). The license governs your rights in the code. These terms govern your use of the site and the tool. Where the two conflict about the code, the license prevails."],
-      ["What the tool does, and does not do", "The tool runs on your computer, reads the history that AI coding agents keep there (today `~/.claude/projects` and `~/.codex/sessions`), and prints counts. It sends nothing to us or to anyone. It is not a security audit, not a penetration test, not legal or compliance advice, and not a guarantee of anything. A finding is an indication within the tool's published rules. An empty result does not mean nothing happened: Unknown is not safe."],
-      ["No warranty", "The site, the tool and all content are provided \"AS IS\" and \"AS AVAILABLE\", without warranties or conditions of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, accuracy, completeness and non-infringement. We do not warrant that the tool will detect any particular event, that it is free of errors, or that the site will be available."],
-      ["Limitation of liability", "To the maximum extent permitted by law, NoData, its officers, employees and the tool's contributors will not be liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for any loss of data, profits, revenue, business or goodwill, or for any security incident, exposure of credentials or keys, or decision you take, arising from or related to the site or the tool, even if advised of the possibility. Our total liability for any claim relating to the site or the tool is limited to the amount you paid NoData for them in the twelve months before the claim. For the free site and tool, that amount is zero. Nothing in these terms limits liability that cannot be limited by law."],
-      ["Reporting a problem", "We provide a channel to report faults and limits: something not found, found wrongly, not read or read in part, a wrong category, an unsupported file type, a decision that does not match the rules, or any unexpected result ([report it](reportProblem)). We will review reports professionally, check them as far as the circumstances and the information available to us allow, and consider a fix, an improvement or another fitting answer. Each report gets a number and a status you can follow ([how reports are handled](reporting)). A report is not a commitment that every problem will be found, reproduced or fixed, or fixed within a set time, unless agreed otherwise in writing. Do not send keys, passwords, confidential content or personal data in a report: describe their shape, and send a sample only through a secure channel we approve. A report never changes a past record."],
-      ["Your responsibility", "You decide whether, where and how to run the tool, and you are responsible for that decision and for what you do with its output. Run it only on computers, accounts and data you own or are authorised to inspect, and in line with the law and with your employer's policies. Rotating keys, changing settings and protecting your systems remain your responsibility."],
-      ["Acceptable use", "The lab and the research pages describe attack techniques with simulated logs, example domains and invented package names, for education. Do not use them, or the tool, to access, test or attack systems, accounts or data you do not own or have written permission to test."],
-      ["Indemnity", "You agree to indemnify and hold harmless NoData, its officers, employees and the tool's contributors from claims, losses and costs (including reasonable legal fees) arising from your breach of these terms or your misuse of the site or the tool."],
-      ["Third parties", "The tool reads files written by third-party AI agents, such as Claude Code and Codex. Their names and marks belong to their owners; this site and the tool are not affiliated with, sponsored or endorsed by them. Links to GitHub, npm, LinkedIn and NoData lead to services with their own terms."],
-      ["Your data and privacy", "The site sets no cookies and runs no analytics. When you agree to these terms, NoData records the agreement: the terms version, the sentence you agreed to, the time, your IP address and your browser (user agent). The purpose is evidence that you agreed, and nothing else. The IP address and browser are stored encrypted, the record is chained so it cannot be edited or back-dated, and it is kept for 7 years (the general limitation period) and then erased. You get an agreement id and a key, kept in your browser; with them, under sections 13 and 14 of the Privacy Protection Law, 5741-1981, you can see the record and ask to erase it at any time on [the privacy page](/privacy/), or by [opening an issue](newIssue) without personal details. An erased record no longer shows your agreement, so the site asks you to agree again. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."],
-      ["Intellectual property", "The tool's code is open source under its license. The site's content, design and the names \"NoData\" and \"What My Agent Saw\" belong to NoData. You may quote and link to the site with attribution."],
-      ["Changes", "We may change these terms. The date above shows the current version, and the site asks you to agree again when it changes. Continuing to use the site or the tool after a change means you accept it."],
-      ["Governing law and jurisdiction", "These terms are governed by the laws of the State of Israel, without regard to conflict-of-law rules. The competent courts of Tel Aviv-Jaffa have exclusive jurisdiction over any dispute relating to them."],
-      ["General", "If a provision is found unenforceable, it is limited to the minimum extent needed, and the rest stays in effect. Not enforcing a right is not a waiver of it. These terms, together with the tool's license, are the entire agreement between you and NoData about the site and the tool."],
-      ["Contact", "Questions: [open an issue](newIssue). Security reports: [the security policy](security)."]
+      [
+        "Who we are",
+        "whatmyagentsaw.com (the \"site\") and the agent-check tool (the \"tool\") are made available by NoData Capsule (\"NoData\", \"we\"), operating [nodatacapsule.com](nodata), Israel. The tool is part of the open-source package {package}, published from [daviderez4/nodatachat-core](repo)."
+      ],
+      [
+        "Agreement",
+        "These terms are an agreement between you and NoData. You accept them by clicking to agree, or by using the site or the tool. If you use them on behalf of an organisation, you confirm that you may bind it, and \"you\" includes it. Your agreement is recorded only in your own browser and on your own computer; we do not receive it."
+      ],
+      [
+        "The open-source license",
+        "The tool's code is licensed under the Apache License 2.0 ([read it](license)). The license governs your rights in the code. These terms govern your use of the site and the tool. Where the two conflict about the code, the license prevails."
+      ],
+      [
+        "What the tool does, and does not do",
+        "The tool runs on your computer, reads the history that AI coding agents keep there (today `~/.claude/projects` and `~/.codex/sessions`), and prints counts. It sends nothing to us or to anyone. It is not a security audit, not a penetration test, not legal or compliance advice, and not a guarantee of anything. A finding is an indication within the tool's published rules. An empty result does not mean nothing happened: Unknown is not safe."
+      ],
+      [
+        "No warranty",
+        "The site, the tool and all content are provided \"AS IS\" and \"AS AVAILABLE\", without warranties or conditions of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, accuracy, completeness and non-infringement. We do not warrant that the tool will detect any particular event, that it is free of errors, or that the site will be available."
+      ],
+      [
+        "Limitation of liability",
+        "To the maximum extent permitted by law, NoData, its officers, employees and the tool's contributors will not be liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for any loss of data, profits, revenue, business or goodwill, or for any security incident, exposure of credentials or keys, or decision you take, arising from or related to the site or the tool, even if advised of the possibility. Our total liability for any claim relating to the site or the tool is limited to the amount you paid NoData for them in the twelve months before the claim. For the free site and tool, that amount is zero. Nothing in these terms limits liability that cannot be limited by law."
+      ],
+      [
+        "Reporting a problem",
+        "We provide a channel to report faults and limits: something not found, found wrongly, not read or read in part, a wrong category, an unsupported file type, a decision that does not match the rules, or any unexpected result ([report it](reportProblem)). We will review reports professionally, check them as far as the circumstances and the information available to us allow, and consider a fix, an improvement or another fitting answer. Each report gets a number and a status you can follow ([how reports are handled](reporting)). A report is not a commitment that every problem will be found, reproduced or fixed, or fixed within a set time, unless agreed otherwise in writing. Do not send keys, passwords, confidential content or personal data in a report: describe their shape, and send a sample only through a secure channel we approve. A report never changes a past record."
+      ],
+      [
+        "Your responsibility",
+        "You decide whether, where and how to run the tool, and you are responsible for that decision and for what you do with its output. Run it only on computers, accounts and data you own or are authorised to inspect, and in line with the law and with your employer's policies. Rotating keys, changing settings and protecting your systems remain your responsibility."
+      ],
+      [
+        "Acceptable use",
+        "The lab and the research pages describe attack techniques with simulated logs, example domains and invented package names, for education. Do not use them, or the tool, to access, test or attack systems, accounts or data you do not own or have written permission to test."
+      ],
+      [
+        "Indemnity",
+        "You agree to indemnify and hold harmless NoData, its officers, employees and the tool's contributors from claims, losses and costs (including reasonable legal fees) arising from your breach of these terms or your misuse of the site or the tool."
+      ],
+      [
+        "Third parties",
+        "The tool reads files written by third-party AI agents, such as Claude Code and Codex. Their names and marks belong to their owners; this site and the tool are not affiliated with, sponsored or endorsed by them. Links to GitHub, npm, LinkedIn and NoData lead to services with their own terms."
+      ],
+      [
+        "Your data and privacy",
+        "The site sets no cookies and runs no analytics. When you agree to these terms, NoData records the agreement: the terms version, the sentence you agreed to, the time, your IP address and your browser (user agent). The purpose is evidence that you agreed, and nothing else. The IP address and browser are stored encrypted, the record is chained so it cannot be edited or back-dated, and it is kept for 7 years (the general limitation period) and then erased. You get an agreement id and a key, kept in your browser; with them, under sections 13 and 14 of the Privacy Protection Law, 5741-1981, you can see the record and ask to erase it at any time on [the privacy page](/privacy/), or by [opening an issue](newIssue) without personal details. An erased record no longer shows your agreement, so the site asks you to agree again. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."
+      ],
+      [
+        "Intellectual property",
+        "The tool's code is open source under its license. The site's content, design and the names \"NoData\" and \"What My Agent Saw\" belong to NoData. You may quote and link to the site with attribution."
+      ],
+      [
+        "Changes",
+        "We may change these terms. The date above shows the current version, and the site asks you to agree again when it changes. Continuing to use the site or the tool after a change means you accept it."
+      ],
+      [
+        "Governing law and jurisdiction",
+        "These terms are governed by the laws of the State of Israel, without regard to conflict-of-law rules. The competent courts of Tel Aviv-Jaffa have exclusive jurisdiction over any dispute relating to them."
+      ],
+      [
+        "General",
+        "If a provision is found unenforceable, it is limited to the minimum extent needed, and the rest stays in effect. Not enforcing a right is not a waiver of it. These terms, together with the tool's license, are the entire agreement between you and NoData about the site and the tool."
+      ],
+      [
+        "Contact",
+        "Questions: [open an issue](newIssue). Security reports: [the security policy](security)."
+      ]
     ]
   },
-
   "star": {
     "title": "This is all open. Use it.",
     "body": "Everything you saw here is built from an open repository, and you do not need an account or our products to use it.",
-    "points": ["Run agent-check on your own machine.", "Read the rules, and argue with them.", "Report what it got wrong."],
+    "points": [
+      "Run agent-check on your own machine.",
+      "Read the rules, and argue with them.",
+      "Report what it got wrong."
+    ],
     "ask": "If it helped you, a star on GitHub would mean a lot. It helps more people find this, and keeps the question of who controls information where it belongs: in the open.",
     "cta": "Star on GitHub",
     "later": "Not now",
     "close": "Close"
   },
-
   "consent": {
     "title": "Before you continue",
     "points": [
@@ -461,7 +655,6 @@
     "notRecorded": "The record could not be saved right now. Your agreement holds, and the site will try again on your next visit.",
     "done": "Done"
   },
-
   "about": {
     "metaDescription": "Who builds What My Agent Saw, what is open, what is not, and how the site works.",
     "eyebrow": "About",
@@ -471,9 +664,18 @@
     "visionTitle": "Control and sovereignty in the age of",
     "visionAccent": "AI.",
     "visionCards": [
-      ["Your information", "Agents may use it. They do not own it, and it does not have to leave your hands for them to work."],
-      ["People hold the keys", "An agent can ask. A person, or a rule a person set, decides. An agent is never the one who approves."],
-      ["The owner sets the rules", "Every action an agent takes on your information follows rules you can read, change, and check afterwards."]
+      [
+        "Your information",
+        "Agents may use it. They do not own it, and it does not have to leave your hands for them to work."
+      ],
+      [
+        "People hold the keys",
+        "An agent can ask. A person, or a rule a person set, decides. An agent is never the one who approves."
+      ],
+      [
+        "The owner sets the rules",
+        "Every action an agent takes on your information follows rules you can read, change, and check afterwards."
+      ]
     ],
     "visionClose": "Information moves. Control stays. Seeing what agents do is the first step. [Read the 10 principles →](/principles/)",
     "whoEyebrow": "Who builds it",
@@ -491,11 +693,26 @@
     "followEyebrow": "Follow the work",
     "howEyebrow": "How we work",
     "principles": [
-      ["Every fact comes from the code", "Versions, flags, categories and every verdict on this site are read from {package} when the site is built. If a page and the code disagree, the site does not build."],
-      ["Evidence, and its limits", "Every finding says what it shows and what it does not prove. Unknown is an answer. An attempt is not an exposure."],
-      ["No numbers without a source", "We quote a measurement only after reading the primary study, with its method, scope and limits. Simulated data is marked as simulated."],
-      ["You can argue with us", "The rules are plain patterns in the open. A wrong rule is an issue or a pull request, and the history of every change is public."],
-      ["Every reported failure is looked into", "Report anything a result got wrong, including what it missed. Each report gets a number and a status, from reported to verified, answered in the open. A report never rewrites a past record."]
+      [
+        "Every fact comes from the code",
+        "Versions, flags, categories and every verdict on this site are read from {package} when the site is built. If a page and the code disagree, the site does not build."
+      ],
+      [
+        "Evidence, and its limits",
+        "Every finding says what it shows and what it does not prove. Unknown is an answer. An attempt is not an exposure."
+      ],
+      [
+        "No numbers without a source",
+        "We quote a measurement only after reading the primary study, with its method, scope and limits. Simulated data is marked as simulated."
+      ],
+      [
+        "You can argue with us",
+        "The rules are plain patterns in the open. A wrong rule is an issue or a pull request, and the history of every change is public."
+      ],
+      [
+        "Every reported failure is looked into",
+        "Report anything a result got wrong, including what it missed. Each report gets a number and a status, from reported to verified, answered in the open. A report never rewrites a past record."
+      ]
     ],
     "siteEyebrow": "This site",
     "site": [
@@ -518,10 +735,22 @@
     "lede": "The site keeps one thing about you: the record that you agreed to [the terms](/terms/). Under sections 13 and 14 of the Privacy Protection Law, you can see that record and ask to erase it. No account is needed: the agreement id and its key are in this browser.",
     "keptTitle": "What is kept",
     "kept": [
-      ["The terms version and the sentence you agreed to", "What you agreed to."],
-      ["The time", "When you agreed."],
-      ["Your IP address and browser (user agent)", "Evidence that the agreement came from you. Stored encrypted, each record under its own key."],
-      ["An agreement id, and hashes", "The id you see, a hash of the key (never the key itself), and a chain link, so the record cannot be edited or back-dated."]
+      [
+        "The terms version and the sentence you agreed to",
+        "What you agreed to."
+      ],
+      [
+        "The time",
+        "When you agreed."
+      ],
+      [
+        "Your IP address and browser (user agent)",
+        "Evidence that the agreement came from you. Stored encrypted, each record under its own key."
+      ],
+      [
+        "An agreement id, and hashes",
+        "The id you see, a hash of the key (never the key itself), and a chain link, so the record cannot be edited or back-dated."
+      ]
     ],
     "whoTitle": "Who keeps it, why, and for how long",
     "who": "NoData Capsule, the operator of this site, keeps it as evidence of the agreement, and uses it for nothing else: no marketing, no profile, no sharing. It is kept for 7 years, the general limitation period, then the IP address and browser are erased automatically. The tool you run keeps nothing here: it runs on your computer and sends nothing.",
@@ -538,9 +767,48 @@
     "erased": "Erased. The IP address and browser are gone, and the key no longer opens the record. The chain keeps only the id, the time and hashes, so the erasure itself stays on record.",
     "pending": "Your agreement in this browser is not on record yet; the site will try again on your next visit.",
     "none": "No agreement id is stored in this browser.",
-    "fields": {"code": "Agreement id", "terms_version": "Terms version", "sentence": "Agreed to", "accepted_at": "Time", "ip": "IP address", "user_agent": "Browser", "retain_until": "Kept until", "erased_at": "Erased", "receipt_hash": "Chain hash"},
+    "fields": {
+      "code": "Agreement id",
+      "terms_version": "Terms version",
+      "sentence": "Agreed to",
+      "accepted_at": "Time",
+      "ip": "IP address",
+      "user_agent": "Browser",
+      "retain_until": "Kept until",
+      "erased_at": "Erased",
+      "receipt_hash": "Chain hash"
+    },
     "erasedValue": "erased",
     "otherTitle": "Anything else",
     "other": "For any other request about your data, [open an issue](newIssue) without personal details and ask to be contacted, or see [the terms](/terms/), section 12."
+  },
+  "evidence": {
+    "metaDescription": "Who controls what AI can access, what can be proven, and what remains unknown. Every item opened at its source and quoted word for word.",
+    "eyebrow": "Research · Evidence",
+    "title": "We don't just track what AI does.",
+    "lede": "We study who controls what AI can access, what can be proven, and what remains unknown.",
+    "rules": [
+      [
+        "Source before summary",
+        "Every item links to the original document, quotes it word for word, and says when it was last opened. No secondary articles, no tracking links."
+      ],
+      [
+        "Evidence before conclusion",
+        "A filed claim is an allegation. Legal items name their stage: allegation, evidence filed, finding of fact, court decision, final judgment."
+      ],
+      [
+        "Unknown is not safe",
+        "When a source does not say what reached the agent, the item says unknown. A missing report is never shown as proof that nothing happened."
+      ]
+    ],
+    "tickerLabel": "Evidence · verified at source",
+    "tickerRegion": "Verified evidence, latest first",
+    "allEvidence": "← All evidence",
+    "why": "Why it matters.",
+    "limits": "Where it stops.",
+    "opened": "opened and matched",
+    "noDate": "no date given by the source",
+    "stale": "Needs re-verification",
+    "share": "Share"
   }
 }
