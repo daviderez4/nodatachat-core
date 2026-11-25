@@ -557,7 +557,7 @@
       ],
       [
         "Agreement",
-        "These terms are an agreement between you and NoData. You accept them by clicking to agree, or by using the site or the tool. If you use them on behalf of an organisation, you confirm that you may bind it, and \"you\" includes it. Your agreement is recorded only in your own browser and on your own computer; we do not receive it."
+        "These terms are an agreement between you and NoData. You accept them by clicking to agree, or by using the site or the tool. If you use them on behalf of an organisation, you confirm that you may bind it, and \"you\" includes it. Your agreement is recorded in two separate ways. When you agree on the site, NoData records the agreement as evidence that you agreed, as section 12 describes. When you agree in the tool, the agreement is kept only on your computer, and the tool sends nothing: neither the agreement nor anything it reads."
       ],
       [
         "The open-source license",
@@ -597,7 +597,7 @@
       ],
       [
         "Your data and privacy",
-        "The site sets no cookies and runs no analytics. When you agree to these terms, NoData records the agreement: the terms version, the sentence you agreed to, the time, your IP address and your browser (user agent). The purpose is evidence that you agreed, and nothing else. The IP address and browser are stored encrypted, the record is chained so it cannot be edited or back-dated, and it is kept for 7 years (the general limitation period) and then erased. You get an agreement id and a key, kept in your browser; with them, under sections 13 and 14 of the Privacy Protection Law, 5741-1981, you can see the record and ask to erase it at any time on [the privacy page](/privacy/), or by [opening an issue](newIssue) without personal details. An erased record no longer shows your agreement, so the site asks you to agree again. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."
+        "The site sets no cookies and runs no analytics. When you agree to these terms, NoData records the agreement: the terms version, the sentence you agreed to, the time, your IP address and your browser (user agent). The purpose is evidence that you agreed, and nothing else. The IP address and browser are stored encrypted, the record is chained so it cannot be edited or back-dated, and it is kept for 7 years (the general limitation period) and then erased. You get an agreement id and a key, kept in your browser; with them, under sections 13 and 14 of the Privacy Protection Law, 5741-1981, you can see the record at any time, and erase its personal data (the IP address and browser) on [the privacy page](/privacy/), or by [opening an issue](newIssue) without personal details. Erasing removes the IP address, the browser and the key. The agreement id, the time, the terms version and the hashes stay, so the chain stays verifiable and the erasure itself is on record. Without the personal data the record no longer stands as evidence, so the site asks you to agree again. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."
       ],
       [
         "Intellectual property",
@@ -646,10 +646,10 @@
     "principles": "This site follows [the 10 principles for protecting information in the age of AI](/principles/).",
     "checkbox": "I have read and agree to the Terms of Use, including the disclaimer of warranties and the limitation of liability.",
     "agree": "Continue",
-    "stored": "Agreeing records the terms version, the time, your IP address and browser with NoData Capsule, the operator, encrypted, for 7 years, as evidence of the agreement. Nothing else, no cookies, no tracking. [See or erase it](/privacy/).",
+    "stored": "Agreeing records the terms version, the time, your IP address and browser with NoData Capsule, the operator, encrypted, for 7 years, as evidence of the agreement. Nothing else, no cookies, no tracking. [See it, or erase your IP address and browser](/privacy/).",
     "saving": "Recording your agreement…",
     "recordedTitle": "Your agreement is recorded",
-    "recordedBody": "This is your agreement id. Its key is kept in this browser, so on [the privacy page](/privacy/) you can see the record or erase it. Copy both if you may clear this browser.",
+    "recordedBody": "This is your agreement id. Its key is kept in this browser, so on [the privacy page](/privacy/) you can see the record, or erase its IP address and browser. Copy both if you may clear this browser.",
     "recordedId": "Agreement id",
     "recordedKey": "Key",
     "notRecorded": "The record could not be saved right now. Your agreement holds, and the site will try again on your next visit.",
@@ -716,7 +716,7 @@
     ],
     "siteEyebrow": "This site",
     "site": [
-      "A static site: no accounts, no cookies, no analytics. Fonts and scripts are served from this domain. The one request it makes elsewhere is to NoData Capsule, its operator, when you agree to the [terms](/terms/): the agreement is recorded with your IP address and browser, encrypted, for 7 years, and you can [see or erase it](/privacy/). The host keeps ordinary request logs, as every web host does.",
+      "A static site: no accounts, no cookies, no analytics. Fonts and scripts are served from this domain. The one request it makes elsewhere is to NoData Capsule, its operator, when you agree to the [terms](/terms/): the agreement is recorded with your IP address and browser, encrypted, for 7 years, and you can [see it, or erase your IP address and browser](/privacy/). The host keeps ordinary request logs, as every web host does.",
       "The check itself runs on your computer. Nothing it reads is sent here, or anywhere."
     ],
     "contactEyebrow": "Get in touch",
@@ -729,10 +729,10 @@
     ]
   },
   "privacy": {
-    "metaDescription": "What whatmyagentsaw.com keeps about your agreement to its terms, and how to see it or erase it.",
+    "metaDescription": "What whatmyagentsaw.com keeps about your agreement to its terms, and how to see it or erase its personal data.",
     "eyebrow": "Privacy",
     "title": "What we keep, and how to remove it",
-    "lede": "The site keeps one thing about you: the record that you agreed to [the terms](/terms/). Under sections 13 and 14 of the Privacy Protection Law, you can see that record and ask to erase it. No account is needed: the agreement id and its key are in this browser.",
+    "lede": "The site keeps one thing about you: the record that you agreed to [the terms](/terms/). Under sections 13 and 14 of the Privacy Protection Law, you can see that record and erase its personal data (the IP address and browser). No account is needed: the agreement id and its key are in this browser.",
     "keptTitle": "What is kept",
     "kept": [
       [
@@ -754,13 +754,13 @@
     ],
     "whoTitle": "Who keeps it, why, and for how long",
     "who": "NoData Capsule, the operator of this site, keeps it as evidence of the agreement, and uses it for nothing else: no marketing, no profile, no sharing. It is kept for 7 years, the general limitation period, then the IP address and browser are erased automatically. The tool you run keeps nothing here: it runs on your computer and sends nothing.",
-    "formTitle": "See or erase your record",
+    "formTitle": "See your record, or erase its personal data",
     "formBody": "Filled in from this browser when you agreed here. On another browser, paste the id and key you copied.",
     "codeLabel": "Agreement id",
     "secretLabel": "Key",
     "view": "Show the record",
-    "erase": "Erase my data",
-    "eraseConfirm": "Erase the IP address and browser of this record now? Your agreement will no longer be on record, and the site will ask you to agree again.",
+    "erase": "Erase my IP address and browser",
+    "eraseConfirm": "Erase the IP address and browser of this record now? The id, the time and the hashes stay, so the erasure is on record, but your agreement will no longer stand as evidence, and the site will ask you to agree again.",
     "busy": "Working…",
     "notFound": "No record matches this id and key, or its key was already erased.",
     "unavailable": "The record service did not answer. Please try again later, or [open an issue](newIssue) without personal details.",
