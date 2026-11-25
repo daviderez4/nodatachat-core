@@ -44,6 +44,12 @@
       },
       "reportCaption": "This is the CLI's real output for the {calls} demo calls above, produced by the report code of the source ({version}) at build time."
     },
+    "principles": {
+      "kicker": "THE 10 PRINCIPLES",
+      "title": "Before you give AI access to your information, set the rules.",
+      "lede": "Know your data, set policy, enforce it at the point of access, and demand proof. Ten principles for anyone who lets AI near their information.",
+      "cta": "Read the 10 principles →"
+    },
     "nextBand": {
       "kicker": "GOT YOUR REPORT?",
       "title": "Six steps, in order. Five of them free.",
@@ -153,7 +159,8 @@
         "04 · FROM VISIBILITY TO CONTROL",
         "NoData",
         "For teams that want to enforce what they now see. [Learn more →](nodata)"
-      ]
+      ],
+      "principlesLink": "[The 10 principles for protecting information in the age of AI →](/principles/)"
     }
   },
   "lab": {
@@ -363,12 +370,185 @@
     "outsideTitle": "Keys that came back outside these five",
     "outside": "The line \"secret-looking values … over all calls\" also counts keys that came back from ordinary files and command output. Those are often the most interesting: a key sitting in code. Find them in the events and treat them like step 2."
   },
+  "principles": {
+    "metaDescription": "Ten principles for protecting information in the age of AI: know your data, set policy, enforce it at the point of access, and demand proof.",
+    "tagline": "AI should empower. Your data should remain yours.",
+    "brand": "NoData — Possession is not access.",
+    "en": {
+      "title": "The 10 commandments for protecting information in the age of AI",
+      "eyebrow": "The vision",
+      "lead": "Before you give AI access to your information, set the rules.",
+      "intro": [
+        "We believe AI should help people and organisations, not at the expense of their confidentiality, their privacy, or their sovereignty over their information.",
+        "The traditional borders of the organisation are no longer enough. Information moves between users, agents, models, vendors and systems. Protecting it takes a new approach."
+      ],
+      "start": "Here is where to start:",
+      "items": [
+        [
+          "Know your data",
+          "Know what information you hold, where it is, what in it is sensitive, and who can reach it. You cannot protect information you do not know."
+        ],
+        [
+          "Do not assume information stays inside the organisation",
+          "Check what AI agents read, what they send, which tools they run, and which systems and vendors the information reaches."
+        ],
+        [
+          "Set policy before you grant access",
+          "Define what information may be disclosed, to whom, for what purpose, under which conditions and in which circumstances. Do not leave these decisions to a vendor's defaults."
+        ],
+        [
+          "Do not settle for vendors' promises",
+          "Read the terms of use, understand the privacy policy, check how information is retained, and use tools that let you see what really happens."
+        ],
+        [
+          "Separate holding information from the right to access it",
+          "Whoever holds a file, a database or a capsule is not necessarily allowed to open it. Demand a mechanism where access is decided by policy and permission, not by possession alone."
+        ],
+        [
+          "Enforce, do not only monitor",
+          "A policy that is not enforced is mostly a statement of intent. Use mechanisms that prevent access and the release of information when the conditions are not met."
+        ],
+        [
+          "Demand proof before every disclosure",
+          "Do not settle for a log written after the fact, or for a promise that access was checked. Demand verifiable evidence that the decision was made before the information was released, and that the release met the conditions set."
+        ],
+        [
+          "Do not ignore what the system does not know",
+          "Scanning, detection, decoding and classification can be wrong. Treat an unrecognised result as Unknown, not as confirmation that the information is safe. Allow reports of missed detections, wrong classifications and unsupported files."
+        ],
+        [
+          "Check, learn and improve, continuously",
+          "Use open tools, check the findings, learn the limits, apply the recommendations and report faults. Your protection policy should evolve with the information, the technology and the threats."
+        ],
+        [
+          "Keep control with the owner of the information",
+          "Users change, AI agents change, vendors change, and information moves between systems. The policy should stay in your control, and access to information should be decided anew on every request."
+        ]
+      ],
+      "closingTitle": "Responsibility starts with you. Enforcement should be part of the infrastructure.",
+      "closing": [
+        "NoData was built to help make these principles real: to know the paths by which information is reached, to set policy, to enforce it at the point of access, and to produce proof that can be verified.",
+        "Our open source and our tools are meant to let you understand what happens behind the scenes, even without using our commercial products. We encourage independent checking, learning, reporting of limits, and continuous improvement.",
+        "We do not ask you to trust us blindly. We ask you to know your information, check the mechanisms, and demand proof."
+      ],
+      "highlight": "Do not settle for knowing who accessed your information. Demand to know why access was allowed, and demand proof before the information is disclosed.",
+      "stages": [
+        [
+          "Know",
+          "1–2"
+        ],
+        [
+          "Set policy",
+          "3–4"
+        ],
+        [
+          "Enforce at the point of access",
+          "5–6"
+        ],
+        [
+          "Prove before disclosure",
+          "7"
+        ]
+      ],
+      "loop": "Report, learn, improve (8–9)",
+      "frame": "Control stays with the owner of the information (10)",
+      "diagramCaption": "From the commandments to practice",
+      "toTerms": "And now, the legal agreement: the Terms of Use →",
+      "lang": "עברית"
+    },
+    "he": {
+      "title": "10 הדיברות להגנה על המידע בעידן הבינה המלאכותית",
+      "eyebrow": "החזון",
+      "lead": "לפני שאתם נותנים ל-AI גישה למידע שלכם, קבעו את הכללים.",
+      "intro": [
+        "אנחנו מאמינים שבינה מלאכותית צריכה לעזור לאנשים ולארגונים, לא לבוא על חשבון הסודיות, הפרטיות והריבונות שלהם על המידע.",
+        "הגבולות המסורתיים של הארגון כבר אינם מספיקים. מידע עובר בין משתמשים, סוכנים, מודלים, ספקים ומערכות. האחריות להגן עליו מחייבת גישה חדשה."
+      ],
+      "start": "כך מתחילים:",
+      "items": [
+        [
+          "הכירו את הדאטה שלכם",
+          "דעו איזה מידע אתם מחזיקים, היכן הוא נמצא, מה רגיש בו ומי יכול לגשת אליו. אי אפשר להגן על מידע שאינכם מכירים."
+        ],
+        [
+          "אל תניחו שהמידע נשאר בגבולות הארגון",
+          "בדקו מה סוכני AI קוראים, מה הם שולחים, אילו כלים הם מפעילים ולאילו מערכות וספקים המידע מגיע."
+        ],
+        [
+          "גבשו מדיניות לפני שאתם נותנים גישה",
+          "הגדירו איזה מידע מותר לחשוף, למי, לאיזו מטרה, באילו תנאים ובאילו נסיבות. אל תשאירו את ההחלטות האלה לברירות המחדל של הספק."
+        ],
+        [
+          "אל תסתפקו בהבטחות של ספקים",
+          "קראו את תנאי השימוש, הבינו את מדיניות הפרטיות, בדקו את מנגנוני שמירת המידע והשתמשו בכלים שמאפשרים לכם לראות מה באמת מתרחש."
+        ],
+        [
+          "הפרידו בין החזקת מידע להרשאה לגשת אליו",
+          "מי שמחזיק בקובץ, במאגר או בקפסולה אינו בהכרח מורשה לפתוח אותם. דרשו מנגנון שבו הגישה נקבעת לפי מדיניות והרשאה, ולא רק לפי עצם ההחזקה במידע."
+        ],
+        [
+          "הפעילו מנגנוני אכיפה, לא רק ניטור",
+          "מדיניות שאינה נאכפת היא בעיקר הצהרת כוונות. השתמשו במנגנונים שמונעים גישה ושחרור מידע כאשר התנאים אינם מתקיימים."
+        ],
+        [
+          "דרשו הוכחה לפני כל חשיפה",
+          "אל תסתפקו בלוג שנכתב בדיעבד או בהבטחה שהגישה נבדקה. דרשו ראיה שניתן לאמת לכך שההחלטה התקבלה לפני שחרור המידע ושהשחרור עמד בתנאים שהוגדרו."
+        ],
+        [
+          "אל תתעלמו ממה שהמערכת אינה יודעת",
+          "סריקה, זיהוי, פענוח וסיווג עלולים לטעות. התייחסו לתוצאה לא מוכרת כאל Unknown, ולא כאל אישור שהמידע בטוח. אפשרו דיווח על זיהוי חסר, סיווג שגוי וקבצים שאינם נתמכים."
+        ],
+        [
+          "בדקו, למדו ושפרו באופן מתמשך",
+          "השתמשו בכלים פתוחים, בדקו את הממצאים, למדו את המגבלות, יישמו המלצות ודווחו על תקלות. מדיניות ההגנה צריכה להתפתח יחד עם המידע, הטכנולוגיה והאיומים."
+        ],
+        [
+          "שמרו את השליטה אצל בעל המידע",
+          "משתמשים מתחלפים, סוכני AI מתחלפים, ספקים מתחלפים והמידע עובר בין מערכות. המדיניות צריכה להישאר בשליטתכם, והגישה למידע צריכה להיבחן מחדש בכל בקשה."
+        ]
+      ],
+      "closingTitle": "האחריות מתחילה אצלכם. האכיפה צריכה להיות חלק מהתשתית.",
+      "closing": [
+        "NoData נבנתה כדי לסייע להפוך את העקרונות האלה למציאות: להכיר את מסלולי הגישה למידע, לגבש מדיניות, לאכוף אותה בנקודת הגישה ולייצר הוכחה שניתן לאמת.",
+        "הקוד הפתוח והכלים שלנו נועדו לאפשר לכם להבין מה מתרחש מאחורי הקלעים, גם בלי להשתמש במוצרים המסחריים שלנו. אנחנו מעודדים בדיקה עצמאית, למידה, דיווח על מגבלות ושיפור מתמשך.",
+        "אנחנו לא מבקשים מכם לסמוך עלינו בעיניים עצומות. אנחנו מבקשים מכם להכיר את המידע שלכם, לבדוק את המנגנונים ולדרוש הוכחות."
+      ],
+      "highlight": "אל תסתפקו בלדעת מי ניגש למידע שלכם. דרשו לדעת מדוע הותרה הגישה, ודרשו הוכחה לפני שהמידע נחשף.",
+      "stages": [
+        [
+          "להכיר",
+          "1–2"
+        ],
+        [
+          "לגבש מדיניות",
+          "3–4"
+        ],
+        [
+          "לאכוף בנקודת הגישה",
+          "5–6"
+        ],
+        [
+          "להוכיח לפני חשיפה",
+          "7"
+        ]
+      ],
+      "loop": "לדווח, ללמוד, לשפר (8–9)",
+      "frame": "השליטה נשארת אצל בעל המידע (10)",
+      "diagramCaption": "מהדיברות לפעולה",
+      "toTerms": "ועכשיו, ההסכם המשפטי: תנאי השימוש ←",
+      "lang": "English"
+    }
+  },
   "terms": {
     "version": "2026-11-24",
     "metaDescription": "The terms for using whatmyagentsaw.com and the agent-check tool.",
     "eyebrow": "Terms",
     "title": "Terms of use",
     "updated": "Last updated",
+    "principlesKicker": "BEFORE THE AGREEMENT",
+    "principlesTitle": "The 10 principles for protecting information in the age of AI",
+    "principlesBody": "What we stand for comes first: know your data, set policy, enforce it at the point of access, and demand proof. The terms below are the legal agreement that sets each side's rights and the limits of liability.",
+    "principlesLink": "Read the 10 principles →",
     "intro": "Please read these terms carefully. They include a disclaimer of warranties (section 5), a limitation of liability (section 6) and your responsibility for how you use the tool (sections 7 and 8). By using this site or running agent-check, you agree to them. If you do not agree, do not use them.",
     "sections": [
       [
@@ -417,7 +597,7 @@
       ],
       [
         "Your data and privacy",
-        "The site sets no cookies, runs no analytics and collects no personal data. Your agreement to these terms is kept in your browser's local storage. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."
+        "The site sets no cookies and runs no analytics. When you agree to these terms, NoData records the agreement: the terms version, the sentence you agreed to, the time, your IP address and your browser (user agent). The purpose is evidence that you agreed, and nothing else. The IP address and browser are stored encrypted, the record is chained so it cannot be edited or back-dated, and it is kept for 7 years (the general limitation period) and then erased. You get an agreement id and a key, kept in your browser; with them, under sections 13 and 14 of the Privacy Protection Law, 5741-1981, you can see the record and ask to erase it at any time on [the privacy page](/privacy/), or by [opening an issue](newIssue) without personal details. An erased record no longer shows your agreement, so the site asks you to agree again. The hosting provider keeps ordinary technical request logs, as every web host does. The tool keeps its own local files on your computer and sends nothing."
       ],
       [
         "Intellectual property",
@@ -441,6 +621,19 @@
       ]
     ]
   },
+  "star": {
+    "title": "This is all open. Use it.",
+    "body": "Everything you saw here is built from an open repository, and you do not need an account or our products to use it.",
+    "points": [
+      "Run agent-check on your own machine.",
+      "Read the rules, and argue with them.",
+      "Report what it got wrong."
+    ],
+    "ask": "If it helped you, a star on GitHub would mean a lot. It helps more people find this, and keeps the question of who controls information where it belongs: in the open.",
+    "cta": "Star on GitHub",
+    "later": "Not now",
+    "close": "Close"
+  },
   "consent": {
     "title": "Before you continue",
     "points": [
@@ -450,9 +643,17 @@
       "You use it at your own responsibility, only where you are allowed to, and NoData's liability is limited as the terms say."
     ],
     "termsLink": "[Read the full terms](/terms/)",
+    "principles": "This site follows [the 10 principles for protecting information in the age of AI](/principles/).",
     "checkbox": "I have read and agree to the Terms of Use, including the disclaimer of warranties and the limitation of liability.",
     "agree": "Continue",
-    "stored": "Stored only in this browser. No cookies, no tracking."
+    "stored": "Agreeing records the terms version, the time, your IP address and browser with NoData Capsule, the operator, encrypted, for 7 years, as evidence of the agreement. Nothing else, no cookies, no tracking. [See or erase it](/privacy/).",
+    "saving": "Recording your agreement…",
+    "recordedTitle": "Your agreement is recorded",
+    "recordedBody": "This is your agreement id. Its key is kept in this browser, so on [the privacy page](/privacy/) you can see the record or erase it. Copy both if you may clear this browser.",
+    "recordedId": "Agreement id",
+    "recordedKey": "Key",
+    "notRecorded": "The record could not be saved right now. Your agreement holds, and the site will try again on your next visit.",
+    "done": "Done"
   },
   "about": {
     "metaDescription": "Who builds What My Agent Saw, what is open, what is not, and how the site works.",
@@ -476,7 +677,7 @@
         "Every action an agent takes on your information follows rules you can read, change, and check afterwards."
       ]
     ],
-    "visionClose": "Information moves. Control stays. Seeing what agents do is the first step.",
+    "visionClose": "Information moves. Control stays. Seeing what agents do is the first step. [Read the 10 principles →](/principles/)",
     "whoEyebrow": "Who builds it",
     "whoTitle": "Maintained by NoData.",
     "who": [
@@ -515,7 +716,7 @@
     ],
     "siteEyebrow": "This site",
     "site": [
-      "A static site: no accounts, no cookies, no analytics, and no request to anyone else. Fonts and scripts are served from this domain. Your agreement to the [terms](/terms/) is kept only in this browser. The host keeps ordinary request logs, as every web host does.",
+      "A static site: no accounts, no cookies, no analytics. Fonts and scripts are served from this domain. The one request it makes elsewhere is to NoData Capsule, its operator, when you agree to the [terms](/terms/): the agreement is recorded with your IP address and browser, encrypted, for 7 years, and you can [see or erase it](/privacy/). The host keeps ordinary request logs, as every web host does.",
       "The check itself runs on your computer. Nothing it reads is sent here, or anywhere."
     ],
     "contactEyebrow": "Get in touch",
@@ -526,6 +727,60 @@
       "[Enforcement for a team: NoData ↗](nodata)",
       "[Or start with the lab →](/lab/)"
     ]
+  },
+  "privacy": {
+    "metaDescription": "What whatmyagentsaw.com keeps about your agreement to its terms, and how to see it or erase it.",
+    "eyebrow": "Privacy",
+    "title": "What we keep, and how to remove it",
+    "lede": "The site keeps one thing about you: the record that you agreed to [the terms](/terms/). Under sections 13 and 14 of the Privacy Protection Law, you can see that record and ask to erase it. No account is needed: the agreement id and its key are in this browser.",
+    "keptTitle": "What is kept",
+    "kept": [
+      [
+        "The terms version and the sentence you agreed to",
+        "What you agreed to."
+      ],
+      [
+        "The time",
+        "When you agreed."
+      ],
+      [
+        "Your IP address and browser (user agent)",
+        "Evidence that the agreement came from you. Stored encrypted, each record under its own key."
+      ],
+      [
+        "An agreement id, and hashes",
+        "The id you see, a hash of the key (never the key itself), and a chain link, so the record cannot be edited or back-dated."
+      ]
+    ],
+    "whoTitle": "Who keeps it, why, and for how long",
+    "who": "NoData Capsule, the operator of this site, keeps it as evidence of the agreement, and uses it for nothing else: no marketing, no profile, no sharing. It is kept for 7 years, the general limitation period, then the IP address and browser are erased automatically. The tool you run keeps nothing here: it runs on your computer and sends nothing.",
+    "formTitle": "See or erase your record",
+    "formBody": "Filled in from this browser when you agreed here. On another browser, paste the id and key you copied.",
+    "codeLabel": "Agreement id",
+    "secretLabel": "Key",
+    "view": "Show the record",
+    "erase": "Erase my data",
+    "eraseConfirm": "Erase the IP address and browser of this record now? Your agreement will no longer be on record, and the site will ask you to agree again.",
+    "busy": "Working…",
+    "notFound": "No record matches this id and key, or its key was already erased.",
+    "unavailable": "The record service did not answer. Please try again later, or [open an issue](newIssue) without personal details.",
+    "erased": "Erased. The IP address and browser are gone, and the key no longer opens the record. The chain keeps only the id, the time and hashes, so the erasure itself stays on record.",
+    "pending": "Your agreement in this browser is not on record yet; the site will try again on your next visit.",
+    "none": "No agreement id is stored in this browser.",
+    "fields": {
+      "code": "Agreement id",
+      "terms_version": "Terms version",
+      "sentence": "Agreed to",
+      "accepted_at": "Time",
+      "ip": "IP address",
+      "user_agent": "Browser",
+      "retain_until": "Kept until",
+      "erased_at": "Erased",
+      "receipt_hash": "Chain hash"
+    },
+    "erasedValue": "erased",
+    "otherTitle": "Anything else",
+    "other": "For any other request about your data, [open an issue](newIssue) without personal details and ask to be contacted, or see [the terms](/terms/), section 12."
   },
   "evidence": {
     "metaDescription": "Who controls what AI can access, what can be proven, and what remains unknown. Every item opened at its source and quoted word for word.",
