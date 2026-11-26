@@ -34,6 +34,8 @@ export default function Home() {
         <div className="eyebrow">{c.eyebrow}</div>
         <h1 style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(44px, 8vw, 88px)", lineHeight: 0.98, letterSpacing: "-0.045em", fontWeight: 700, maxWidth: 1000 }}>{c.title}</h1>
         <p style={{ margin: 0, fontSize: 20, lineHeight: 1.55, color: "var(--muted)", maxWidth: 700 }}>{c.lede}</p>
+        {/* The same promise in Hebrew. "Exposed" is the tool's own word: content that came back to the agent, never a leak outside. */}
+        <p dir="rtl" lang="he" style={{ margin: "-14px 0 0", fontSize: 19, lineHeight: 1.5, fontWeight: 600, color: "var(--ink)", maxWidth: 700 }}>{c.ledeHe}</p>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, maxWidth: "100%" }}>
           <CopyCommand command={RUN} />
           <a href="#map" className="btn btn-teal" style={{ minHeight: 56 }}>{c.exploreButton}</a>

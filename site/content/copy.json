@@ -3,7 +3,8 @@
   "home": {
     "eyebrow": "Make the invisible behavior of AI agents visible",
     "title": "What did your agent actually see?",
-    "lede": "See what your AI agent attempted, what succeeded, and what actually reached it.",
+    "lede": "See what your AI agent attempted, what succeeded, and what it was actually exposed to.",
+    "ledeHe": "מה הסוכן שלכם ראה, ולאיזה מידע הוא נחשף בפועל.",
     "exploreButton": "Explore a session ↓",
     "badges": [
       "Claude Code · Codex",
@@ -216,7 +217,7 @@
         "Exposure",
         "What did the agent actually receive?",
         "Evidence of what was read, run, and returned.",
-        "This is agent-check: what was attempted, what succeeded, what came back."
+        "This is agent-check: what was attempted, what succeeded, what the agent was exposed to."
       ],
       [
         "Execution",
@@ -693,7 +694,7 @@
     "metaDescription": "Who builds What My Agent Saw, what is open, what is not, and how the site works.",
     "eyebrow": "About",
     "title": "A place to see what AI agents actually do with the access you gave them.",
-    "lede": "Agents read files, run commands and fetch pages on your behalf. Most of it is invisible unless you go looking. What My Agent Saw is where you go looking: a free tool that reads your agent's own history, a lab that teaches how to read the evidence, and research on where agents can be misled.",
+    "lede": "Agents read files, run commands and fetch pages on your behalf. Most of it is invisible unless you go looking. What My Agent Saw is where you go looking: a free tool that reads your agent's own history and shows what it was exposed to, a lab that teaches how to read the evidence, and research on where agents can be misled.",
     "visionEyebrow": "The vision",
     "visionTitle": "Control and sovereignty in the age of",
     "visionAccent": "AI.",

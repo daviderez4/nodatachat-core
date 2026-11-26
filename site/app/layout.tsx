@@ -14,11 +14,11 @@ import { StarInvite } from "@/components/StarInvite";
 export const metadata: Metadata = {
   metadataBase: new URL("https://whatmyagentsaw.com"),
   title: { default: "What My Agent Saw", template: "%s · What My Agent Saw" },
-  description: "See what your AI agent attempted, what succeeded, and what actually reached it. Open source, free, runs on your history.",
+  description: "See what your AI agent attempted, what succeeded, and what it was actually exposed to. Open source, free, runs on your history.",
   icons: { icon: "/favicon.svg" },
   openGraph: {
     title: "What did your agent actually see?",
-    description: "See what your AI agent attempted, what succeeded, and what actually reached it.",
+    description: "See what your AI agent attempted, what succeeded, and what it was actually exposed to.",
     url: "https://whatmyagentsaw.com",
     siteName: "What My Agent Saw",
     type: "website",
