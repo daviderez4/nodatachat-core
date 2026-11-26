@@ -1,4 +1,4 @@
-// Verify a Mycelium transfer without trusting NoData (launch plan, stage 4).
+// Verify a Mycelium transfer without trusting NoData.
 //
 // Two claims the Mycelium makes, each checkable here with what ships in this
 // package and nothing else (no network, no NoData server, no secret):
@@ -261,3 +261,79 @@ export function fabricSideChecks(packA: EvidencePack, packB: EvidencePack, blobI
   });
   return checks;
 }
+
+// ── What an agent received, against the receipt that released it ──────────
+//
+// The agent read (v1.decrypt), access/retrieve (table, document, folder) and a
+// governed Mycelium send all sign released_sha256 = sha256(canonical(released)):
+// the rows or documents exactly as the agent received them. With the pack the
+// organisation exported and the response the agent kept, anyone checks, offline
+// and without NoData, that this is what was released, and reads from the same
+// signed receipt what was withheld (column and key NAMES, counts, never values).
+// It proves what was released through the door; it does not prove what a model
+// absorbed by another path (a cache, another tool, a copy held in the clear).
+
+/** The released value inside what the agent kept: a full response body
+ *  ({ rows } read · { context } retrieve · { documents } folder) or the bare array. */
+export function releasedValue(received: unknown): unknown {
+  const o = received as { rows?: unknown; documents?: unknown; context?: unknown } | null;
+  if (o && typeof o === "object" && !Array.isArray(o)) {
+    if (Array.isArray(o.rows)) return o.rows;
+    if (Array.isArray(o.context)) return o.context;
+    if (Array.isArray(o.documents)) return o.documents;
+  }
+  return received;
+}
+
+/** The forms a release commits to. Rows, table context and folders: sha256 of
+ *  the canonical JSON. A document's chunks: sha256 of their text joined by a
+ *  blank line (lib/capsule/projection, the same on the server and the holder). */
+export function releasedDigests(value: unknown): string[] {
+  const out = [createHash("sha256").update(canonicalize(value)).digest("hex")];
+  if (Array.isArray(value) && value.length > 0 && value.every((c) => c && typeof (c as { text?: unknown }).text === "string")) {
+    out.push(createHash("sha256").update((value as Array<{ text: string }>).map((c) => c.text).join("\n\n"), "utf8").digest("hex"));
+  }
+  return out;
+}
+
+const WITHHELD_FIELDS = ["columns_withheld", "columns_requested_not_granted", "keys_never_derived", "withheld_types", "dropped_columns"] as const;
+const WITHHELD_COUNTS = ["rows_withheld_by_policy", "spans_withheld", "files_denied"] as const;
+
+/** A release receipt in a verified pack, against what the agent received. */
+export async function verifyReleasedInPack(pack: EvidencePack, receiptId: string, received: unknown, keys: PinnedKeys): Promise<CheckResult[]> {
+  const own = [...(await verifyPack(pack, { contextSince: contextEras(keys) })), checkOrigin(pack, keys)];
+  const failed = own.filter((c) => !c.passed);
+  const checks: CheckResult[] = [
+    { name: "The organisation's pack verifies", passed: failed.length === 0, detail: failed.length === 0 ? `${own.length} checks hold.` : `Fails: ${failed.map((c) => c.name).join("; ")}.` },
+  ];
+  const r = (pack?.nodata_evidence_pack?.receipts ?? []).find((x) => x.id === receiptId);
+  if (!r) return [...checks, { name: "The release receipt is in the pack", passed: false, detail: `No receipt ${receiptId} in this pack.` }];
+  const p = (r.payload ?? {}) as { data?: Record<string, unknown> } & Record<string, unknown>;
+  const data = (p.data && typeof p.data === "object" ? p.data : p) as Record<string, unknown>;
+  const committed = typeof data.released_sha256 === "string" ? data.released_sha256.toLowerCase() : null;
+  const digests = releasedDigests(releasedValue(received));
+  const got = committed !== null && digests.includes(committed) ? committed : digests[0];
+  checks.push({
+    name: "What the agent received is what the receipt released",
+    passed: committed !== null && committed === got,
+    detail: committed === null
+      ? `Receipt ${receiptId} carries no released_sha256, so what was received cannot be tied to it.`
+      : committed === got
+        ? `sha256 ${got.slice(0, 16)}… equals the signed released_sha256 (receipt #${r.chain_index}, ${r.created_at}).`
+        : `sha256 of what you hold is ${got.slice(0, 16)}…; the receipt released ${committed.slice(0, 16)}….`,
+  });
+  const named = WITHHELD_FIELDS.filter((f) => Array.isArray(data[f]) && (data[f] as unknown[]).length > 0).map((f) => `${f}: ${(data[f] as unknown[]).join(", ")}`);
+  const counted = WITHHELD_COUNTS.filter((f) => typeof data[f] === "number" && (data[f] as number) > 0).map((f) => `${f}: ${data[f]}`);
+  const states = WITHHELD_FIELDS.some((f) => Array.isArray(data[f])) || WITHHELD_COUNTS.some((f) => typeof data[f] === "number");
+  checks.push({
+    name: "The same signed receipt states what was withheld",
+    passed: states,
+    detail: !states
+      ? "This receipt names nothing withheld, so what the agent did not receive is not stated by it."
+      : named.length + counted.length === 0
+        ? "Nothing was withheld from this release."
+        : [...named, ...counted].join(" · "),
+  });
+  return checks;
+}
+

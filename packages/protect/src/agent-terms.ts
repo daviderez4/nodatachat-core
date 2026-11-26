@@ -7,8 +7,8 @@
 //
 // The agreement is kept on this computer only, next to the fingerprint salt
 // (agent-events.ts SALT_FILE), in the shape the NoData MCP keeps its own
-// (packages/mcp-server/src/terms.ts, ~/.nodata/consent.json): the terms version, when it
-// was accepted, and a hash of those two. That module cannot be imported here (the open
+// (~/.nodata/consent.json): the terms version, when it
+// was accepted, and a hash of those two. That code cannot be imported here (the open
 // package imports only Node and itself), so the shape is copied, not a second design.
 // The MCP's agent and organisation fields are left out: no name, no email, no account,
 // no identifier of any kind. Nothing is sent anywhere.
@@ -113,11 +113,27 @@ export function declinedLine(lang: TermsLang): string {
   return lang === "he" ? "לא הסכמתם, ולכן לא נקרא דבר." : "Not agreed. Nothing was read.";
 }
 
-/** Without a terminal there is no one to ask: one line, and no wait. */
-export function noTerminalLine(lang: TermsLang): string {
-  return lang === "he"
-    ? `agent-check: צריך להסכים לתנאים (${TERMS_URL}) לפני הריצה הראשונה. הריצו אותו פעם אחת בטרמינל, או הוסיפו --accept-terms.`
-    : `agent-check: agree to the terms (${TERMS_URL}) before the first run. Run it once in a terminal, or add --accept-terms.`;
+/** The command a person runs to agree where there is no terminal to ask in. */
+export const ACCEPT_COMMAND = "npx @nodatachat/protect@3 agent-check --accept-terms";
+
+/**
+ * Without a terminal there is no one to ask, and no wait. The person still reads the terms
+ * right here, where they ran the command, rather than being sent to a website: the short
+ * terms, the sentence they agree to, and the one command that agrees. An agent that ran
+ * the check (the usual way there is no terminal) is told to show the terms to the person
+ * and to add the flag only after the person says yes: it never agrees for them.
+ */
+export function noTerminalLines(lang: TermsLang): string[] {
+  const he = lang === "he";
+  return [
+    ...termsLines(lang),
+    "",
+    he ? "כדי להסכים, הריצו אותו שוב עם --accept-terms:" : "To agree, run it once more with --accept-terms:",
+    `  ${ACCEPT_COMMAND}`,
+    he
+      ? "אם סוכן AI הריץ את זה: הראו לאדם את התנאים, והוסיפו --accept-terms רק אחרי שהוא אומר שהוא מסכים. סוכן לעולם לא מסכים במקום אדם."
+      : "If an AI agent ran this: show the person these terms, and add --accept-terms only after the person says they agree. An agent never agrees for a person.",
+  ];
 }
 
 export function acceptedByFlagLine(lang: TermsLang): string {

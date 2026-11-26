@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "NoData's public signing keys, pinned. chain_keys sign receipts and epoch seal roots; pack_envelope_signers sign evidence-pack envelopes. Source: https://nodatachat.com/api/chain/pubkey at publish time. A key counts only once a published version of this package lists it. receipt_context_since: when the key began signing receipts in their signing context (server mig 612, read from production 2026-10-19); a context-free receipt it signed after that (+15 min) fails verification.",
+  "note": "NoData's public signing keys, pinned. chain_keys sign receipts and epoch seal roots; pack_envelope_signers sign evidence-pack envelopes. Source: https://nodatachat.com/api/chain/pubkey at publish time. A key counts only once a published version of this package lists it. receipt_context_since: when the key began signing receipts in their signing context (read from production 2026-10-19); a context-free receipt it signed after that (+15 min) fails verification.",
   "pinned_from": "https://nodatachat.com/api/chain/pubkey (chain key, read 2026-09-30) · claude_identities where admin_user_id = the pack-signing identity (envelope signer, read 2026-09-30)",
   "chain_keys": [
     {

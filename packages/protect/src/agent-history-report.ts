@@ -30,7 +30,7 @@ export const NEXT_URL = "https://whatmyagentsaw.com/next/";
 /**
  * What to do with the report, in the order of whatmyagentsaw.com/next: the five free
  * steps first, NoData's gate last. The gate's line claims only what the gate does by
- * default (packages/mcp-server gate.ts): it holds and asks, and it warns after outside
+ * default (NoData's read gate): it holds and asks, and it warns after outside
  * content. Refusing is block mode or a rule the person sets, so it is not claimed here.
  * No path and no value: the same steps go on the shareable card.
  */

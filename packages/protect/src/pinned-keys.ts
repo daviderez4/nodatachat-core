@@ -17,8 +17,8 @@ export interface ChainKey {
   ml_dsa65_pubkey_hex?: string | null;
   created_at?: string | null;
   retired_at?: string | null;
-  /** When this key began signing receipts in their signing contexts (server
-   *  mig 612). A context-free receipt it signed after this (plus grace) fails. */
+  /** When this key began signing receipts in their signing contexts (set on
+   *  NoData's server). A context-free receipt it signed after this (plus grace) fails. */
   receipt_context_since?: string | null;
 }
 
