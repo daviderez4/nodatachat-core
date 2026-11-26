@@ -501,7 +501,7 @@ export async function verifyPack(pack: EvidencePack, opts: VerifyOptions = {}): 
     const countDup = (vals: Array<string | number>) => vals.length - new Set(vals).size;
     // Only the signed link decides: two SIGNED receipts naming one predecessor.
     // A repeated chain_index alone is reported, never failed: some chains wrote
-    // every receipt at index 1 with no predecessor (signet, mig 185), and an
+    // every receipt at index 1 with no predecessor (older chains did), and an
     // unsigned field cannot prove a fork anyway.
     const forks = countDup(receipts.filter((x) => x.signature_hex).map((x) => x.prev_receipt_id).filter((v): v is string => !!v));
     const repeatedIndexes = countDup(receipts.map((x) => x.chain_index));

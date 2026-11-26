@@ -86,6 +86,24 @@ npx @nodatachat/protect@3 verify-relay-receipt receipt.json --approval receiver-
 
 The leaf holds the SENDER's scan verdict (`mh`). Membership proves the file is one of those the receiver approved. It does not prove the scan was right, which is why the receiving computer scans on arrival.
 
+## 4. What an AI agent received
+
+The same commitment rides every release to an agent, not only the Mycelium: the agent read (`v1.decrypt`, event `dal_key_release`, since 2026-11-24) and `access/retrieve` (table, document, folder) sign `data.released_sha256` over what the agent received in the response body: `sha256(canonical(rows))` for a read, `sha256(canonical(context))` for a table retrieve and `sha256(canonical(documents))` for a folder; for a document, `sha256` of the chunks' `text` joined by a blank line (`\n\n`). A document projected on the holder's side (`computed_by: holder`) commits the same way: the server signs the hashes and never receives the text. The read response returns it as `audit.released_sha256` beside `audit.release_receipt_id`. The same signed receipt names what was withheld: `columns_withheld`, `columns_requested_not_granted`, `keys_never_derived`, `rows_withheld_by_policy` (names and counts, never values).
+
+```
+npx @nodatachat/protect@3 verify-released org-pack.json --receipt <release_receipt_id> --received response.json
+```
+
+`response.json` is the response body the agent kept (`rows`, `context` or `documents`), or the bare array. The organisation exports the pack with `GET /api/v1/proofs?format=pack`.
+
+| Check | What it proves |
+|---|---|
+| The organisation's pack verifies | Every evidence-pack check, and that NoData's pinned keys signed it. |
+| What the agent received is what the receipt released | The hash of what you hold, in the form above, equals the signed `released_sha256`. |
+| The same signed receipt states what was withheld | Lists the withheld columns, never-derived keys and held-back row counts the receipt signs. |
+
+This proves what was released through the door. It does not prove what a model absorbed by another path (a cache, another tool, a copy already held in the clear): that bypass is closed only where the data is sealed at rest.
+
 ## What this does not prove
 
 - **That the content was true or complete.** It proves what was sealed and carried, not that it was right.

@@ -109,6 +109,19 @@ npx @nodatachat/protect@3 verify-both-sides sender-pack.json recipient-pack.json
 
 Both verify only against the keys pinned in [`NODATA-KEYS.json`](NODATA-KEYS.json), never against a key the evidence names.
 
+### What an AI agent received, against the receipt that released it (3.11.0)
+
+The agent read, `access/retrieve` (table, document, folder) and a governed Mycelium send sign `released_sha256` over
+what the agent received. With the organisation's evidence pack and the response the agent kept, this checks, offline,
+that the two match, and reads back what the same receipt says was withheld (column and key names, counts, never values).
+
+```bash
+npx @nodatachat/protect@3 verify-released org-pack.json --receipt <release_receipt_id> --received response.json
+```
+
+It proves what was released through the door, not what a model absorbed by another path
+([`FABRIC-RECEIPT-FORMAT.md`](FABRIC-RECEIPT-FORMAT.md) §4).
+
 ## What did your AI agent touch? (agent-check, 3.6.0)
 
 One command checks your AI coding agent instead of NoData, from the history the

@@ -17,6 +17,9 @@
 //                                                   a Mycelium relay receipt (FABRIC-RECEIPT-FORMAT.md)
 //   npx @nodatachat/protect@3 verify-both-sides a.json b.json --blob <id>
 //                                                   one Mycelium envelope on both organisations' chains
+//   npx @nodatachat/protect@3 verify-released pack.json --receipt <id> --received response.json
+//                                                   what an AI agent received is what the signed
+//                                                   receipt released, and what it withheld
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -25,16 +28,17 @@ import { createInterface } from "node:readline";
 import { localSalt } from "./agent-events";
 import { checkAgents, localEvents } from "./agent-history";
 import { reportHtml, reportLines, type Lang } from "./agent-history-report";
-import { acceptedByFlagLine, declinedLine, hasAgreed, isYes, noTerminalLine, recordAgreement, termsFile, termsLines, termsQuestion } from "./agent-terms";
+import { acceptedByFlagLine, declinedLine, hasAgreed, isYes, noTerminalLines, recordAgreement, termsFile, termsLines, termsQuestion } from "./agent-terms";
 import { runCheckVectors } from "./check-vectors";
 import { checkOrigin, contextEras, loadPinnedKeys, NODATA_KEYS_PATH } from "./pinned-keys";
 import { inspectNdc, type NdcManifest } from "./seal-v3";
-import { verifyApprovalInPack, verifyBothSides, verifyRelayReceipt } from "./verify-fabric";
+import { verifyApprovalInPack, verifyBothSides, verifyRelayReceipt, verifyReleasedInPack } from "./verify-fabric";
 import { verifyPack, type CheckResult, type EvidencePack } from "./verify-pack";
 
 const USAGE =
   "usage: protect agent-check [--days N] [--lang he] [--accept-terms] | protect check-vectors | protect verify-pack <pack.json> [--keys <keys.json>] | protect inspect-seal <file.ndc>" +
-  " | protect verify-relay-receipt <receipt.json> [--opened <file>] [--approval <receiver-pack.json>] | protect verify-both-sides <a-pack.json> <b-pack.json> --blob <id>";
+  " | protect verify-relay-receipt <receipt.json> [--opened <file>] [--approval <receiver-pack.json>] | protect verify-both-sides <a-pack.json> <b-pack.json> --blob <id>" +
+  " | protect verify-released <pack.json> --receipt <id> --received <response.json>";
 
 /** What agent-check needs from the outside world, so a test can stand in for it. */
 export interface AgentCheckIo {
@@ -63,6 +67,10 @@ export async function main(argv: string[], out: (line: string) => void = (l) => 
   if (cmd === "verify-relay-receipt" && file) {
     const opts = flags(argv.slice(2), ["--opened", "--approval"]);
     if (opts) return relayReceipt(file, opts["--opened"], opts["--approval"], out);
+  }
+  if (cmd === "verify-released" && file) {
+    const opts = flags(argv.slice(2), ["--receipt", "--received"]);
+    if (opts && opts["--receipt"] && opts["--received"]) return released(file, opts["--receipt"], opts["--received"], out);
   }
   if (cmd === "verify-both-sides" && file && flag && argv[3] === "--blob" && argv[4]) return bothSides(file, flag, argv[4], out);
   if (cmd !== "verify-pack" || !file || (flag !== undefined && (flag !== "--keys" || !keysFile))) {
@@ -152,6 +160,14 @@ async function relayReceipt(file: string, opened: string | undefined, approval: 
   return report(checks, "this relay receipt", out);
 }
 
+/** What an AI agent received, against the organisation's signed release receipt. */
+async function released(packFile: string, receiptId: string, receivedFile: string, out: (line: string) => void): Promise<number> {
+  const pack = readJson(packFile, out) as EvidencePack | undefined;
+  const received = readJson(receivedFile, out);
+  if (!pack || received === undefined) return 1;
+  return report(await verifyReleasedInPack(pack, receiptId, received, loadPinnedKeys()), `release ${receiptId}`, out);
+}
+
 /** One envelope on both organisations' chains: two packs, one exported by each side. */
 async function bothSides(fileA: string, fileB: string, blobId: string, out: (line: string) => void): Promise<number> {
   const a = readJson(fileA, out) as EvidencePack | undefined;
@@ -216,7 +232,7 @@ async function agreeToTerms(byFlag: boolean, lang: Lang, say: (line: string) => 
     return true;
   }
   if (!io.isTTY) {
-    io.err(noTerminalLine(lang));
+    for (const line of noTerminalLines(lang)) io.err(line);
     return 2;
   }
   for (const line of termsLines(lang)) say(line);
