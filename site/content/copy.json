@@ -425,6 +425,23 @@
           "Users change, AI agents change, vendors change, and information moves between systems. The policy should stay in your control, and access to information should be decided anew on every request."
         ]
       ],
+      "use": {
+        "title": "Turn every principle into practice",
+        "body": [
+          "Anything that helps an agent behave better is worth using. Each principle here can become a skill, an instruction in the agent's settings, a review step or a habit in your team. Write them, share them, use them.",
+          "But guidance is not a guarantee. An instruction asks an agent to behave well; it cannot make it, and it leaves nothing you can check afterwards. Good behaviour adds to control and proof. It never replaces them."
+        ],
+        "line": [
+          "A skill tells an agent what it should do.",
+          "Control decides what it is allowed to do.",
+          "Proof shows what it actually did."
+        ],
+        "labels": [
+          "GUIDE",
+          "CONTROL",
+          "PROOF"
+        ]
+      },
       "closingTitle": "Responsibility starts with you. Enforcement should be part of the infrastructure.",
       "closing": [
         "NoData was built to help make these principles real: to know the paths by which information is reached, to set policy, to enforce it at the point of access, and to produce proof that can be verified.",
@@ -507,6 +524,23 @@
           "משתמשים מתחלפים, סוכני AI מתחלפים, ספקים מתחלפים והמידע עובר בין מערכות. המדיניות צריכה להישאר בשליטתכם, והגישה למידע צריכה להיבחן מחדש בכל בקשה."
         ]
       ],
+      "use": {
+        "title": "הפכו כל עיקרון למעשה",
+        "body": [
+          "כל מה שעוזר לסוכן להתנהג נכון שווה שימוש. כל עיקרון כאן יכול להפוך לסקיל, להנחיה בהגדרות הסוכן, לשלב בדיקה או להרגל בצוות. כתבו אותם, שתפו אותם והשתמשו בהם.",
+          "אבל הנחיה אינה ערובה. היא מבקשת מהסוכן להתנהג נכון, היא לא יכולה לחייב אותו, והיא לא משאירה שום דבר שאפשר לבדוק אחר כך. התנהגות נכונה מצטרפת לשליטה ולהוכחות, ולעולם אינה מחליפה אותן."
+        ],
+        "line": [
+          "סקיל אומר לסוכן מה כדאי לו לעשות.",
+          "שליטה קובעת מה מותר לו לעשות.",
+          "הוכחה מראה מה הוא עשה בפועל."
+        ],
+        "labels": [
+          "הנחיה",
+          "שליטה",
+          "הוכחה"
+        ]
+      },
       "closingTitle": "האחריות מתחילה אצלכם. האכיפה צריכה להיות חלק מהתשתית.",
       "closing": [
         "NoData נבנתה כדי לסייע להפוך את העקרונות האלה למציאות: להכיר את מסלולי הגישה למידע, לגבש מדיניות, לאכוף אותה בנקודת הגישה ולייצר הוכחה שניתן לאמת.",
