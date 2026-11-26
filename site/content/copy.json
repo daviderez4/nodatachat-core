@@ -6,6 +6,12 @@
     "lede": "See what your AI agent attempted, what succeeded, and what it was actually exposed to.",
     "ledeHe": "מה הסוכן שלכם ראה, ולאיזה מידע הוא נחשף בפועל.",
     "exploreButton": "Explore a session ↓",
+    "video": {
+      "button": "Watch the film",
+      "title": "What did your agent actually see?",
+      "caption": "A real run on one developer's computer: every number in the film is that computer's own agent-check report. Nothing in the report holds a value, only where it was.",
+      "close": "Close the film"
+    },
     "badges": [
       "Claude Code · Codex",
       "No account",
