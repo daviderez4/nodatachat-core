@@ -7,6 +7,8 @@ export type LegalStage = "not_legal" | "allegation" | "evidence_filed" | "findin
 
 export interface EvidenceItem {
   id: string;
+  /** The record in NODATACHAT docs/research/evidence-intelligence/records.json this item rests on. */
+  record_id?: string;
   date: string | null;
   headline: string;
   claim: string;

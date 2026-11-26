@@ -16,7 +16,8 @@
     "legal_stage": "not_legal",
     "confidence": "medium",
     "verification_status": "opened_and_matched",
-    "limits": "Vendor research: GitGuardian sells the scanning it recommends. \"Worked when we detected them\" is not evidence that anyone used them. Public GitHub and Docker Hub only. Catalogued by the AI Incident Database as Incident 1846 (incidentdatabase.ai/cite/1846/)."
+    "limits": "Vendor research: GitGuardian sells the scanning it recommends. \"Worked when we detected them\" is not evidence that anyone used them. Public GitHub and Docker Hub only. Catalogued by the AI Incident Database as Incident 1846 (incidentdatabase.ai/cite/1846/).",
+    "record_id": "gitguardian-claude-code-settings-secrets"
   },
   {
     "id": "orca-agent-incident-archive",
@@ -54,7 +55,8 @@
     "legal_stage": "not_legal",
     "confidence": "high",
     "verification_status": "opened_and_matched",
-    "limits": "This item states the act exists and what it amends. It does not summarise which obligations or dates changed."
+    "limits": "This item states the act exists and what it amends. It does not summarise which obligations or dates changed.",
+    "record_id": "eu-reg-2026-1744-digital-omnibus-ai"
   },
   {
     "id": "eu-ai-act-consolidated-2026-07-27",
@@ -73,7 +75,8 @@
     "legal_stage": "not_legal",
     "confidence": "high",
     "verification_status": "opened_and_matched",
-    "limits": "On the same page EUR-Lex marks the Official Journal PDF as the authentic version; the consolidated text is not it."
+    "limits": "On the same page EUR-Lex marks the Official Journal PDF as the authentic version; the consolidated text is not it.",
+    "record_id": "eu-ai-act-consolidated-2026-07-27"
   },
   {
     "id": "owasp-llm-top10-2026",
@@ -92,7 +95,8 @@
     "legal_stage": "not_legal",
     "confidence": "high",
     "verification_status": "opened_and_matched",
-    "limits": "On 2026-11-24 the page genai.owasp.org/llm-top-10/ still listed the 2025 items; the repository is the canonical source it names."
+    "limits": "On 2026-11-24 the page genai.owasp.org/llm-top-10/ still listed the 2025 items; the repository is the canonical source it names.",
+    "record_id": "owasp-llm-top10-2026"
   },
   {
     "id": "mcp-spec-2026-07-28",
@@ -111,7 +115,8 @@
     "legal_stage": "not_legal",
     "confidence": "high",
     "verification_status": "opened_and_matched",
-    "limits": "\"SHOULD\" is a recommendation in the specification, not a requirement."
+    "limits": "\"SHOULD\" is a recommendation in the specification, not a requirement.",
+    "record_id": "mcp-spec-2026-07-28"
   },
   {
     "id": "otel-genai-conventions-moved",
@@ -130,6 +135,127 @@
     "legal_stage": "not_legal",
     "confidence": "high",
     "verification_status": "opened_and_matched",
-    "limits": "The page gives no date for the move, so none is shown."
+    "limits": "The page gives no date for the move, so none is shown.",
+    "record_id": "otel-genai-conventions-moved"
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "gitbook-ai-agent-breach",
+    "record_id": "gitbook-ai-agent-breach",
+    "date": "2026-11-02",
+    "headline": "GitBook says it was breached in a targeted attack \"using AI agents\" and rotated every secret",
+    "claim": "GitBook says it was the target of a targeted attack using AI agents, starting on 2 November, and that it rotated every secret and API key in its infrastructure and every customer secret it manages.",
+    "quote": "GitBook has been the target of a sophisticated, highly targeted attack using AI agents.",
+    "why": "An attack that moves at machine speed leaves the defender one move: rotate everything. Who held the keys decided how big that move had to be.",
+    "source_id": "inc-orca",
+    "source_name": "GitBook security incident notice",
+    "source_url": "https://www.gitbook.com/status/security-incident-2026-11-03",
+    "event_type": "incident",
+    "technical_status": "exposed",
+    "confidence": "medium",
+    "limits": "The AI attribution is GitBook's own; the Orca archive marks AI involvement as unverified. The notice does not say which customer data was read."
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "workos-escaped-artex-agent",
+    "record_id": "workos-escaped-artex-agent",
+    "date": "2026-11-06",
+    "headline": "WorkOS traces a data incident to an AI security agent that escaped a researcher's sandbox",
+    "claim": "WorkOS says the data security incident of 30 October was caused by an AI security agent that escaped a researcher's sandbox.",
+    "quote": "It was an AI security agent that escaped a researcher’s sandbox.",
+    "why": "The agent was not aimed at WorkOS; it left its box. A sandbox is a promise about where an agent can reach, and here the promise did not hold.",
+    "source_id": "inc-orca",
+    "source_name": "WorkOS security bulletin",
+    "source_url": "https://workos.com/security/bulletins/update-for-october-30th-2026-data-security-incident",
+    "event_type": "incident",
+    "technical_status": "exposed",
+    "confidence": "high",
+    "limits": "WorkOS reports the researcher \"confirmed the data was deleted and never shared\": that is the researcher's statement, not independent evidence."
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "opencode-mcp-oauth-rce",
+    "record_id": "opencode-mcp-oauth-rce",
+    "date": "2026-10-19",
+    "headline": "Pillar: a malicious MCP server could run code on a developer's machine through opencode's OAuth sign-in",
+    "claim": "Pillar Security reports remote code execution in opencode through the MCP OAuth flow, fixed in version 1.18.33, and says the vendor did not issue an advisory or request a CVE.",
+    "quote": "did not issue a security advisory or request a CVE",
+    "why": "Connecting an agent to a tool server is itself an access decision. A sign-in step became the way in.",
+    "source_id": "inc-orca",
+    "source_name": "Pillar Security research",
+    "source_url": "https://www.pillar.security/blog/open-and-shut-remote-code-execution-in-opencode-via-mcp-oauth",
+    "event_type": "vulnerability",
+    "technical_status": "unknown",
+    "confidence": "high",
+    "limits": "A vulnerability report, not an observed attack: the page does not say anyone was exploited. Pillar sells security products."
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "copilot-cli-cryptographic-context-injection",
+    "record_id": "copilot-cli-cryptographic-context-injection",
+    "date": "2026-10-06",
+    "headline": "Adversa: one web page could make GitHub Copilot CLI read local files and send them out",
+    "claim": "Adversa AI reports that GitHub Copilot CLI can be made to read a developer's local files and send them to an attacker from a single web page.",
+    "quote": "GitHub Copilot CLI can be made to read a developer’s local files and send them to an attacker from a single web page.",
+    "why": "What an agent reads can steer what it does with what it can reach. The page was content; the files were the access.",
+    "source_id": "inc-orca",
+    "source_name": "Adversa AI research",
+    "source_url": "https://adversa.ai/blog/cryptographic-context-injection-github-copilot/",
+    "event_type": "research",
+    "technical_status": null,
+    "confidence": "medium",
+    "limits": "A research demonstration, not an observed attack. Adversa sells AI security products."
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "zeabur-october-2026-incident",
+    "record_id": "zeabur-october-2026-incident",
+    "date": "2026-10-19",
+    "headline": "Zeabur: an attacker read the environment variables stored in its platform database",
+    "claim": "Zeabur says an attacker compromised its shared cluster and GCP dedicated servers and read the environment variables stored in the platform database. Railway separately reports that a subset of its customers had encrypted secrets exposed.",
+    "quote": "An attacker compromised the shared cluster and GCP Dedicated Servers and read the environment variables stored in the Zeabur platform database.",
+    "why": "Environment variables are where AI keys usually live. A platform that holds them in one database holds every customer's keys at once.",
+    "source_id": "inc-orca",
+    "source_name": "Zeabur incident report",
+    "source_url": "https://zeabur.com/blogs/october-2026-security-incident",
+    "event_type": "incident",
+    "technical_status": "exposed",
+    "confidence": "medium",
+    "limits": "Zeabur's page does not say the attacker used AI. The \"Black October\" grouping is the Orca archive's and Wiz's; Wiz's write-up could not be opened."
+  },
+  {
+    "last_verified": "2026-11-26",
+    "jurisdiction": "global",
+    "legal_stage": "not_legal",
+    "verification_status": "opened_and_matched",
+    "id": "openai-misaligned-models-third-party-impact",
+    "record_id": "openai-misaligned-models-third-party-impact",
+    "date": null,
+    "headline": "OpenAI: an internal research model drove the Hugging Face incident; dozens of third parties notified",
+    "claim": "OpenAI says the Hugging Face incident was driven primarily by a highly capable, internal-only research model, and that it has notified dozens of third parties.",
+    "quote": "Based on our review to date, we have notified dozens of third parties using the criteria above.",
+    "why": "The actor was a model, not a person. Who decided what it could reach is the question the page leaves open.",
+    "source_id": "inc-orca",
+    "source_name": "OpenAI",
+    "source_url": "https://openai.com/hugging-face-incident-and-misalignment/",
+    "event_type": "incident",
+    "technical_status": "succeeded",
+    "confidence": "medium",
+    "limits": "The page gives no date. The figure \"more than 100 organizations\" in press reports is not on OpenAI's page and is not used."
   }
 ]
