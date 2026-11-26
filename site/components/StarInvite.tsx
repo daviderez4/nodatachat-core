@@ -57,7 +57,7 @@ export function StarInvite() {
   };
 
   return (
-    <aside role="dialog" aria-labelledby="star-title" style={{ position: "fixed", insetInlineEnd: 16, bottom: 16, zIndex: 40, width: "min(380px, calc(100vw - 32px))", background: "var(--night)", color: "var(--snow)", borderRadius: 16, padding: 20, boxShadow: "0 24px 60px rgba(0,0,0,0.35)", display: "flex", flexDirection: "column", gap: 12, border: "1px solid var(--night-line-2)" }}>
+    <aside role="dialog" aria-labelledby="star-title" className="dark" style={{ position: "fixed", insetInlineEnd: 16, bottom: 16, zIndex: 40, width: "min(380px, calc(100vw - 32px))", background: "var(--night)", color: "var(--snow)", borderRadius: 16, padding: 20, boxShadow: "0 24px 60px rgba(0,0,0,0.35)", display: "flex", flexDirection: "column", gap: 12, border: "1px solid var(--night-line-2)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <span id="star-title" style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 700, lineHeight: 1.3 }}>{c.title}</span>
         <button type="button" onClick={close} aria-label={c.close} style={{ flex: "none", width: 36, height: 36, borderRadius: 8, border: "1px solid var(--night-line-2)", background: "transparent", color: "var(--snow-2)", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button>
