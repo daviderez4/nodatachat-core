@@ -40,6 +40,8 @@ export function StarInvite() {
     const agreed = read("wmas-terms") === copy.terms.version;
     const seen = Number(read(SEEN) ?? 0);
     if (!agreed || Date.now() - seen < WAIT_DAYS * 86_400_000) return;
+    // Never over the film: it opens by itself on a first visit, and the star waits for it.
+    if (!read("wmas-video-seen") && pathname === "/") return;
     if (pages >= 2) {
       const t = setTimeout(() => setShow(true), 4000);
       return () => clearTimeout(t);

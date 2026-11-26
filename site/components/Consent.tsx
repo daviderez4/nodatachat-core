@@ -82,7 +82,7 @@ export function Consent() {
           ) : (
             <p style={{ margin: 0, fontSize: 15, lineHeight: 1.55, color: "var(--ink-2)" }}>{c.notRecorded}</p>
           )}
-          <button type="button" autoFocus onClick={() => setOpen(false)} className="btn btn-ink" style={{ width: "100%", minHeight: 48 }}>{c.done}</button>
+          <button type="button" autoFocus onClick={() => { setOpen(false); window.dispatchEvent(new Event("wmas:agreed")); }} className="btn btn-ink" style={{ width: "100%", minHeight: 48 }}>{c.done}</button>
         </div>
       </div>
     );

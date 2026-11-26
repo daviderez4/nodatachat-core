@@ -7,6 +7,7 @@ import { CopyCommand } from "@/components/CopyCommand";
 import { QuickstartTabs } from "@/components/QuickstartTabs";
 import { Social } from "@/components/Social";
 import { Emblem } from "@/components/Emblem";
+import { VideoInvite, WatchButton } from "@/components/VideoInvite";
 
 // The six calls of the homepage map, in the order they happen in the demo session.
 const MAP_IDS = ["env", "aws", "src", "grep", "mcp", "curl"];
@@ -38,6 +39,7 @@ export default function Home() {
         <p dir="rtl" lang="he" style={{ margin: "-14px 0 0", fontSize: 19, lineHeight: 1.5, fontWeight: 600, color: "var(--ink)", maxWidth: 700 }}>{c.ledeHe}</p>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, maxWidth: "100%" }}>
           <CopyCommand command={RUN} />
+          <WatchButton />
           <a href="#map" className="btn btn-teal" style={{ minHeight: 56 }}>{c.exploreButton}</a>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 18px", fontSize: 13, color: "var(--faint)" }}>
@@ -277,6 +279,7 @@ export default function Home() {
           </ol>
         </div>
       </section>
+      <VideoInvite />
     </>
   );
 }
