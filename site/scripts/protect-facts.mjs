@@ -117,7 +117,10 @@ for (const k of ["CHECK_COMMAND", "GATE_COMMAND", "CARD_COMMAND"])
 // 2FA approval. People run what npm serves, so the site must not show a version they cannot get.
 let npmLatest = null;
 try {
-  npmLatest = execFileSync("npm", ["view", pkg.name, "dist-tags.latest"], { encoding: "utf8", timeout: 20000, stdio: ["ignore", "pipe", "ignore"] }).trim() || null;
+  // --prefer-online: ask the registry, never a cached copy of it. A build host that keeps npm's
+  // cache between builds otherwise reads the version from before the last release, and the
+  // pages say "npm serves" a version npm no longer calls latest.
+  npmLatest = execFileSync("npm", ["view", pkg.name, "dist-tags.latest", "--prefer-online"], { encoding: "utf8", timeout: 20000, stdio: ["ignore", "pipe", "ignore"] }).trim() || null;
 } catch {
   // Unreachable registry: the pages say only what the source is, never claim a published version.
 }
