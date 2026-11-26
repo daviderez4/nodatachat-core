@@ -40,7 +40,9 @@ export function Consent() {
   }, [open]);
 
   // The terms page itself stays readable: the window would cover the text it asks you to read.
-  if (!open || pathname?.startsWith("/terms") || pathname?.startsWith("/principles") || pathname?.startsWith("/privacy")) return null;
+  // The evidence pages are reading, not using the tool: a reader arriving from a shared post
+  // gets the article, and the terms still come up on the tool's pages.
+  if (!open || pathname?.startsWith("/terms") || pathname?.startsWith("/principles") || pathname?.startsWith("/privacy") || pathname?.startsWith("/evidence")) return null;
 
   // Clickwrap: the box starts unchecked and the button stays disabled until the person ticks it.
   const agree = async () => {
