@@ -59,14 +59,14 @@ where agents can be misled. NoData maintains it and is linked from it. The site 
 
 1. **A branch and a PR** to `main` in `daviderez4/nodatachat-core`.
 2. **Vercel builds a preview** for the PR. David reviews it and can comment on the preview page.
-3. **David merges.** A person merges, never an agent, by THE RELEASE LAW: this site is a release
-   channel, row `site_whatmyagentsaw` in the private repo's `apps/web/src/lib/release-policy/channels.ts`.
+3. **David merges.** A person merges, never an agent: the site is a release channel, and every
+   release needs a person's approval.
 4. **Production deploys** to whatmyagentsaw.com. A bad deploy is withdrawn by promoting the previous
    deployment in Vercel, or by a revert.
 
 The protect package (`packages/protect`), its CI (`.github/workflows/protect.yml`) and its npm release are
-not the site's. A site change never touches them. A change to `packages/protect` comes from the private
-repo through `protect-public-sync`, not from here.
+not the site's. A site change never touches them. A change to `packages/protect` arrives through its
+release sync, not from here.
 
 ## Commands (from `site/`)
 
