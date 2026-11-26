@@ -119,6 +119,24 @@ export function Principles() {
         </ol>
       </section>
 
+      {/* USE THEM: anything that helps behaviour is welcome; none of it replaces control and proof */}
+      <section className="wrap" style={{ paddingBottom: 64, maxWidth: 1040, width: "100%", marginLeft: "auto", marginRight: "auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28, padding: 28, borderRadius: 16, background: "var(--paper-2)", border: "1px solid var(--line)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
+            <h2 style={{ margin: 0, fontFamily: "var(--display)", fontSize: "clamp(22px, 2.6vw, 28px)", fontWeight: 700, lineHeight: 1.2, letterSpacing: rtl ? 0 : "-0.02em" }}>{c.use.title}</h2>
+            {c.use.body.map((x) => <p key={x} style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: "var(--ink-2)" }}>{x}</p>)}
+          </div>
+          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10, alignSelf: "center", minWidth: 0 }}>
+            {c.use.line.map((x, i) => (
+              <li key={x} style={{ display: "flex", gap: 12, alignItems: "baseline", padding: "12px 16px", borderRadius: 10, background: "var(--card)", border: "1px solid var(--line)", fontSize: 17, fontWeight: i === 0 ? 500 : 700 }}>
+                <span className="mono" style={{ fontSize: 12, color: i === 0 ? "var(--faint)" : "var(--teal)", flex: "none" }}>{c.use.labels[i]}</span>
+                <span>{x}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* CLOSING */}
       <section className="dark">
         <div className="wrap" style={{ paddingTop: 72, paddingBottom: 72, maxWidth: 1040, width: "100%", marginLeft: "auto", marginRight: "auto", display: "flex", flexDirection: "column", gap: 18 }}>
