@@ -23,6 +23,10 @@ you install, so you can read exactly the code you run.
 npx @nodatachat/protect@3 agent-check       # the last 30 days; --lang he for Hebrew
 ```
 
+<img src="assets/agent-check.gif" alt="agent-check output: what the agent attempted, what succeeded, and how many secret-looking values came back into its context" width="720"/>
+
+<sub>A real run on one developer's computer: 30 days, 23,850 tool calls. The report holds counts only.</sub>
+
 It reads the history Claude Code (`~/.claude/projects`) and Codex (`~/.codex/sessions`)
 already keep on your computer, and counts, per category, what the agent **tried**, what
 **succeeded**, and how many **secret-looking values came back** into its context. Credential
@@ -38,6 +42,9 @@ The rules are plain patterns in
 Step through real cases in the lab at **[whatmyagentsaw.com](https://whatmyagentsaw.com)**:
 the evidence in each log, the limits of what it proves, and the decision these rules make.
 The site is in [`site/`](site/) and is built from this repository, so it cannot drift from the code.
+
+agent-check shows what already happened. Deciding what an agent may read next time, before
+it reads it, is what [NoData](https://nodatacapsule.com) does.
 
 ## Verify NoData's claims
 
@@ -57,7 +64,7 @@ What each command proves, and what it does not, is in
 | [`packages/protect`](packages/protect) | `@nodatachat/protect` 3.x: specs, vectors, verifiers, and `agent-check`. License: [Apache-2.0](packages/protect/LICENSE.md) |
 | [`legacy/`](legacy) | The 1.x open core (Apache-2.0), kept as published, not maintained |
 
-NoData's product (the server, the MCP, the SDK, the CLI, the read gate's decisions, the
+NoData's product ([nodatacapsule.com](https://nodatacapsule.com): the server, the MCP, the SDK, the CLI, the read gate's decisions, the
 deep scanner) is not in this repository. What is here is what you need to verify what
 NoData says about it, and to see what your agent does before you decide what to allow.
 
