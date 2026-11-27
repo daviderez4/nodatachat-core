@@ -152,7 +152,7 @@ export function Toolbox({ tools, c }: { tools: Tool[]; c: C }) {
                 </div>
                 <dl className="tb-facts">
                   <dt>{k.runsWhere}</dt><dd>{t.runs_where.join(", ")}</dd>
-                  <dt>{k.contentLeaves}</dt><dd>{t.content_leaves}</dd>
+                  <dt>{k.contentLeaves}</dt><dd>{t.content_leaves}{t.content_note ? `: ${t.content_note}` : ""}</dd>
                   <dt>{k.covers}</dt><dd>{t.covers}</dd>
                   <dt>{k.license}</dt><dd>{t.open_source}</dd>
                   <dt>{k.price}</dt><dd>{t.price}</dd>

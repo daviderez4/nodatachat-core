@@ -28,6 +28,8 @@ const WHERE = ["your machine", "your cloud", "vendor"];
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TRACKING = /^utm_|^fbclid$|^gclid$|^mc_cid$|^mc_eid$|^ref$|^ref_src$|^_hs/i;
 const TEXT = ["name", "url", "covers", "price", "limits", "summary", "open_source", "how_to_verify", "last_checked"];
+// Optional text fields: checked like the others when present (no em dash).
+const OPTIONAL_TEXT = ["content_note", "disclosure"];
 
 const errors = [];
 const bad = (id, msg) => errors.push(`"${id}": ${msg}`);
@@ -50,6 +52,7 @@ for (const it of items) {
   seen.add(id);
 
   for (const f of TEXT) if (typeof it[f] !== "string" || !it[f].trim()) bad(id, `missing ${f}`);
+  for (const f of OPTIONAL_TEXT) if (f in it && (typeof it[f] !== "string" || !it[f].trim())) bad(id, `${f} is present but empty`);
   if (it.disclosure !== undefined && (typeof it.disclosure !== "string" || !it.disclosure.trim())) bad(id, "disclosure, when present, must be a sentence");
   for (const [f, v] of Object.entries(it)) if (typeof v === "string" && v.includes("—")) bad(id, `${f} uses an em dash; use a comma, colon or period`);
 
@@ -77,7 +80,8 @@ if (errors.length) {
 const ageDays = (d) => Math.floor((today.getTime() - Date.parse(d)) / 86400000);
 // "Open source" on the page means the whole tool is under an open licence: not source-available,
 // and not a tool whose open part is only one layer of it.
-const openSource = (s) => s !== "no" && !/^source-available/i.test(s) && !/closed/i.test(s);
+// "no" and "proprietary" both mean closed; a source-available licence is not open source.
+const openSource = (s) => s !== "no" && !/^proprietary/i.test(s) && !/^source-available/i.test(s) && !/closed/i.test(s);
 const out = items
   .map((it) => ({ ...it, stale: ageDays(it.last_checked) > STALE_DAYS, oss: openSource(it.open_source), local: it.runs_where.includes("your machine") }))
   // Lowest level first, so the list reads up the ladder. Ties keep the file's order.
