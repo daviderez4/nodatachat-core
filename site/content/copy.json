@@ -851,5 +851,127 @@
     "noDate": "no date given by the source",
     "stale": "Needs re-verification",
     "share": "Share"
+  },
+  "toolbox": {
+    "metaDescription": "A ladder of methods for controlling what an AI agent may touch, from instructions to verifiable proof. Five tests place any tool on it, ours included.",
+    "eyebrow": "Enforcement toolbox",
+    "title": "Seeing is the first step. This is the next one.",
+    "lede": "Methods and tools that control what your agent may touch, and prove what happened.",
+    "checkFirst": "Haven't looked yet? Run the check first:",
+    "ladderEyebrow": "The ladder of methods",
+    "ladderTitle": "From guidance to guarantee.",
+    "ladderLede": "Each level is a method, not a product. A tool sits where the five tests below place it. Higher means a stronger guarantee, not a better tool: most setups use several levels at once.",
+    "ladderHint": "Select a level to show only its tools.",
+    "ladderTools": [
+      "no tools listed",
+      "tool",
+      "tools"
+    ],
+    "levels": [
+      {
+        "name": "Instructions and skills",
+        "meaning": "The agent is told what not to do, and can ignore it.",
+        "note": "Use every instruction as guidance, never instead of control and proof."
+      },
+      {
+        "name": "The agent's own settings",
+        "meaning": "Deny rules, sandbox, approval prompts. Enforced inside the agent; another tool or a changed setting goes around them."
+      },
+      {
+        "name": "Scanning and detection",
+        "meaning": "DLP and secret scanners see and alert, usually after the fact."
+      },
+      {
+        "name": "Masking, redaction, tokenization",
+        "meaning": "The agent receives less to begin with."
+      },
+      {
+        "name": "A gate outside the agent",
+        "meaning": "A proxy, vault or MCP gateway decides before data is released."
+      },
+      {
+        "name": "Encryption with per-request key release",
+        "meaning": "Data is ciphertext at rest. No decision, no key. Hard to bypass."
+      },
+      {
+        "name": "Zero knowledge and verifiable proof",
+        "meaning": "The provider cannot see the content and holds no keys, and the proof can be checked without trusting the provider.",
+        "note": "Here \"zero knowledge\" means exactly that sentence. It is not a claim that a tool uses zero-knowledge proofs in the cryptographic sense."
+      }
+    ],
+    "testsEyebrow": "How to choose",
+    "testsTitle": "Five tests. Apply them to any tool, ours included.",
+    "testsLede": "Every placement on this page comes from these questions, answered from the tool's own documentation or code.",
+    "tests": [
+      [
+        "Before or after?",
+        "Does it act before the read, run or send, or only report after?"
+      ],
+      [
+        "Outside the agent?",
+        "Does it run outside the agent, where the agent cannot change it?"
+      ],
+      [
+        "Can it be bypassed?",
+        "Can it be bypassed, and how? A tool's own docs usually say."
+      ],
+      [
+        "Who holds the key?",
+        "You, the vendor, or nobody?"
+      ],
+      [
+        "Proof you can check?",
+        "Is the proof verifiable without trusting the vendor?"
+      ]
+    ],
+    "alsoAsk": "Also ask where it runs, whether your content leaves, which agents it covers, its licence and its price. Each card below answers those.",
+    "toolsEyebrow": "The tools",
+    "toolsTitle": "Placed by the tests, not ranked.",
+    "toolsLede": "A short list, each claim checked against the tool's own docs or code. It grows as entries are verified.",
+    "filters": {
+      "level": "Level",
+      "allLevels": "All levels",
+      "category": "Category",
+      "allCategories": "All categories",
+      "openSource": "Open source only",
+      "local": "Runs on your machine",
+      "clear": "Clear filters",
+      "showing": "Showing",
+      "of": "of",
+      "none": "No tool in this list matches these filters yet."
+    },
+    "card": {
+      "enforces": "Enforces",
+      "proves": "Proves",
+      "yes": "yes",
+      "partial": "partial",
+      "no": "no",
+      "enforcementOnly": "Enforcement only",
+      "loggingOnly": "Logging only",
+      "detectionOnly": "Detection only",
+      "level": "Level",
+      "runsWhere": "Runs",
+      "contentLeaves": "Your content leaves",
+      "covers": "Covers",
+      "license": "Licence",
+      "price": "Price",
+      "limits": "Limits",
+      "basisDocs": "Per vendor docs",
+      "basisTested": "Tested",
+      "verify": "Check the source",
+      "stale": "Stale: not re-checked in 120 days",
+      "footer": "Based on public docs as of",
+      "error": "Spot an error?",
+      "openIssue": "Open an issue."
+    },
+    "policyEyebrow": "Policy",
+    "policyTitle": "Then write the rules down.",
+    "policyLede": "A tool enforces whatever rules you give it. The rules themselves, with commands, are on their own page.",
+    "policyNext": "[Rules you can adopt today, with commands →](/next/)",
+    "policyLab": "[Try it in the lab →](/lab/)",
+    "ctaTitle": "Why this matters, and how to try it.",
+    "ctaEvidence": "[Why this matters, with sources →](/evidence/)",
+    "ctaLab": "[Try it in the lab →](/lab/)",
+    "suggest": "Know a tool that belongs here, or a placement that is wrong? [Suggest a tool or a correction](newIssue). Every entry follows the same fields and the same tests."
   }
 }
