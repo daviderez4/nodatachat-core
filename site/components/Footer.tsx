@@ -17,6 +17,7 @@ export function Footer() {
             <span className="mono" style={{ fontSize: 11, color: "var(--snow-3)" }}>BUILD</span>
             <Link href="/#check" style={{ color: "var(--snow-2)" }}>Run the check</Link>
             <Link href="/next/" style={{ color: "var(--snow-2)" }}>What to do next</Link>
+            <Link href="/toolbox/" style={{ color: "var(--snow-2)" }}>Enforcement toolbox</Link>
             <a href={links.readme} style={{ color: "var(--snow-2)" }}>Docs</a>
             <Link href="/lab/" style={{ color: "var(--snow-2)" }}>Lab</Link>
             <Link href="/agentic-web/" style={{ color: "var(--snow-2)" }}>The Agentic Web</Link>

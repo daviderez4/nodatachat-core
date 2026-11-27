@@ -7,6 +7,7 @@ import { Emblem } from "./Emblem";
 const items: Array<{ href: string; label: string; external?: boolean }> = [
   { href: "/#check", label: "Tool" },
   { href: "/next/", label: "What next" },
+  { href: "/toolbox/", label: "Toolbox" },
   { href: "/lab/", label: "Lab" },
   { href: "/agentic-web/", label: "Agentic Web" },
   { href: "/#developers", label: "Developers" },
