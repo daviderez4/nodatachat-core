@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
 
-// The 73-second film on the home page, in a window that opens by itself once and can always
+// The film on the home page (1:46), in a window that opens by itself once and can always
 // be closed. It opens after the visitor has agreed to the terms (never over the consent
 // window), and not again once closed in this browser. The Watch button in the hero opens it
 // at any time. The file is served from this site: no player, no third party, nothing loads
