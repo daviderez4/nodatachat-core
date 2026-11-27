@@ -24,6 +24,8 @@ export interface Tool {
   limits: string;
   summary: string;
   disclosure?: string;
+  /** Shown after content_leaves when the yes/no alone would mislead (for example: the agent sends content to its model provider). */
+  content_note?: string;
   stale: boolean;
   /** The whole tool is under an open licence (derived at build time). */
   oss: boolean;

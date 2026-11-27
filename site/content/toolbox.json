@@ -9,14 +9,15 @@
     "proves": "no",
     "runs_where": ["your machine"],
     "content_leaves": "no",
-    "open_source": "no",
+    "open_source": "proprietary",
     "covers": "Claude Code only",
     "price": "Part of Claude Code, which needs a Claude subscription or an Anthropic Console account",
     "basis": "docs",
     "how_to_verify": "https://code.claude.com/docs/en/permissions",
     "last_checked": "2026-11-27",
     "limits": "Its docs say deny rules match the command text Claude writes and are not a security boundary around a program; the OS-level sandbox is off by default and covers shell commands only.",
-    "summary": "Deny, ask and allow rules evaluated deny first, plus an optional OS-level sandbox (Seatbelt on macOS, bubblewrap on Linux and WSL2) for shell commands."
+    "summary": "Deny, ask and allow rules evaluated deny first, plus an optional OS-level sandbox (Seatbelt on macOS, bubblewrap on Linux and WSL2) for shell commands.",
+    "content_note": "the setting itself sends nothing; Claude Code sends your prompts and the files it reads to Anthropic, its model provider"
   },
   {
     "id": "codex-cli-sandbox",
@@ -35,7 +36,8 @@
     "how_to_verify": "https://github.com/openai/codex/blob/main/codex-rs/protocol/src/config_types.rs",
     "last_checked": "2026-11-27",
     "limits": "A setting of the agent itself: the danger-full-access mode and the never-ask approval policy are one configuration change away.",
-    "summary": "Sandbox modes read-only, workspace-write and danger-full-access, and approval policies from untrusted to never. On Linux the sandbox uses bubblewrap and seccomp."
+    "summary": "Sandbox modes read-only, workspace-write and danger-full-access, and approval modes on-request and never, with finer-grained approval settings in its config. On Linux the sandbox uses bubblewrap and seccomp.",
+    "content_note": "the setting itself sends nothing; Codex sends your prompts and the files it reads to OpenAI, its model provider"
   },
   {
     "id": "gitleaks",
@@ -106,12 +108,13 @@
     "content_leaves": "no",
     "open_source": "Apache-2.0 for the verification layer; the service is closed",
     "covers": "Agents connected through its MCP gate",
-    "price": "See the vendor's site",
+    "price": "Early access; pricing is not published yet",
     "basis": "tested",
     "how_to_verify": "https://www.npmjs.com/package/@nodatachat/protect",
     "last_checked": "2026-11-27",
     "limits": "Controls only what passes through it; access an agent already holds in the clear is outside it.",
     "summary": "Seals files and secrets on your computer to keys you hold, decides each release before it happens, and signs receipts that its published verifiers check offline.",
-    "disclosure": "Made by the team behind this site."
+    "disclosure": "Made by the team behind this site.",
+    "content_note": "only ciphertext and hashes leave your computer"
   }
 ]
