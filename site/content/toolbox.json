@@ -127,8 +127,8 @@
     "price": "Early access; pricing is not published yet",
     "basis": "tested",
     "how_to_verify": "https://www.npmjs.com/package/@nodatachat/protect",
-    "last_checked": "2026-11-27",
-    "limits": "Controls only what passes through it; access an agent already holds in the clear is outside it.",
+    "last_checked": "2026-11-28",
+    "limits": "Level 7 holds with keys you hold: sealed on your computer, an organisation key, or a sovereign install. In tables managed in NoData's own cloud, NoData holds the key and decrypts the approved columns, and each receipt says so: that is level 6. Controls only what passes through it; access an agent already holds in the clear is outside it.",
     "summary": "Seals files and secrets on your computer to keys you hold, decides each release before it happens, and signs receipts that its published verifiers check offline.",
     "disclosure": "Made by the team behind this site.",
     "content_note": "only ciphertext and hashes leave your computer"
